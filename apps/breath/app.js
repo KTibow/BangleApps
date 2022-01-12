@@ -21,8 +21,8 @@ var settings_file = require("Storage").open("breath.settings.json", "r");
 
 var test = settings_file.read(settings_file.getLength());
 
-if(test!== undefined)
-  settings = JSON.parse(test);
+if (test !== undefined)
+    settings = JSON.parse(test);
 
 if (settings === undefined) {
     settings = {
@@ -36,7 +36,8 @@ if (settings === undefined) {
 }
 
 var selection = ["speed", "exhale pause", "inhale pause", "colour", "vibrate",
-                 "ex_in_ratio", "in_progress", "paused"];
+    "ex_in_ratio", "in_progress", "paused"
+];
 
 var colours = {
     green: ["#00ff7f", "green"],
@@ -62,13 +63,12 @@ function circle() {
             g.setFontAlign(-1, -1);
             g.drawString("<<", 220, 40);
             status = 7;
-            timeout = setTimeout(function () {
+            timeout = setTimeout(function() {
                 interval = restart_interval();
             }, settings.exhale_pause * 1000);
         }
         direction = 0;
-    }
-    else {
+    } else {
         if (angle == 90)
             angle = -90;
         if (angle == -90) {
@@ -76,7 +76,7 @@ function circle() {
             g.setFontAlign(-1, -1);
             g.drawString("<<", 220, 40);
             status = 7;
-            timeout = setTimeout(function () {
+            timeout = setTimeout(function() {
                 interval = restart_interval();
             }, settings.inhale_pause * 1000);
         }
@@ -87,7 +87,7 @@ function circle() {
     g.flip();
 
     if (settings.vibrate == "forward")
-        Bangle.buzz(50, Math.abs(origin)/1.5);
+        Bangle.buzz(50, Math.abs(origin) / 1.5);
     else if (settings.vibrate == "backward")
         Bangle.buzz(50, (1.6 - (Math.abs(origin))));
 }
@@ -97,8 +97,8 @@ function restart_interval() {
     var calc = 5 - settings.period;
     calc *= 15;
     calc += 120;
-    if(direction == 1 && settings.ex_in_ratio == "5:6"){
-      calc -= calc*0.2;
+    if (direction == 1 && settings.ex_in_ratio == "5:6") {
+        calc -= calc * 0.2;
     }
     interval = setInterval(circle, calc);
 }
@@ -116,18 +116,17 @@ function update_menu() {
     while (cursor < 180) {
         var key = Object.keys(settings)[(cursor - 60) / 20];
         var value = settings[key];
-      
+
         if (status == ((cursor - 60) / 20)) {
             g.setColor(colours.white[0]);
-        }
-        else
+        } else
             g.setColor(settings.colour[0]);
 
         var display_txt = selection[(cursor - 60) / 20] + ": " + value;
-      
-        if(((cursor - 60) / 20) == 3)
-          display_txt = selection[(cursor - 60) / 20] + ": " + value[1];
-      
+
+        if (((cursor - 60) / 20) == 3)
+            display_txt = selection[(cursor - 60) / 20] + ": " + value[1];
+
         g.drawString(display_txt, 10, cursor);
         cursor += 20;
     }
@@ -140,8 +139,7 @@ function btn1Pressed() {
             status = 0;
 
         update_menu();
-    }
-    else if (status == 7) {
+    } else if (status == 7) {
         clearTimeout(timeout);
         clearInterval();
         status = 0;
@@ -165,41 +163,35 @@ function btn3Pressed() {
             settings.period += 1;
             if (settings.period > 6)
                 settings.period = 1;
-        }
-        else if (status == 1) {
+        } else if (status == 1) {
             settings.exhale_pause += 1;
             if (settings.exhale_pause > 4)
                 settings.exhale_pause = 1;
-        }
-        else if (status == 2) {
+        } else if (status == 2) {
             settings.inhale_pause += 1;
             if (settings.inhale_pause > 4)
                 settings.inhale_pause = 1;
-        }
-        else if (status == 3) {
+        } else if (status == 3) {
             if (settings.colour[0] == colours.green[0]) {
                 settings.colour = colours.blue;
-            }
-            else if (settings.colour[0] == colours.blue[0])
+            } else if (settings.colour[0] == colours.blue[0])
                 settings.colour = colours.red;
             else if (settings.colour[0] == colours.red[0])
                 settings.colour = colours.yellow;
             else if (settings.colour[0] == colours.yellow[0])
                 settings.colour = colours.green;
-        }
-        else if (status == 4) {
+        } else if (status == 4) {
             if (settings.vibrate == "forward")
                 settings.vibrate = "backward";
             else if (settings.vibrate == "backward")
                 settings.vibrate = "off";
             else if (settings.vibrate == "off")
                 settings.vibrate = "forward";
-        }
-        else if(status == 5){
-          if(settings.ex_in_ratio == "1:1")
-            settings.ex_in_ratio = "5:6";
-          else
-            settings.ex_in_ratio = "1:1";
+        } else if (status == 5) {
+            if (settings.ex_in_ratio == "1:1")
+                settings.ex_in_ratio = "5:6";
+            else
+                settings.ex_in_ratio = "1:1";
         }
         update_menu();
     }
@@ -207,16 +199,22 @@ function btn3Pressed() {
 
 update_menu();
 
-setWatch(btn1Pressed, BTN1, { repeat: true });
-setWatch(btn2Pressed, BTN2, { repeat: true });
-setWatch(btn3Pressed, BTN3, { repeat: true });
+setWatch(btn1Pressed, BTN1, {
+    repeat: true
+});
+setWatch(btn2Pressed, BTN2, {
+    repeat: true
+});
+setWatch(btn3Pressed, BTN3, {
+    repeat: true
+});
 
-Bangle.on('HRM', function (hrm) {
+Bangle.on('HRM', function(hrm) {
     if (first_signal)
         first_signal = false;
-    else{
-          var signal = hrm.bpm;
-          if(signal > 50 && signal < 180)
+    else {
+        var signal = hrm.bpm;
+        if (signal > 50 && signal < 180)
             display_HR = signal;
-        }
+    }
 });

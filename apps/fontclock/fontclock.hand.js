@@ -4,7 +4,7 @@ class Hand {
      * a hand class will have 1 main function
      * moveTo which will move the hand to the given angle.
      */
-    moveTo(angle){}
+    moveTo(angle) {}
 }
 
 module.exports = Hand;

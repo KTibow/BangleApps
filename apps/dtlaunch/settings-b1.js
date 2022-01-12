@@ -1,33 +1,35 @@
 (function(back) {
-  var FILE = "dtlaunch.json";
-  
-  var settings = Object.assign({
-    showClocks: true,
-    showLaunchers: true
-  }, require('Storage').readJSON(FILE, true) || {});
+    var FILE = "dtlaunch.json";
 
-  function writeSettings() {
-    require('Storage').writeJSON(FILE, settings);
-  }
+    var settings = Object.assign({
+        showClocks: true,
+        showLaunchers: true
+    }, require('Storage').readJSON(FILE, true) || {});
 
-  E.showMenu({
-    "" : { "title" : "Desktop launcher" },
-    "< Back" : () => back(),
-    'Show clocks': {
-      value: settings.showClocks,
-      format: v => v?"On":"Off",
-      onchange: v => {
-        settings.showClocks = v;
-        writeSettings();
-      }
-    },
-    'Show launchers': {
-      value: settings.showLaunchers,
-      format: v => v?"On":"Off",
-      onchange: v => {
-        settings.showLaunchers = v;
-        writeSettings();
-      }
+    function writeSettings() {
+        require('Storage').writeJSON(FILE, settings);
     }
-  });
+
+    E.showMenu({
+        "": {
+            "title": "Desktop launcher"
+        },
+        "< Back": () => back(),
+        'Show clocks': {
+            value: settings.showClocks,
+            format: v => v ? "On" : "Off",
+            onchange: v => {
+                settings.showClocks = v;
+                writeSettings();
+            }
+        },
+        'Show launchers': {
+            value: settings.showLaunchers,
+            format: v => v ? "On" : "Off",
+            onchange: v => {
+                settings.showLaunchers = v;
+                writeSettings();
+            }
+        }
+    });
 })

@@ -5,25 +5,27 @@ const spentStrategies = []
 function chooseObliqueness() {
     const strategy = strategies[Math.floor(Math.random() * strategies.length)];
     spentStrategies.push(strategy);
-  return strategy
+    return strategy
 }
 
 // app intro
 E.showMessage('oblique strategies\n\ncopied from\nbrian eno\n\nclick btn2');
 
 setWatch(() => {
-  // beep!
-  Bangle.beep();
-  
-  // get the strategy
-  const strategy = chooseObliqueness();
-  
-  // configure font
-  g.setFontAlign(0,0);
-  
-  // show the oblique strategy
-  E.showMessage(strategy.replace(/\s/g, '\n'));
-  
-  // clear the screen
-  setTimeout(() => g.clear(), 10000);
-}, BTN2, { repeat: true });
+    // beep!
+    Bangle.beep();
+
+    // get the strategy
+    const strategy = chooseObliqueness();
+
+    // configure font
+    g.setFontAlign(0, 0);
+
+    // show the oblique strategy
+    E.showMessage(strategy.replace(/\s/g, '\n'));
+
+    // clear the screen
+    setTimeout(() => g.clear(), 10000);
+}, BTN2, {
+    repeat: true
+});

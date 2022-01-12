@@ -14,10 +14,10 @@ const font = "6x8";
 const xyCenter = g.getWidth() / 2;
 
 const ypos = [
-    45,   // Time
-    105,  // Date
-    145,  // Symbol
-    210   // Info
+    45, // Time
+    105, // Date
+    145, // Symbol
+    210 // Info
 ];
 
 const settings = require('Storage').readJSON('mysticdock.json', 1) ||
@@ -34,65 +34,65 @@ let wasInActiveMode = false;
 
 
 const infoData = {
-  '*GMT_MODE': {
-    calc: () => (new Date()).toString().split(" ")[5],
-  },
-  BATT_MODE: {
-    calc: () => `BATT: ${E.getBattery()}%`,
-  },
-  ID_MODE: {
-    calc: () => {
-      const val = NRF.getAddress().split(":");
-      return `ID: ${val[4]}${val[5]}`;
+    '*GMT_MODE': {
+        calc: () => (new Date()).toString().split(" ")[5],
     },
-  },
-  MEM_MODE: {
-    calc: () => {
-      const val = process.memory();
-      return `MEM: ${Math.round(val.usage * 100 / val.total)}%`;
+    BATT_MODE: {
+        calc: () => `BATT: ${E.getBattery()}%`,
     },
-  },
-  VER_MODE: {
-    calc: () => `FW: ${process.env.VERSION}`,
-  },
+    ID_MODE: {
+        calc: () => {
+            const val = NRF.getAddress().split(":");
+            return `ID: ${val[4]}${val[5]}`;
+        },
+    },
+    MEM_MODE: {
+        calc: () => {
+            const val = process.memory();
+            return `MEM: ${Math.round(val.usage * 100 / val.total)}%`;
+        },
+    },
+    VER_MODE: {
+        calc: () => `FW: ${process.env.VERSION}`,
+    },
 };
 const infoList = Object.keys(infoData).sort();
 let infoMode = infoList[0];
 
 
 function setColor() {
-  const colorCommands = {
-    white: () => g.setColor(1, 1, 1),
-    blue: () => g.setColor(0, 0, 1),
-    green: () => g.setColor(0, 1, 0),
-    purple: () => g.setColor(1, 0, 1),
-    red: () => g.setColor(1, 0, 0),
-    teal: () => g.setColor(0, 1, 1),
-    other: () => g.setColor(1, 1, 0)
-  };
-  
-  // default if value unknown
-  if (!color || !colorCommands[color]) return colorCommands.white();
-  return colorCommands[color]();
+    const colorCommands = {
+        white: () => g.setColor(1, 1, 1),
+        blue: () => g.setColor(0, 0, 1),
+        green: () => g.setColor(0, 1, 0),
+        purple: () => g.setColor(1, 0, 1),
+        red: () => g.setColor(1, 0, 0),
+        teal: () => g.setColor(0, 1, 1),
+        other: () => g.setColor(1, 1, 0)
+    };
+
+    // default if value unknown
+    if (!color || !colorCommands[color]) return colorCommands.white();
+    return colorCommands[color]();
 }
 
 
 function drawInfo() {
-  if (infoData[infoMode] && infoData[infoMode].calc) {
-    // clear info
-    g.setColor(0, 0, 0);
-    g.fillRect(0, ypos[3] - 8, 239, ypos[3] + 25);
-  
-    // draw info
-    g.setFont(font, dataFontSize);
-    setColor();
-    g.drawString((infoData[infoMode].calc()), xyCenter, ypos[3], true);
-  }
+    if (infoData[infoMode] && infoData[infoMode].calc) {
+        // clear info
+        g.setColor(0, 0, 0);
+        g.fillRect(0, ypos[3] - 8, 239, ypos[3] + 25);
+
+        // draw info
+        g.setFont(font, dataFontSize);
+        setColor();
+        g.drawString((infoData[infoMode].calc()), xyCenter, ypos[3], true);
+    }
 }
-  
+
 function drawImage() {
-  setColor();
-  g.drawPoly([xyCenter - 100, ypos[2], xyCenter + 100, ypos[2], xyCenter, ypos[2] + 30], true);
+    setColor();
+    g.drawPoly([xyCenter - 100, ypos[2], xyCenter + 100, ypos[2], xyCenter, ypos[2] + 30], true);
 }
 
 function drawClock() {
@@ -111,30 +111,29 @@ function drawClock() {
 
     let hours = (`0${d.getHours()}`).substr(-2);
     let meridian = "";
-  
+
     if (d.getSeconds() % 10 === 0) {
         y = Math.floor(Math.random() * (yposMax - yposMin)) + yposMin;
     }
-  
+
     // drawSting centered
     g.setFontAlign(0, 0);
-  
+
     // setup color
     setColor();
 
     if (settings.use12Hour) {
-      hours = parseInt(hours, 10);
-      meridian = 'AM';
-      if (hours === 0) {
-        hours = 12;
-      }
-      else if (hours >= 12) {
-        meridian = 'PM';
-        if (hours > 12) hours -= 12;
-      }
-      hours = (' ' + hours).substr(-2);
+        hours = parseInt(hours, 10);
+        meridian = 'AM';
+        if (hours === 0) {
+            hours = 12;
+        } else if (hours >= 12) {
+            meridian = 'PM';
+            if (hours > 12) hours -= 12;
+        }
+        hours = (' ' + hours).substr(-2);
     }
-  
+
     g.setFont(font, timeFontSize);
 
     if (lastButtonPressTime && ((d.getTime() - lastButtonPressTime) / 1000) < 5) {
@@ -150,32 +149,29 @@ function drawClock() {
         // show info line below it
         g.drawString(`${hours}${(d.getSeconds() % 2) ? ' ' : ':'}${minutes}`, xyCenter - 15, ypos[0], true);
         g.setFont(font, dataFontSize);
-      
+
         if (settings.use12Hour) {
-          g.drawString(seconds, xyCenter + 97, ypos[0] - 10, true);
-          g.drawString(meridian, xyCenter + 97, ypos[0] + 10, true);
+            g.drawString(seconds, xyCenter + 97, ypos[0] - 10, true);
+            g.drawString(meridian, xyCenter + 97, ypos[0] + 10, true);
+        } else {
+            g.drawString(seconds, xyCenter + 97, ypos[0] + 10, true);
         }
-        else {
-          g.drawString(seconds, xyCenter + 97, ypos[0] + 10, true);
-        }
-      
+
         // draw DoW, name of month, date, year
         g.setFont(font, dataFontSize);
         g.drawString([
-          useLocale ? require('locale').dow(d, 1) : dLocal[0],
-          useLocale ? require('locale').month(d, 1) : dLocal[1],
-          d.getDate(),
-          d.getFullYear()
-        ].join(' '), xyCenter, ypos[1], true);     
-        
+            useLocale ? require('locale').dow(d, 1) : dLocal[0],
+            useLocale ? require('locale').month(d, 1) : dLocal[1],
+            d.getDate(),
+            d.getFullYear()
+        ].join(' '), xyCenter, ypos[1], true);
+
         drawInfo();
         drawImage();
-    }
-    else if (d.getSeconds() % 10 === 8) {
+    } else if (d.getSeconds() % 10 === 8) {
         g.clear();
         wasInActiveMode = false;
-    }
-    else if (d.getSeconds() % 10 !== 9) {
+    } else if (d.getSeconds() % 10 !== 9) {
         // clear screen when switching modes
         if (wasInActiveMode) {
             g.clear();
@@ -194,24 +190,24 @@ function drawClock() {
 
 
 function nextInfo() {
-  lastButtonPressTime = Date.now();
-  let idx = infoList.indexOf(infoMode);
+    lastButtonPressTime = Date.now();
+    let idx = infoList.indexOf(infoMode);
 
-  if (idx > -1) {
-    if (idx === infoList.length - 1) infoMode = infoList[0];
-    else infoMode = infoList[idx + 1];
-  }
+    if (idx > -1) {
+        if (idx === infoList.length - 1) infoMode = infoList[0];
+        else infoMode = infoList[idx + 1];
+    }
 }
-  
-  
-function prevInfo() {
-  lastButtonPressTime = Date.now();
-  let idx = infoList.indexOf(infoMode);
 
-  if (idx > -1) {
-    if (idx === 0) infoMode = infoList[infoList.length - 1];
-    else infoMode = infoList[idx - 1];
-  }
+
+function prevInfo() {
+    lastButtonPressTime = Date.now();
+    let idx = infoList.indexOf(infoMode);
+
+    if (idx > -1) {
+        if (idx === 0) infoMode = infoList[infoList.length - 1];
+        else infoMode = infoList[idx - 1];
+    }
 }
 
 
@@ -225,23 +221,30 @@ setInterval(drawClock, 1000);
 drawClock();
 
 if (Bangle.isCharging()) {
-  Bangle.on("charging", isCharging => {
-    const reloadOnUplug = !settings.reloadOnUplug;
+    Bangle.on("charging", isCharging => {
+        const reloadOnUplug = !settings.reloadOnUplug;
 
-    if (!isCharging && reloadOnUplug) load();
-  });
+        if (!isCharging && reloadOnUplug) load();
+    });
 }
 
 // show launcher when middle button pressed
-setWatch(Bangle.showLauncher, BTN2, { repeat: false, edge: "falling" });
+setWatch(Bangle.showLauncher, BTN2, {
+    repeat: false,
+    edge: "falling"
+});
 
 // change to "active mode" and rotate through info when the buttons are pressed
 setWatch(() => {
-  nextInfo();
-  drawClock();
-}, BTN3, { repeat: true });
+    nextInfo();
+    drawClock();
+}, BTN3, {
+    repeat: true
+});
 
 setWatch(() => {
     prevInfo();
     drawClock();
-}, BTN1, { repeat: true });
+}, BTN1, {
+    repeat: true
+});

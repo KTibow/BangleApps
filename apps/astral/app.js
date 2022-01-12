@@ -14,7 +14,8 @@ var colours_switched = false;
 // Load fonts
 require("Font7x11Numeric7Seg").add(Graphics);
 // position on screen
-const Xaxis = 150, Yaxis = 55;
+const Xaxis = 150,
+    Yaxis = 55;
 
 //lat lon settings loading
 var astral_settings;
@@ -35,19 +36,78 @@ if (astral_settings === undefined) {
         lat: 51.5074,
         lon: 0.1278,
         astral_default: true,
-        extras: [
-            { name: "Andromeda", ra: "004244", de: "411609", type: 3 },
-            { name: "Cigar", ra: "095552", de: "694047", type: 3 },
-            { name: "Pinwheel", ra: "140313", de: "542057", type: 3 },
-            { name: "Whirlpool", ra: "132953", de: "471143", type: 3 },
-            { name: "Orion", ra: "053517", de: "-052328", type: 2 },
-            { name: "Hercules", ra: "160515", de: "174455", type: 1 },
-            { name: "Beehive", ra: "084024", de: "195900", type: 1 },
-            { name: "SilverCoin", ra: "004733", de: "-251718", type: 3 },
-            { name: "Lagoon", ra: "180337", de: "-242312", type: 2 },
-            { name: "Trifid", ra: "180223", de: " -230148", type: 2 },
-            { name: "Dumbbell", ra: "195935", de: "224316", type: 2 },
-            { name: "Pleiades", ra: "034724", de: "240700", type: 1 }
+        extras: [{
+                name: "Andromeda",
+                ra: "004244",
+                de: "411609",
+                type: 3
+            },
+            {
+                name: "Cigar",
+                ra: "095552",
+                de: "694047",
+                type: 3
+            },
+            {
+                name: "Pinwheel",
+                ra: "140313",
+                de: "542057",
+                type: 3
+            },
+            {
+                name: "Whirlpool",
+                ra: "132953",
+                de: "471143",
+                type: 3
+            },
+            {
+                name: "Orion",
+                ra: "053517",
+                de: "-052328",
+                type: 2
+            },
+            {
+                name: "Hercules",
+                ra: "160515",
+                de: "174455",
+                type: 1
+            },
+            {
+                name: "Beehive",
+                ra: "084024",
+                de: "195900",
+                type: 1
+            },
+            {
+                name: "SilverCoin",
+                ra: "004733",
+                de: "-251718",
+                type: 3
+            },
+            {
+                name: "Lagoon",
+                ra: "180337",
+                de: "-242312",
+                type: 2
+            },
+            {
+                name: "Trifid",
+                ra: "180223",
+                de: " -230148",
+                type: 2
+            },
+            {
+                name: "Dumbbell",
+                ra: "195935",
+                de: "224316",
+                type: 2
+            },
+            {
+                name: "Pleiades",
+                ra: "034724",
+                de: "240700",
+                type: 1
+            }
         ]
     };
     config_file = require("Storage").open("astral.config.txt", "w");
@@ -111,46 +171,44 @@ function test() {
     if (coords[1] < 0) {
         calc.west = false;
         calc.east = true;
-    }
-    else {
+    } else {
         calc.west = true;
         calc.east = false;
     }
     if (coords[0] < 0) {
         calc.south = true;
         calc.north = false;
-    }
-    else {
+    } else {
         calc.south = false;
         calc.north = true;
     }
 }
 
-var DEGS = 180 / Math.PI;                  // convert radians to degrees
-var RADS = Math.PI / 180;                  // convert degrees to radians
-var EPS = 1.0e-12;                      // machine error constant
+var DEGS = 180 / Math.PI; // convert radians to degrees
+var RADS = Math.PI / 180; // convert degrees to radians
+var EPS = 1.0e-12; // machine error constant
 
 // right ascension, declination coordinate structure
 function coord() {
-    ra = parseFloat("0");              // right ascension [deg]
-    dec = parseFloat("0");              // declination [deg]
-    rvec = parseFloat("0");              // distance [AU]
+    ra = parseFloat("0"); // right ascension [deg]
+    dec = parseFloat("0"); // declination [deg]
+    rvec = parseFloat("0"); // distance [AU]
 }
 
 // altitude, azimuth coordinate structure
 function horizon() {
-    alt = parseFloat("0");               // altitude [deg]
-    az = parseFloat("0");               // azimuth [deg]
+    alt = parseFloat("0"); // altitude [deg]
+    az = parseFloat("0"); // azimuth [deg]
 }
 
 // orbital element structure
 function elem() {
-    a = parseFloat("0");                 // semi-major axis [AU]
-    e = parseFloat("0");                 // eccentricity of orbit
-    i = parseFloat("0");                 // inclination of orbit [deg]
-    O = parseFloat("0");                 // longitude of the ascending node [deg]
-    w = parseFloat("0");                 // longitude of perihelion [deg]
-    L = parseFloat("0");                 // mean longitude [deg]
+    a = parseFloat("0"); // semi-major axis [AU]
+    e = parseFloat("0"); // eccentricity of orbit
+    i = parseFloat("0"); // inclination of orbit [deg]
+    O = parseFloat("0"); // longitude of the ascending node [deg]
+    w = parseFloat("0"); // longitude of perihelion [deg]
+    L = parseFloat("0"); // mean longitude [deg]
 }
 
 function process_extras_coord(coord_string) {
@@ -165,8 +223,7 @@ function process_extras_coord(coord_string) {
         extras_minute = parseInt(coord_string.slice(3, -2));
         extras_hour = parseInt(coord_string.slice(1, 3));
         extras_calc = (extras_hour + extras_minute / 60 + extras_second / 3600) * -1;
-    }
-    else {
+    } else {
         extras_minute = parseInt(coord_string.slice(2, -2));
         extras_hour = parseInt(coord_string.slice(0, 2));
         extras_calc = extras_hour + extras_minute / 60 + extras_second / 3600;
@@ -219,8 +276,7 @@ function compute() {
 
             pstrings.push(display_string);
         }
-    }
-    else {
+    } else {
         all_extras_arrray = [];
         for (p = 0; p < astral_settings.extras.length; p++) {
             var extras_ra = process_extras_coord(astral_settings.extras[p].ra);
@@ -234,7 +290,7 @@ function compute() {
             all_extras_array.push([h.alt, display_string]);
         }
 
-        all_extras_array.sort(function (a, b) {
+        all_extras_array.sort(function(a, b) {
             return b[0] - a[0];
         });
 
@@ -247,9 +303,9 @@ function compute() {
 // day number to/from J2000 (Jan 1.5, 2000)
 function day_number(y, m, d, hour, mins) {
     var h = hour + mins / 60;
-    var rv = 367 * y
-        - Math.floor(7 * (y + Math.floor((m + 9) / 12)) / 4)
-        + Math.floor(275 * m / 9) + d - 730531.5 + h / 24;
+    var rv = 367 * y -
+        Math.floor(7 * (y + Math.floor((m + 9) / 12)) / 4) +
+        Math.floor(275 * m / 9) + d - 730531.5 + h / 24;
     return rv;
 }
 
@@ -294,7 +350,7 @@ function get_coord(obj, p, d) {
     var yh = rp * (Math.sin(op) * Math.cos(vp + pp - op) + Math.cos(op) * Math.sin(vp + pp - op) * Math.cos(ip));
     var zh = rp * (Math.sin(vp + pp - op) * Math.sin(ip));
 
-    if (p == 2)                          // earth --> compute sun
+    if (p == 2) // earth --> compute sun
     {
         xh = 0;
         yh = 0;
@@ -307,7 +363,7 @@ function get_coord(obj, p, d) {
     var zg = zh - ze;
 
     // rotate around x axis from ecliptic to equatorial coords
-    var ecl = 23.439281 * RADS;            //value for J2000.0 frame
+    var ecl = 23.439281 * RADS; //value for J2000.0 frame
     var xeq = xg;
     var yeq = yg * Math.cos(ecl) - zg * Math.sin(ecl);
     var zeq = yg * Math.sin(ecl) + zg * Math.cos(ecl);
@@ -321,7 +377,7 @@ function get_coord(obj, p, d) {
 // Compute the elements of the orbit for planet-i at day number-d
 // result is returned in structure p
 function mean_elements(p, i, d) {
-    var cy = d / 36525;                    // centuries since J2000
+    var cy = d / 36525; // centuries since J2000
 
     switch (i) {
         case 0: // Mercury
@@ -410,7 +466,7 @@ function true_anomaly(M, e) {
     // initial approximation of eccentric anomaly
     var E = M + e * Math.sin(M) * (1.0 + e * Math.cos(M));
 
-    do                                   // iterate to improve accuracy
+    do // iterate to improve accuracy
     {
         E1 = E;
         E = E1 - (E1 - e * Math.sin(E1) - M) / (1 - e * Math.cos(E1));
@@ -420,7 +476,7 @@ function true_anomaly(M, e) {
     // convert eccentric anomaly to true anomaly
     V = 2 * Math.atan(Math.sqrt((1 + e) / (1 - e)) * Math.tan(0.5 * E));
 
-    if (V < 0) V = V + (2 * Math.PI);      // modulo 2pi
+    if (V < 0) V = V + (2 * Math.PI); // modulo 2pi
 
     return V;
 }
@@ -429,7 +485,7 @@ function true_anomaly(M, e) {
 function ha2str(x) {
     if ((x < 0) || (360 < x)) print("function ha2str() range error!");
 
-    var ra = x / 15;                       // degrees to hours
+    var ra = x / 15; // degrees to hours
     var h = Math.floor(ra);
     var m = 60 * (ra - h);
     return cintstr(h, 3) + "h " + frealstr(m, 4, 1) + "m";
@@ -524,21 +580,20 @@ function mean_sidereal_time(lon) {
     var da = Math.floor(30.6001 * (month + 1));
 
     // days since J2000.0
-    var jd = b + c + da - 730550.5 + day
-        + (hour + mins / 60.0 + secs / 3600.0) / 24.0;
+    var jd = b + c + da - 730550.5 + day +
+        (hour + mins / 60.0 + secs / 3600.0) / 24.0;
 
     // julian centuries since J2000.0
     var jt = jd / 36525.0;
 
     // mean sidereal time
-    var mst = 280.46061837 + 360.98564736629 * jd
-        + 0.000387933 * jt * jt - jt * jt * jt / 38710000 + lon;
+    var mst = 280.46061837 + 360.98564736629 * jd +
+        0.000387933 * jt * jt - jt * jt * jt / 38710000 + lon;
 
     if (mst > 0.0) {
         while (mst > 360.0)
             mst = mst - 360.0;
-    }
-    else {
+    } else {
         while (mst < 0.0)
             mst = mst + 360.0;
     }
@@ -595,10 +650,10 @@ function cintstr(num, width) {
     var intgr = "";
     var i;
 
-    for (i = 0; i < width - len; i++)    // append leading spaces
+    for (i = 0; i < width - len; i++) // append leading spaces
         intgr += ' ';
 
-    for (i = 0; i < len; i++)            // append digits
+    for (i = 0; i < len; i++) // append digits
         intgr += str.charAt(i);
 
     return intgr;
@@ -610,10 +665,10 @@ function frealstr(num, width, fract) {
     var real = "";
     var i;
 
-    for (i = 0; i < width - len; i++)    // append leading spaces
+    for (i = 0; i < width - len; i++) // append leading spaces
         real += ' ';
 
-    for (i = 0; i < len; i++)            // append digits
+    for (i = 0; i < len; i++) // append digits
         real += str.charAt(i);
 
     return real;
@@ -649,11 +704,10 @@ function write_refresh_note(colour) {
     if (!ready_to_compute) {
         g.drawString("mode change:", Xaxis + 50, cursor, false);
         cursor += 15;
-        g.drawString("BTN1 to refresh", Xaxis + 50, cursor, true /*clear background*/);
+        g.drawString("BTN1 to refresh", Xaxis + 50, cursor, true /*clear background*/ );
         cursor += 15;
-        g.drawString("BTN3 to cancel", Xaxis + 50, cursor, true /*clear background*/);
-    }
-    else
+        g.drawString("BTN3 to cancel", Xaxis + 50, cursor, true /*clear background*/ );
+    } else
         g.drawString("updating, please wait", Xaxis + 50, cursor, false);
 }
 
@@ -663,30 +717,25 @@ function draw_moon(phase) {
         g.fillCircle(200, Yaxis, 30);
         g.setColor("#000000");
         g.fillRect(220, 25, 240, 90);
-    }
-    else if (phase == 6) {
+    } else if (phase == 6) {
         g.fillCircle(200, Yaxis, 30);
         g.setColor("#000000");
         g.fillRect(200, 25, 240, 90);
-    }
-    else if (phase == 1) {
+    } else if (phase == 1) {
         g.fillCircle(200, Yaxis, 30);
         g.setColor("#000000");
         g.fillCircle(180, Yaxis, 30);
-    }
-    else if (phase == 4)
+    } else if (phase == 4)
         g.fillCircle(200, Yaxis, 30);
     else if (phase == 3) {
         g.fillCircle(200, Yaxis, 30);
         g.setColor("#000000");
         g.fillRect(160, 25, 180, 90);
-    }
-    else if (phase == 2) {
+    } else if (phase == 2) {
         g.fillCircle(200, Yaxis, 30);
         g.setColor("#000000");
         g.fillRect(160, 25, 200, 90);
-    }
-    else if (phase == 7) {
+    } else if (phase == 7) {
         g.fillCircle(200, Yaxis, 30);
         g.setColor("#000000");
         g.fillCircle(220, Yaxis, 30);
@@ -702,7 +751,8 @@ function draw() {
 
     // work out how to display the current time
     var d = new Date();
-    var h = d.getHours(), m = d.getMinutes();
+    var h = d.getHours(),
+        m = d.getMinutes();
     var time = (" " + h).substr(-2) + ":" + ("0" + m).substr(-2);
     // Reset the state of the graphics library
     g.reset();
@@ -710,13 +760,13 @@ function draw() {
     // draw the current time (4x size 7 segment)
     g.setFont("7x11Numeric7Seg", 5);
     g.setFontAlign(1, 1); // align right bottom
-    g.drawString(time, Xaxis + 20, Yaxis + 30, true /*clear background*/);
+    g.drawString(time, Xaxis + 20, Yaxis + 30, true /*clear background*/ );
 
     g.setFont("6x8");
     g.setFontAlign(1, 1); // align center bottom
     // pad the date - this clears the background if the date were to change length
     var dateStr = "    " + require("locale").date(d) + "    ";
-    g.drawString(dateStr, Xaxis - 40, Yaxis - 40, true /*clear background*/);
+    g.drawString(dateStr, Xaxis - 40, Yaxis - 40, true /*clear background*/ );
 
     //compute location of objects
     g.setFontAlign(1, 1);
@@ -733,11 +783,10 @@ function draw() {
         if (ready_to_compute)
             g.drawString("updating, please wait", Xaxis + 50, cursor, true);
         else
-            g.drawString("press BTN1 to update", Xaxis + 50, cursor, true /*clear background*/);
-    }
-    else {
+            g.drawString("press BTN1 to update", Xaxis + 50, cursor, true /*clear background*/ );
+    } else {
         for (let i = 0; i < pstrings.length; i++) {
-            g.drawString(pstrings[i], Xaxis + 50, cursor, true /*clear background*/);
+            g.drawString(pstrings[i], Xaxis + 50, cursor, true /*clear background*/ );
             cursor += 15;
         }
     }
@@ -800,49 +849,50 @@ Bangle.setGPSPower(1);
 Bangle.setClockMode();
 
 Bangle.setUI("clockupdown", btn => {
-  if (btn==0) {
-    if (!processing) {
-        if (!modeswitch) {
-            modeswitch = true;
-            if (mode == "planetary") mode = "extras";
-            else mode = "planetary";
+    if (btn == 0) {
+        if (!processing) {
+            if (!modeswitch) {
+                modeswitch = true;
+                if (mode == "planetary") mode = "extras";
+                else mode = "planetary";
+            } else
+                modeswitch = false;
         }
-        else
-            modeswitch = false;
+    } else {
+        if (!processing)
+            ready_to_compute = true;
     }
-  } else {
-    if (!processing)
-        ready_to_compute = true;
-  }
 });
 
-setWatch(function () {
+setWatch(function() {
     if (!astral_settings.astral_default) {
         colours_switched = true;
         if (display_colour == setupcomplete_colour)
             display_colour = default_colour;
         else
             display_colour = setupcomplete_colour;
-      draw_moon(current_moonphase);
+        draw_moon(current_moonphase);
     }
-}, BTN4, { repeat: true });
+}, BTN4, {
+    repeat: true
+});
 
 //events
-Bangle.on('mag', function (m) {
-  g.setFont("6x8",2);
+Bangle.on('mag', function(m) {
+    g.setFont("6x8", 2);
     if (isNaN(m.heading))
         compass_heading = "---";
     else
         compass_heading = 360 - Math.round(m.heading);
-  //  g.setColor("#000000");
-   // g.fillRect(160, 10, 160, 20);
+    //  g.setColor("#000000");
+    // g.fillRect(160, 10, 160, 20);
     g.setColor(display_colour);
-    if(compass_heading<100)
-      compass_heading = " " + compass_heading;
-    g.drawString(compass_heading, 150, 20, true /*clear background*/);
+    if (compass_heading < 100)
+        compass_heading = " " + compass_heading;
+    g.drawString(compass_heading, 150, 20, true /*clear background*/ );
 });
 
-Bangle.on('GPS', function (g) {
+Bangle.on('GPS', function(g) {
     if (g.fix) {
         astral_settings.lat = g.lat;
         astral_settings.lon = g.lon;

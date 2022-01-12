@@ -1,21 +1,23 @@
 var NumeralFont = require("fontclock.font.js");
 
-const DIM_14x22 = [14,22];
-const DIM_27x22 = [27,22];
-class DigitNumeralFont extends NumeralFont{
-    constructor(){
+const DIM_14x22 = [14, 22];
+const DIM_27x22 = [27, 22];
+class DigitNumeralFont extends NumeralFont {
+    constructor() {
         super();
     }
-    getDimensions(hour){
-        if (hour < 10){
+    getDimensions(hour) {
+        if (hour < 10) {
             return DIM_14x22;
         } else {
             return DIM_27x22;
         }
     }
-    hour_txt(hour){ return hour.toString(); }
-    draw(hour_txt,x,y){
-        if(hour_txt == null)
+    hour_txt(hour) {
+        return hour.toString();
+    }
+    draw(hour_txt, x, y) {
+        if (hour_txt == null)
             return;
 
         /* going to leave this in here for future testing.
@@ -29,11 +31,13 @@ class DigitNumeralFont extends NumeralFont{
                       x,y+dim[1]
                      ]);
         g.setColor(1.0,1.0,1.0);*/
-        g.setFontAlign(-1,-1,0);
-        g.setFont("Vector",25);
-        g.drawString(hour_txt,x,y);
+        g.setFontAlign(-1, -1, 0);
+        g.setFont("Vector", 25);
+        g.drawString(hour_txt, x, y);
     }
-    getName(){return "Digit";}
+    getName() {
+        return "Digit";
+    }
 }
 
 module.exports = [DigitNumeralFont];

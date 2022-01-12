@@ -1,28 +1,28 @@
 exports = class Set {
-  constructor(maxReps) {
-    this.completed = false;
-    this.minReps = 0;
-    this.reps = 0;
-    this.maxReps = maxReps;
-  }
+    constructor(maxReps) {
+        this.completed = false;
+        this.minReps = 0;
+        this.reps = 0;
+        this.maxReps = maxReps;
+    }
 
-  isCompleted() {
-    return !!this.completed;
-  }
+    isCompleted() {
+        return !!this.completed;
+    }
 
-  setCompleted() {
-    this.completed = true;
-  }
+    setCompleted() {
+        this.completed = true;
+    }
 
-  incReps() {
-    if (this.completed) return;
-    if (this.reps >= this.maxReps) return;
-    this.reps++;
-  }
+    incReps() {
+        if (this.completed) return;
+        if (this.reps >= this.maxReps) return;
+        this.reps++;
+    }
 
-  decReps() {
-    if (this.completed) return;
-    if (this.reps <= this.minReps) return;
-    this.reps--;
-  }
+    decReps() {
+        if (this.completed) return;
+        if (this.reps <= this.minReps) return;
+        this.reps--;
+    }
 };

@@ -31,71 +31,71 @@ if (g.getWidth() > 200) {
     yposGMT = 161;
 }
 // Check settings for what type our clock should be
-var is12Hour = (require("Storage").readJSON("setting.json",1)||{})["12hour"];
+var is12Hour = (require("Storage").readJSON("setting.json", 1) || {})["12hour"];
 
 // timeout used to update every minute
 var drawTimeout;
 
 // schedule a draw for the next minute
 function queueDraw() {
-  if (drawTimeout) clearTimeout(drawTimeout);
-  drawTimeout = setTimeout(function() {
-    drawTimeout = undefined;
-    draw();
-  }, 60000 - (Date.now() % 60000));
+    if (drawTimeout) clearTimeout(drawTimeout);
+    drawTimeout = setTimeout(function() {
+        drawTimeout = undefined;
+        draw();
+    }, 60000 - (Date.now() % 60000));
 }
 
 function draw() {
-  g.clear();
-  Bangle.drawWidgets();
+    g.clear();
+    Bangle.drawWidgets();
 
-  // get date
-  var d = new Date();
+    // get date
+    var d = new Date();
 
-  g.reset(); // default draw styles
-  // drawSting centered
-  g.setFontAlign(0, 0);
+    g.reset(); // default draw styles
+    // drawSting centered
+    g.setFontAlign(0, 0);
 
-  // drawTime
-  var hours;
-  if (is12Hour) {
-    hours = ("0" + d.getHours()%12).slice(-2);
-  } else {
-    hours = ("0" + d.getHours()).slice(-2);
-  }
-  var minutes = ("0" + d.getMinutes()).slice(-2);
+    // drawTime
+    var hours;
+    if (is12Hour) {
+        hours = ("0" + d.getHours() % 12).slice(-2);
+    } else {
+        hours = ("0" + d.getHours()).slice(-2);
+    }
+    var minutes = ("0" + d.getMinutes()).slice(-2);
 
-  g.setFont(font, timeFontSize);
-  g.drawString(`${hours}:${minutes}`, xyCenter, yposTime, true);
+    g.setFont(font, timeFontSize);
+    g.drawString(`${hours}:${minutes}`, xyCenter, yposTime, true);
 
-  if (is12Hour) {
+    if (is12Hour) {
+        g.setFont(font, gmtFontSize);
+        g.drawString(locale.meridian(d), xyCenter + 102, yposTime + 10, true);
+    }
+
+    // draw Day, name of month, Date
+    g.setFont(font, dateFontSize);
+    g.drawString([locale.dow(d, 1), locale.month(d, 1), d.getDate()].join(" "), xyCenter, yposDate, true);
+
+    // draw year
+    g.setFont(font, dateFontSize);
+    g.drawString(d.getFullYear(), xyCenter, yposYear, true);
+
+    // draw gmt
     g.setFont(font, gmtFontSize);
-    g.drawString(locale.meridian(d), xyCenter + 102, yposTime + 10, true);
-  }
+    g.drawString(d.toString().match(/GMT[+-]\d+/), xyCenter, yposGMT, true);
 
-  // draw Day, name of month, Date
-  g.setFont(font, dateFontSize);
-  g.drawString([locale.dow(d,1), locale.month(d,1), d.getDate()].join(" "), xyCenter, yposDate, true);
-
-  // draw year
-  g.setFont(font, dateFontSize);
-  g.drawString(d.getFullYear(), xyCenter, yposYear, true);
-
-  // draw gmt
-  g.setFont(font, gmtFontSize);
-  g.drawString(d.toString().match(/GMT[+-]\d+/), xyCenter, yposGMT, true);
-
-  queueDraw();
+    queueDraw();
 }
 
 // Stop updates when LCD is off, restart when on
-Bangle.on('lcdPower',on=>{
-  if (on) {
-    draw(); // draw immediately, queue redraw
-  } else { // stop draw timer
-    if (drawTimeout) clearTimeout(drawTimeout);
-    drawTimeout = undefined;
-  }
+Bangle.on('lcdPower', on => {
+    if (on) {
+        draw(); // draw immediately, queue redraw
+    } else { // stop draw timer
+        if (drawTimeout) clearTimeout(drawTimeout);
+        drawTimeout = undefined;
+    }
 });
 
 // Show launcher when button pressed

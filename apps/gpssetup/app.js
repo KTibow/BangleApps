@@ -16,8 +16,8 @@ Bangle.loadWidgets();
 Bangle.drawWidgets();
 
 function log_debug(o) {
-  //let timestamp = new Date().getTime();
-  //console.log(timestamp + " : " + o);
+    //let timestamp = new Date().getTime();
+    //console.log(timestamp + " : " + o);
 }
 
 const SETTINGS_FILE = "gpssetup.settings.json";
@@ -25,84 +25,91 @@ let settings = undefined;
 let settings_changed = false;
 
 function updateSettings() {
-  require("Storage").write(SETTINGS_FILE, settings);
-  settings_changed = true;
+    require("Storage").write(SETTINGS_FILE, settings);
+    settings_changed = true;
 }
 
 function loadSettings() {
-  log_debug("loadSettings()");
-  settings = require("Storage").readJSON(SETTINGS_FILE,1)||{};
-  settings.update = settings.update||120;
-  settings.search = settings.search||5;
-  settings.power_mode = settings.power_mode||"SuperE";
-  log_debug(settings);
+    log_debug("loadSettings()");
+    settings = require("Storage").readJSON(SETTINGS_FILE, 1) || {};
+    settings.update = settings.update || 120;
+    settings.search = settings.search || 5;
+    settings.power_mode = settings.power_mode || "SuperE";
+    log_debug(settings);
 }
 
 /***********  GPS Power and Setup Functions  ******************/
 
 function setupGPS() {
-  Bangle.setGPSPower(1);
-  setTimeout(function() {
-    require("gpssetup").setPowerMode().then(function() {
-      Bangle.setGPSPower(0);
-    });
-  }, 100);
+    Bangle.setGPSPower(1);
+    setTimeout(function() {
+        require("gpssetup").setPowerMode().then(function() {
+            Bangle.setGPSPower(0);
+        });
+    }, 100);
 }
 
 /***********  GPS Setup Menu App  *****************************/
 
 function showMainMenu() {
-  var power_options = ["SuperE","PSMOO"];
+    var power_options = ["SuperE", "PSMOO"];
 
-  const mainmenu = {
-    '': { 'title': 'GPS Setup' },
-    '< Back': ()=>{exitSetup();},
-    'Power Mode': {
-      value: 0 | power_options.indexOf(settings.power_mode),
-      min: 0, max: 1,
-      format: v => power_options[v],
-      onchange: v => {
-        settings.power_mode = power_options[v];
-        updateSettings();
-      },
-    },
-    'Update (s)': {
-      value: settings.update,
-      min: 10,
-      max: 1800,
-      step: 10,
-      onchange: v => {
-        settings.update = v;
-        updateSettings();
-      }
-    },
-    'Search (s)': {
-      value: settings.search,
-      min: 1,
-      max: 65,
-      step: 1,
-      onchange: v => {
-        settings.search = v;
-        updateSettings();
-      }
-    }
-  };
+    const mainmenu = {
+        '': {
+            'title': 'GPS Setup'
+        },
+        '< Back': () => {
+            exitSetup();
+        },
+        'Power Mode': {
+            value: 0 | power_options.indexOf(settings.power_mode),
+            min: 0,
+            max: 1,
+            format: v => power_options[v],
+            onchange: v => {
+                settings.power_mode = power_options[v];
+                updateSettings();
+            },
+        },
+        'Update (s)': {
+            value: settings.update,
+            min: 10,
+            max: 1800,
+            step: 10,
+            onchange: v => {
+                settings.update = v;
+                updateSettings();
+            }
+        },
+        'Search (s)': {
+            value: settings.search,
+            min: 1,
+            max: 65,
+            step: 1,
+            onchange: v => {
+                settings.search = v;
+                updateSettings();
+            }
+        }
+    };
 
-  return E.showMenu(mainmenu);
+    return E.showMenu(mainmenu);
 }
 
 function exitSetup() {
-  log_debug("exitSetup()");
-  if (settings_changed) {
-    log_debug(settings);
-    E.showMessage("Configuring GPS");
-    setTimeout(function() {
-      setupGPS();
-      setTimeout(function() { load() }, 750);
-    }, 500);
-  } else {
-    load();
-  }
+    log_debug("exitSetup()");
+    if (settings_changed) {
+        log_debug(settings);
+        E.showMessage("Configuring GPS");
+        setTimeout(function() {
+            setupGPS();
+            setTimeout(function() {
+                load()
+            }, 750);
+        }, 500);
+    } else {
+        load();
+    }
 }
 
 loadSettings();

@@ -21,23 +21,23 @@ const weatherStormy = heatshrink.decompress(atob("iEQwYLIg/gAgUB///wAFBh/AgfwgED
 let settings;
 
 function loadSettings() {
-  settings = storage.readJSON("circlesclock.json", 1) || {
-    'minHR': 40,
-    'maxHR': 200,
-    'stepGoal': 10000,
-    'stepDistanceGoal': 8000,
-    'stepLength': 0.8,
-    'batteryWarn': 30,
-    'showWidgets': false,
-    'circle1': 'hr',
-    'circle2': 'steps',
-    'circle3': 'battery'
-  };
-  // Load step goal from pedometer widget as fallback
-  if (settings.stepGoal == undefined) {
-    const d = require('Storage').readJSON("wpedom.json", 1) || {};
-    settings.stepGoal = d != undefined && d.settings != undefined ? d.settings.goal : 10000;
-  }
+    settings = storage.readJSON("circlesclock.json", 1) || {
+        'minHR': 40,
+        'maxHR': 200,
+        'stepGoal': 10000,
+        'stepDistanceGoal': 8000,
+        'stepLength': 0.8,
+        'batteryWarn': 30,
+        'showWidgets': false,
+        'circle1': 'hr',
+        'circle2': 'steps',
+        'circle3': 'battery'
+    };
+    // Load step goal from pedometer widget as fallback
+    if (settings.stepGoal == undefined) {
+        const d = require('Storage').readJSON("wpedom.json", 1) || {};
+        settings.stepGoal = d != undefined && d.settings != undefined ? d.settings.goal : 10000;
+    }
 }
 loadSettings();
 const showWidgets = settings.showWidgets || false;
@@ -67,251 +67,251 @@ const circleFontBig = "Vector:16";
 const circleFontSmall = "Vector:13";
 
 function draw() {
-  g.clear(true);
+    g.clear(true);
 
-  if (!showWidgets) {
-    /*
-     * we are not drawing the widgets as we are taking over the whole screen
-     * so we will blank out the draw() functions of each widget and change the
-     * area to the top bar doesn't get cleared.
-     */
-    if (WIDGETS && typeof WIDGETS === "object") {
-      for (let wd of WIDGETS) {
-        wd.draw = () => {};
-        wd.area = "";
-      }
+    if (!showWidgets) {
+        /*
+         * we are not drawing the widgets as we are taking over the whole screen
+         * so we will blank out the draw() functions of each widget and change the
+         * area to the top bar doesn't get cleared.
+         */
+        if (WIDGETS && typeof WIDGETS === "object") {
+            for (let wd of WIDGETS) {
+                wd.draw = () => {};
+                wd.area = "";
+            }
+        }
+    } else {
+        Bangle.drawWidgets();
     }
-  } else {
-    Bangle.drawWidgets();
-  }
 
-  g.setColor(colorBg);
-  g.fillRect(0, widgetOffset, w, h);
+    g.setColor(colorBg);
+    g.fillRect(0, widgetOffset, w, h);
 
-  // time
-  g.setFont("Vector:50");
-  g.setFontAlign(0, -1);
-  g.setColor(colorFg);
-  g.drawString(locale.time(new Date(), 1), w / 2, h1 + 8);
+    // time
+    g.setFont("Vector:50");
+    g.setFontAlign(0, -1);
+    g.setColor(colorFg);
+    g.drawString(locale.time(new Date(), 1), w / 2, h1 + 8);
 
-  // date & dow
-  g.setFont("Vector:21");
-  g.setFontAlign(-1, 0);
-  g.drawString(locale.date(new Date()), w > 180 ? 2 * w / 10 : w / 10, h2);
-  g.drawString(locale.dow(new Date()), w > 180 ? 2 * w / 10 : w / 10, h2 + 22);
+    // date & dow
+    g.setFont("Vector:21");
+    g.setFontAlign(-1, 0);
+    g.drawString(locale.date(new Date()), w > 180 ? 2 * w / 10 : w / 10, h2);
+    g.drawString(locale.dow(new Date()), w > 180 ? 2 * w / 10 : w / 10, h2 + 22);
 
-  drawCircle(1);
-  drawCircle(2);
-  drawCircle(3);
+    drawCircle(1);
+    drawCircle(2);
+    drawCircle(3);
 }
 
 const defaultCircleTypes = ["steps", "hr", "battery"];
 
 function drawCircle(index) {
-  let type = settings['circle' + index];
-  if (!type) type = defaultCircleTypes[index - 1];
-  const w = getCirclePosition(type);
-  switch (type) {
-    case "steps":
-      drawSteps(w);
-      break;
-    case "stepsDist":
-      drawStepsDistance(w);
-      break;
-    case "hr":
-      drawHeartRate(w);
-      break;
-    case "battery":
-      drawBattery(w);
-      break;
-    case "weather":
-      drawWeather(w);
-      break;
-  }
+    let type = settings['circle' + index];
+    if (!type) type = defaultCircleTypes[index - 1];
+    const w = getCirclePosition(type);
+    switch (type) {
+        case "steps":
+            drawSteps(w);
+            break;
+        case "stepsDist":
+            drawStepsDistance(w);
+            break;
+        case "hr":
+            drawHeartRate(w);
+            break;
+        case "battery":
+            drawBattery(w);
+            break;
+        case "weather":
+            drawWeather(w);
+            break;
+    }
 }
 
 function getCirclePosition(type) {
-  for (let i = 1; i <= 3; i++) {
-    const setting = settings['circle' + i];
-    if (setting == type) return circlePosX[i - 1];
-  }
-  for (let i = 0; i < defaultCircleTypes.length; i++) {
-    if (type == defaultCircleTypes[i]) return circlePosX[i];
-  }
-  return undefined;
+    for (let i = 1; i <= 3; i++) {
+        const setting = settings['circle' + i];
+        if (setting == type) return circlePosX[i - 1];
+    }
+    for (let i = 0; i < defaultCircleTypes.length; i++) {
+        if (type == defaultCircleTypes[i]) return circlePosX[i];
+    }
+    return undefined;
 }
 
 function isCircleEnabled(type) {
-  return getCirclePosition(type) != undefined;
+    return getCirclePosition(type) != undefined;
 }
 
 function drawSteps(w) {
-  if (!w) w = getCirclePosition("steps");
-  const steps = getSteps();
+    if (!w) w = getCirclePosition("steps");
+    const steps = getSteps();
 
-  // Draw rectangle background:
-  g.setColor(colorBg);
-  g.fillRect(w - radiusOuter - 3, h3 - radiusOuter - 3, w + radiusOuter + 3, h3 + radiusOuter + 3);
+    // Draw rectangle background:
+    g.setColor(colorBg);
+    g.fillRect(w - radiusOuter - 3, h3 - radiusOuter - 3, w + radiusOuter + 3, h3 + radiusOuter + 3);
 
-  g.setColor(colorGrey);
-  g.fillCircle(w, h3, radiusOuter);
+    g.setColor(colorGrey);
+    g.fillCircle(w, h3, radiusOuter);
 
-  const stepGoal = settings.stepGoal || 10000;
-  if (stepGoal > 0) {
-    let percent = steps / stepGoal;
-    if (stepGoal < steps) percent = 1;
-    drawGauge(w, h3, percent, colorBlue);
-  }
+    const stepGoal = settings.stepGoal || 10000;
+    if (stepGoal > 0) {
+        let percent = steps / stepGoal;
+        if (stepGoal < steps) percent = 1;
+        drawGauge(w, h3, percent, colorBlue);
+    }
 
-  g.setColor(colorBg);
-  g.fillCircle(w, h3, radiusInner);
+    g.setColor(colorBg);
+    g.fillCircle(w, h3, radiusInner);
 
-  g.fillPoly([w, h3, w - 15, h3 + radiusOuter + 5, w + 15, h3 + radiusOuter + 5]);
+    g.fillPoly([w, h3, w - 15, h3 + radiusOuter + 5, w + 15, h3 + radiusOuter + 5]);
 
-  g.setFont(circleFont);
-  g.setFontAlign(0, 0);
-  g.setColor(colorFg);
-  g.drawString(shortValue(steps), w + 2, h3);
+    g.setFont(circleFont);
+    g.setFontAlign(0, 0);
+    g.setColor(colorFg);
+    g.drawString(shortValue(steps), w + 2, h3);
 
-  g.drawImage(shoesIcon, w - 6, h3 + radiusOuter - 6);
+    g.drawImage(shoesIcon, w - 6, h3 + radiusOuter - 6);
 }
 
 function drawStepsDistance(w) {
-  if (!w) w = getCirclePosition("steps");
-  const steps = getSteps();
-  const stepDistance = settings.stepLength || 0.8;
-  const stepsDistance = Math.round(steps * stepDistance);
+    if (!w) w = getCirclePosition("steps");
+    const steps = getSteps();
+    const stepDistance = settings.stepLength || 0.8;
+    const stepsDistance = Math.round(steps * stepDistance);
 
-  // Draw rectangle background:
-  g.setColor(colorBg);
-  g.fillRect(w - radiusOuter - 3, h3 - radiusOuter - 3, w + radiusOuter + 3, h3 + radiusOuter + 3);
+    // Draw rectangle background:
+    g.setColor(colorBg);
+    g.fillRect(w - radiusOuter - 3, h3 - radiusOuter - 3, w + radiusOuter + 3, h3 + radiusOuter + 3);
 
-  g.setColor(colorGrey);
-  g.fillCircle(w, h3, radiusOuter);
+    g.setColor(colorGrey);
+    g.fillCircle(w, h3, radiusOuter);
 
-  const stepDistanceGoal = settings.stepDistanceGoal || 8000;
-  if (stepDistanceGoal > 0) {
-    let percent = stepsDistance / stepDistanceGoal;
-    if (stepDistanceGoal < stepsDistance) percent = 1;
-    drawGauge(w, h3, percent, colorGreen);
-  }
+    const stepDistanceGoal = settings.stepDistanceGoal || 8000;
+    if (stepDistanceGoal > 0) {
+        let percent = stepsDistance / stepDistanceGoal;
+        if (stepDistanceGoal < stepsDistance) percent = 1;
+        drawGauge(w, h3, percent, colorGreen);
+    }
 
-  g.setColor(colorBg);
-  g.fillCircle(w, h3, radiusInner);
+    g.setColor(colorBg);
+    g.fillCircle(w, h3, radiusInner);
 
-  g.fillPoly([w, h3, w - 15, h3 + radiusOuter + 5, w + 15, h3 + radiusOuter + 5]);
+    g.fillPoly([w, h3, w - 15, h3 + radiusOuter + 5, w + 15, h3 + radiusOuter + 5]);
 
-  g.setFont(circleFont);
-  g.setFontAlign(0, 0);
-  g.setColor(colorFg);
-  g.drawString(shortValue(stepsDistance), w + 2, h3);
+    g.setFont(circleFont);
+    g.setFontAlign(0, 0);
+    g.setColor(colorFg);
+    g.drawString(shortValue(stepsDistance), w + 2, h3);
 
-  g.drawImage(shoesIconGreen, w - 6, h3 + radiusOuter - 6);
+    g.drawImage(shoesIconGreen, w - 6, h3 + radiusOuter - 6);
 }
 
 function drawHeartRate(w) {
-  if (!w) w = getCirclePosition("hr");
+    if (!w) w = getCirclePosition("hr");
 
-  // Draw rectangle background:
-  g.setColor(colorBg);
-  g.fillRect(w - radiusOuter - 3, h3 - radiusOuter - 3, w + radiusOuter + 3, h3 + radiusOuter + 3);
+    // Draw rectangle background:
+    g.setColor(colorBg);
+    g.fillRect(w - radiusOuter - 3, h3 - radiusOuter - 3, w + radiusOuter + 3, h3 + radiusOuter + 3);
 
-  g.setColor(colorGrey);
-  g.fillCircle(w, h3, radiusOuter);
+    g.setColor(colorGrey);
+    g.fillCircle(w, h3, radiusOuter);
 
-  if (hrtValue != undefined && hrtValue > 0) {
-    const minHR = settings.minHR || 40;
-    const percent = (hrtValue - minHR) / (settings.maxHR - minHR);
-    drawGauge(w, h3, percent, colorRed);
-  }
+    if (hrtValue != undefined && hrtValue > 0) {
+        const minHR = settings.minHR || 40;
+        const percent = (hrtValue - minHR) / (settings.maxHR - minHR);
+        drawGauge(w, h3, percent, colorRed);
+    }
 
-  g.setColor(colorBg);
-  g.fillCircle(w, h3, radiusInner);
+    g.setColor(colorBg);
+    g.fillCircle(w, h3, radiusInner);
 
-  g.fillPoly([w, h3, w - 15, h3 + radiusOuter + 5, w + 15, h3 + radiusOuter + 5]);
+    g.fillPoly([w, h3, w - 15, h3 + radiusOuter + 5, w + 15, h3 + radiusOuter + 5]);
 
-  g.setFont(circleFontBig);
-  g.setFontAlign(0, 0);
-  g.setColor(colorFg);
-  g.drawString(hrtValue != undefined ? hrtValue : "-", w, h3);
+    g.setFont(circleFontBig);
+    g.setFontAlign(0, 0);
+    g.setColor(colorFg);
+    g.drawString(hrtValue != undefined ? hrtValue : "-", w, h3);
 
-  g.drawImage(heartIcon, w - 6, h3 + radiusOuter - 6);
+    g.drawImage(heartIcon, w - 6, h3 + radiusOuter - 6);
 }
 
 function drawBattery(w) {
-  if (!w) w = getCirclePosition("battery");
-  const battery = E.getBattery();
+    if (!w) w = getCirclePosition("battery");
+    const battery = E.getBattery();
 
-  // Draw rectangle background:
-  g.setColor(colorBg);
-  g.fillRect(w - radiusOuter - 3, h3 - radiusOuter - 3, w + radiusOuter + 3, h3 + radiusOuter + 3);
+    // Draw rectangle background:
+    g.setColor(colorBg);
+    g.fillRect(w - radiusOuter - 3, h3 - radiusOuter - 3, w + radiusOuter + 3, h3 + radiusOuter + 3);
 
-  g.setColor(colorGrey);
-  g.fillCircle(w, h3, radiusOuter);
+    g.setColor(colorGrey);
+    g.fillCircle(w, h3, radiusOuter);
 
-  if (battery > 0) {
-    const percent = battery / 100;
-    drawGauge(w, h3, percent, colorYellow);
-  }
-
-  g.setColor(colorBg);
-  g.fillCircle(w, h3, radiusInner);
-
-  g.fillPoly([w, h3, w - 15, h3 + radiusOuter + 5, w + 15, h3 + radiusOuter + 5]);
-
-  g.setFont(circleFont);
-  g.setFontAlign(0, 0);
-
-  let icon = powerIcon;
-  let color = colorFg;
-  if (Bangle.isCharging()) {
-    color = colorGreen;
-    icon = powerIconGreen;
-  } else {
-    if (settings.batteryWarn != undefined && battery <= settings.batteryWarn) {
-      color = colorRed;
-      icon = powerIconRed;
+    if (battery > 0) {
+        const percent = battery / 100;
+        drawGauge(w, h3, percent, colorYellow);
     }
-  }
-  g.setColor(color);
-  g.drawString(battery + '%', w, h3);
 
-  g.drawImage(icon, w - 6, h3 + radiusOuter - 6);
+    g.setColor(colorBg);
+    g.fillCircle(w, h3, radiusInner);
+
+    g.fillPoly([w, h3, w - 15, h3 + radiusOuter + 5, w + 15, h3 + radiusOuter + 5]);
+
+    g.setFont(circleFont);
+    g.setFontAlign(0, 0);
+
+    let icon = powerIcon;
+    let color = colorFg;
+    if (Bangle.isCharging()) {
+        color = colorGreen;
+        icon = powerIconGreen;
+    } else {
+        if (settings.batteryWarn != undefined && battery <= settings.batteryWarn) {
+            color = colorRed;
+            icon = powerIconRed;
+        }
+    }
+    g.setColor(color);
+    g.drawString(battery + '%', w, h3);
+
+    g.drawImage(icon, w - 6, h3 + radiusOuter - 6);
 }
 
 function drawWeather(w) {
-  if (!w) w = getCirclePosition("weather");
-  const weather = getWeather();
-  const tempString = weather ? locale.temp(weather.temp - 273.15) : undefined;
-  const humidity = weather ? weather.hum : undefined;
-  const code = weather ? weather.code : -1;
+    if (!w) w = getCirclePosition("weather");
+    const weather = getWeather();
+    const tempString = weather ? locale.temp(weather.temp - 273.15) : undefined;
+    const humidity = weather ? weather.hum : undefined;
+    const code = weather ? weather.code : -1;
 
-  // Draw rectangle background:
-  g.setColor(colorBg);
-  g.fillRect(w - radiusOuter - 3, h3 - radiusOuter - 3, w + radiusOuter + 3, h3 + radiusOuter + 3);
+    // Draw rectangle background:
+    g.setColor(colorBg);
+    g.fillRect(w - radiusOuter - 3, h3 - radiusOuter - 3, w + radiusOuter + 3, h3 + radiusOuter + 3);
 
-  g.setColor(colorGrey);
-  g.fillCircle(w, h3, radiusOuter);
+    g.setColor(colorGrey);
+    g.fillCircle(w, h3, radiusOuter);
 
-  if (humidity >= 0) {
-    drawGauge(w, h3, humidity / 100, colorYellow);
-  }
+    if (humidity >= 0) {
+        drawGauge(w, h3, humidity / 100, colorYellow);
+    }
 
-  g.setColor(colorBg);
-  g.fillCircle(w, h3, radiusInner);
+    g.setColor(colorBg);
+    g.fillCircle(w, h3, radiusInner);
 
-  g.fillPoly([w, h3, w - 25, h3 + radiusOuter + 5, w + 25, h3 + radiusOuter + 5]);
+    g.fillPoly([w, h3, w - 25, h3 + radiusOuter + 5, w + 25, h3 + radiusOuter + 5]);
 
-  const content = tempString ? tempString : "?";
-  g.setFont(content.length < 4 ? circleFont : circleFontSmall);
-  g.setFontAlign(0, 0);
-  g.setColor(colorFg);
-  g.drawString(content, w, h3);
+    const content = tempString ? tempString : "?";
+    g.setFont(content.length < 4 ? circleFont : circleFontSmall);
+    g.setFontAlign(0, 0);
+    g.setColor(colorFg);
+    g.drawString(content, w, h3);
 
-  if (code > 0) {
-    const icon = getWeatherIconByCode(code);
-    if (icon) g.drawImage(icon, w - 6, h3 + radiusOuter - 10);
-  }
+    if (code > 0) {
+        const icon = getWeatherIconByCode(code);
+        if (icon) g.drawImage(icon, w - 6, h3 + radiusOuter - 10);
+    }
 }
 
 /*
@@ -319,127 +319,127 @@ function drawWeather(w) {
  * https://openweathermap.org/weather-conditions#Weather-Condition-Codes-2
  */
 function getWeatherIconByCode(code) {
-  const codeGroup = Math.round(code / 100);
-  switch (codeGroup) {
-    case 2:
-      return weatherStormy;
-    case 3:
-      return weatherCloudy;
-    case 5:
-      switch (code) {
-        case 511:
-          return weatherSnowy;
-        case 520:
-          return weatherPartlyRainy;
-        case 521:
-          return weatherPartlyRainy;
-        case 522:
-          return weatherPartlyRainy;
-        case 531:
-          return weatherPartlyRainy;
+    const codeGroup = Math.round(code / 100);
+    switch (codeGroup) {
+        case 2:
+            return weatherStormy;
+        case 3:
+            return weatherCloudy;
+        case 5:
+            switch (code) {
+                case 511:
+                    return weatherSnowy;
+                case 520:
+                    return weatherPartlyRainy;
+                case 521:
+                    return weatherPartlyRainy;
+                case 522:
+                    return weatherPartlyRainy;
+                case 531:
+                    return weatherPartlyRainy;
+                default:
+                    return weatherRainy;
+            }
+            break;
+        case 6:
+            return weatherSnowy;
+        case 7:
+            return weatherFoggy;
+        case 8:
+            switch (code) {
+                case 800:
+                    return weatherSunny;
+                case 801:
+                    return weatherPartlyCloudy;
+                case 802:
+                    return weatherPartlyCloudy;
+                default:
+                    return weatherCloudy;
+            }
+            break;
         default:
-          return weatherRainy;
-      }
-      break;
-    case 6:
-      return weatherSnowy;
-    case 7:
-      return weatherFoggy;
-    case 8:
-      switch (code) {
-        case 800:
-          return weatherSunny;
-        case 801:
-          return weatherPartlyCloudy;
-        case 802:
-          return weatherPartlyCloudy;
-        default:
-          return weatherCloudy;
-      }
-      break;
-    default:
-      return undefined;
-  }
-  return undefined;
+            return undefined;
+    }
+    return undefined;
 }
 
 function radians(a) {
-  return a * Math.PI / 180;
+    return a * Math.PI / 180;
 }
 
 function drawGauge(cx, cy, percent, color) {
-  const offset = 15;
-  const end = 345;
-  const r = radiusInner + 3;
+    const offset = 15;
+    const end = 345;
+    const r = radiusInner + 3;
 
-  if (percent <= 0) return;
-  if (percent > 1) percent = 1;
+    if (percent <= 0) return;
+    if (percent > 1) percent = 1;
 
-  const startrot = -offset;
-  const endrot = startrot - ((end - offset) * percent);
+    const startrot = -offset;
+    const endrot = startrot - ((end - offset) * percent);
 
-  g.setColor(color);
+    g.setColor(color);
 
-  const size = radiusOuter - radiusInner - 2;
-  // draw gauge
-  for (let i = startrot; i > endrot - size; i -= size) {
-    x = cx + r * Math.sin(radians(i));
-    y = cy + r * Math.cos(radians(i));
-    g.fillCircle(x, y, size);
-  }
+    const size = radiusOuter - radiusInner - 2;
+    // draw gauge
+    for (let i = startrot; i > endrot - size; i -= size) {
+        x = cx + r * Math.sin(radians(i));
+        y = cy + r * Math.cos(radians(i));
+        g.fillCircle(x, y, size);
+    }
 }
 
 function shortValue(v) {
-  if (isNaN(v)) return '-';
-  if (v <= 999) return v;
-  if (v >= 1000 && v < 10000) {
-    v = Math.floor(v / 100) * 100;
-    return (v / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-  }
-  if (v >= 10000) {
-    v = Math.floor(v / 1000) * 1000;
-    return (v / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
-  }
+    if (isNaN(v)) return '-';
+    if (v <= 999) return v;
+    if (v >= 1000 && v < 10000) {
+        v = Math.floor(v / 100) * 100;
+        return (v / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    }
+    if (v >= 10000) {
+        v = Math.floor(v / 1000) * 1000;
+        return (v / 1000).toFixed(1).replace(/\.0$/, '') + 'k';
+    }
 }
 
 function getSteps() {
-  if (WIDGETS && WIDGETS.wpedom !== undefined) {
-    return WIDGETS.wpedom.getSteps();
-  }
-  return 0;
+    if (WIDGETS && WIDGETS.wpedom !== undefined) {
+        return WIDGETS.wpedom.getSteps();
+    }
+    return 0;
 }
 
 function getWeather() {
-  const jsonWeather = storage.readJSON('weather.json');
-  return jsonWeather && jsonWeather.weather ? jsonWeather.weather : undefined;
+    const jsonWeather = storage.readJSON('weather.json');
+    return jsonWeather && jsonWeather.weather ? jsonWeather.weather : undefined;
 }
 
 function enableHRMSensor() {
-  Bangle.setHRMPower(1, "circleclock");
-  if (hrtValue == undefined) {
-    hrtValue = '...';
-    drawHeartRate();
-  }
+    Bangle.setHRMPower(1, "circleclock");
+    if (hrtValue == undefined) {
+        hrtValue = '...';
+        drawHeartRate();
+    }
 }
 
 Bangle.on('lock', function(isLocked) {
-  if (!isLocked) {
-    if (isCircleEnabled("hr")) {
-      enableHRMSensor();
+    if (!isLocked) {
+        if (isCircleEnabled("hr")) {
+            enableHRMSensor();
+        }
+        draw();
+    } else {
+        Bangle.setHRMPower(0, "circleclock");
     }
-    draw();
-  } else {
-    Bangle.setHRMPower(0, "circleclock");
-  }
 });
 
 
 Bangle.on('HRM', function(hrm) {
-  if (isCircleEnabled("hr")) {
-    hrtValue = hrm.bpm;
-    if (Bangle.isLCDOn())
-      drawHeartRate();
-  }
+    if (isCircleEnabled("hr")) {
+        hrtValue = hrm.bpm;
+        if (Bangle.isLCDOn())
+            drawHeartRate();
+    }
 });
 
 
@@ -450,9 +450,9 @@ draw();
 setInterval(draw, 60000);
 
 Bangle.on('charging', function(charging) {
-  if (isCircleEnabled("battery")) drawBattery();
+    if (isCircleEnabled("battery")) drawBattery();
 });
 
 if (isCircleEnabled("hr")) {
-  enableHRMSensor();
+    enableHRMSensor();
 }

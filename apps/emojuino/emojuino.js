@@ -18,12 +18,12 @@ const TX = "k8XwkBiIAYEYogLHBAUIiBNKGxooKEggvJCYYHDKxAMFAoRrOCRAsHCYqbNHQibLKAau
 // Emojis are pairs with the form [ Image String, Unicode code point ]
 // For code points see https://unicode.org/emoji/charts/emoji-list.html
 const EMOJIS = [
-    [ GRIN, 0x1f642 ],        // Slightly smiling
-    [ MEH, 0x1f610 ],         // Neutral
-    [ FROWN, 0x1f641 ],       // Slightly frowning
-    [ THUMBS_UP, 0x1f44d ],   // Thumbs up
-    [ THUMBS_DOWN, 0x1f44e ], // Thumbs down
-    [ HEART, 0x02764 ],       // Heart
+    [GRIN, 0x1f642], // Slightly smiling
+    [MEH, 0x1f610], // Neutral
+    [FROWN, 0x1f641], // Slightly frowning
+    [THUMBS_UP, 0x1f44d], // Thumbs up
+    [THUMBS_DOWN, 0x1f44e], // Thumbs down
+    [HEART, 0x02764], // Heart
 ];
 const EMOJI_TRANSMISSION_MILLISECONDS = 5000;
 const BLINK_PERIOD_MILLISECONDS = 500;
@@ -42,8 +42,9 @@ const TX_X = 68;
 const TX_Y = 12;
 const FONT_SIZE = 24;
 const ESPRUINO_COMPANY_CODE = 0x0590;
-const UNICODE_CODE_POINT_ELIDED_UUID = [ 0x49, 0x6f, 0x49, 0x44, 0x55,
-                                         0x54, 0x46, 0x2d, 0x33, 0x32 ];
+const UNICODE_CODE_POINT_ELIDED_UUID = [0x49, 0x6f, 0x49, 0x44, 0x55,
+    0x54, 0x46, 0x2d, 0x33, 0x32
+];
 
 
 // Global variables
@@ -56,122 +57,125 @@ let lastDragY = 0;
 
 // Cycle through emojis
 function cycleEmoji(isForward) {
-  if(isTransmitting) { return; }
+    if (isTransmitting) {
+        return;
+    }
 
-  if(isForward) {
-    emojiIndex = (emojiIndex + 1) % EMOJIS.length;
-  }
-  else if(--emojiIndex < 0) {
-    emojiIndex = EMOJIS.length - 1;
-  }
+    if (isForward) {
+        emojiIndex = (emojiIndex + 1) % EMOJIS.length;
+    } else if (--emojiIndex < 0) {
+        emojiIndex = EMOJIS.length - 1;
+    }
 
-  drawImage(EMOJIS[emojiIndex][IMAGE_INDEX]);
-  Bangle.buzz(CYCLE_BUZZ_MILLISECONDS);
+    drawImage(EMOJIS[emojiIndex][IMAGE_INDEX]);
+    Bangle.buzz(CYCLE_BUZZ_MILLISECONDS);
 }
 
 
 // Handle a touch: transmit displayed emoji
 function handleTouch(zone, event) {
-  if(isTransmitting) { return; }
+    if (isTransmitting) {
+        return;
+    }
 
-  let emoji = EMOJIS[emojiIndex];
-  transmitEmoji(emoji[IMAGE_INDEX], emoji[CODE_POINT_INDEX],
-                EMOJI_TRANSMISSION_MILLISECONDS);
-  Bangle.buzz(TRANSMIT_BUZZ_MILLISECONDS);
+    let emoji = EMOJIS[emojiIndex];
+    transmitEmoji(emoji[IMAGE_INDEX], emoji[CODE_POINT_INDEX],
+        EMOJI_TRANSMISSION_MILLISECONDS);
+    Bangle.buzz(TRANSMIT_BUZZ_MILLISECONDS);
 }
 
 
 // Transmit the given code point for the given duration in milliseconds,
 // blinking the image once per second.
 function transmitEmoji(image, codePoint, duration) {
-  let instance = [ 0x00, 0x00, (codePoint >> 24) & 0xff,
-                  (codePoint >> 16) & 0xff, (codePoint >> 8) & 0xff,
-                  codePoint & 0xff ];
+    let instance = [0x00, 0x00, (codePoint >> 24) & 0xff,
+        (codePoint >> 16) & 0xff, (codePoint >> 8) & 0xff,
+        codePoint & 0xff
+    ];
 
-  require('ble_eddystone_uid').advertise(UNICODE_CODE_POINT_ELIDED_UUID,
-                                         instance);
-  isTransmitting = true;
-  drawImage(EMOJIS[emojiIndex][IMAGE_INDEX], true);
+    require('ble_eddystone_uid').advertise(UNICODE_CODE_POINT_ELIDED_UUID,
+        instance);
+    isTransmitting = true;
+    drawImage(EMOJIS[emojiIndex][IMAGE_INDEX], true);
 
-  let displayIntervalId = setInterval(toggleImage, BLINK_PERIOD_MILLISECONDS,
-                                      image);
+    let displayIntervalId = setInterval(toggleImage, BLINK_PERIOD_MILLISECONDS,
+        image);
 
-  setTimeout(terminateEmoji, duration, displayIntervalId);
+    setTimeout(terminateEmoji, duration, displayIntervalId);
 }
 
 
 // Transmit the app name under the Espruino company code to facilitate discovery
 function transmitAppName() {
-  let options = {
-      showName: false,
-      manufacturer: ESPRUINO_COMPANY_CODE,
-      manufacturerData: JSON.stringify({ name: APP_ID }),
-      interval: 2000
-  }
+    let options = {
+        showName: false,
+        manufacturer: ESPRUINO_COMPANY_CODE,
+        manufacturerData: JSON.stringify({
+            name: APP_ID
+        }),
+        interval: 2000
+    }
 
-  NRF.setAdvertising({}, options);
+    NRF.setAdvertising({}, options);
 }
 
 
 // Terminate the emoji transmission
 function terminateEmoji(displayIntervalId) {
-  transmitAppName();
-  isTransmitting = false;
-  clearInterval(displayIntervalId);
-  drawImage(EMOJIS[emojiIndex][IMAGE_INDEX], false);
+    transmitAppName();
+    isTransmitting = false;
+    clearInterval(displayIntervalId);
+    drawImage(EMOJIS[emojiIndex][IMAGE_INDEX], false);
 }
 
 
 // Toggle the display between image/off
 function toggleImage(image) {
-  if(isToggleOn) {
-    drawImage(EMOJIS[emojiIndex][IMAGE_INDEX], true);
-  }
-  else {
-    g.clear();
-  }
-  isToggleOn = !isToggleOn;
+    if (isToggleOn) {
+        drawImage(EMOJIS[emojiIndex][IMAGE_INDEX], true);
+    } else {
+        g.clear();
+    }
+    isToggleOn = !isToggleOn;
 }
 
 
 // Draw the given emoji
 function drawImage(image, isTx) {
-  g.clear();
-  g.drawImage(require("heatshrink").decompress(atob(image)), EMOJI_X, EMOJI_Y);
-  if(isTx) {
-    g.drawImage(require("heatshrink").decompress(atob(TX)), TX_X, TX_Y);
-  }
-  else {
-    g.drawString("< Swipe >", g.getWidth() / 2, g.getHeight() - FONT_SIZE);
-  }
-  g.flip();
+    g.clear();
+    g.drawImage(require("heatshrink").decompress(atob(image)), EMOJI_X, EMOJI_Y);
+    if (isTx) {
+        g.drawImage(require("heatshrink").decompress(atob(TX)), TX_X, TX_Y);
+    } else {
+        g.drawString("< Swipe >", g.getWidth() / 2, g.getHeight() - FONT_SIZE);
+    }
+    g.flip();
 }
 
 
 // Handle a drag event
 function handleDrag(event) {
-  let isFingerReleased = (event.b === 0);
+    let isFingerReleased = (event.b === 0);
 
-  if(isFingerReleased) {
-    let isHorizontalDrag = (Math.abs(lastDragX) >= Math.abs(lastDragY)) &&
-                           (lastDragX !== 0);
+    if (isFingerReleased) {
+        let isHorizontalDrag = (Math.abs(lastDragX) >= Math.abs(lastDragY)) &&
+            (lastDragX !== 0);
 
-    if(isHorizontalDrag) {
-      cycleEmoji(lastDragX > 0);
+        if (isHorizontalDrag) {
+            cycleEmoji(lastDragX > 0);
+        }
+    } else {
+        lastDragX = event.dx;
+        lastDragY = event.dy;
     }
-  }
-  else {
-    lastDragX = event.dx;
-    lastDragY = event.dy;
-  }
 }
 
 
 // Special function to handle display switch on
 Bangle.on('lcdPower', (on) => {
-  if(on) {
-    drawImage(EMOJIS[emojiIndex][IMAGE_INDEX], false);
-  }
+    if (on) {
+        drawImage(EMOJIS[emojiIndex][IMAGE_INDEX], false);
+    }
 });
 
 

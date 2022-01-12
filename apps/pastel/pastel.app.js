@@ -18,91 +18,128 @@ var errIcon = require("heatshrink").decompress(atob("kEggILIgOAAYsD4ADBg/gAYMGsA
 
 
 function loadSettings() {
-  settings = require("Storage").readJSON(SETTINGS_FILE,1)||{};
-  settings.grid = settings.grid||false;
-  settings.font = settings.font||"Lato";
+    settings = require("Storage").readJSON(SETTINGS_FILE, 1) || {};
+    settings.grid = settings.grid || false;
+    settings.font = settings.font || "Lato";
 }
 
 // requires the myLocation app
 function loadLocation() {
-  location = require("Storage").readJSON(LOCATION_FILE,1)||{"lat":51.5072,"lon":0.1276,"location":"London"};
+    location = require("Storage").readJSON(LOCATION_FILE, 1) || {
+        "lat": 51.5072,
+        "lon": 0.1276,
+        "location": "London"
+    };
 }
 
-function extractTime(d){
-  var h = d.getHours(), m = d.getMinutes();
-  return(("0"+h).substr(-2) + ":" + ("0"+m).substr(-2));
+function extractTime(d) {
+    var h = d.getHours(),
+        m = d.getMinutes();
+    return (("0" + h).substr(-2) + ":" + ("0" + m).substr(-2));
 }
 
 var sunRise = "00:00";
 var sunSet = "00:00";
 var drawCount = 0;
 
-function updateSunRiseSunSet(now, lat, lon, line){
-  // get today's sunlight times for lat/lon
-  var times = SunCalc.getTimes(new Date(), lat, lon);
+function updateSunRiseSunSet(now, lat, lon, line) {
+    // get today's sunlight times for lat/lon
+    var times = SunCalc.getTimes(new Date(), lat, lon);
 
-  // format sunrise time from the Date object
-  sunRise = extractTime(times.sunrise);
-  sunSet = extractTime(times.sunset);
+    // format sunrise time from the Date object
+    sunRise = extractTime(times.sunrise);
+    sunSet = extractTime(times.sunset);
 }
 
 function loadFonts() {
-  // load font files based on settings.font
-  if (settings.font == "Architect")
-    require("f_architect").add(Graphics);
-  else if (settings.font == "GochiHand")
-    require("f_gochihand").add(Graphics);
-  else if (settings.font == "CabinSketch")
-    require("f_cabin").add(Graphics);
-  else if (settings.font == "Orbitron")
-    require("f_orbitron").add(Graphics);
-  else if (settings.font == "Monoton")
-    require("f_monoton").add(Graphics);
-  else if (settings.font == "Elite")
-    require("f_elite").add(Graphics);
-  else
-    require("f_lato").add(Graphics);
+    // load font files based on settings.font
+    if (settings.font == "Architect")
+        require("f_architect").add(Graphics);
+    else if (settings.font == "GochiHand")
+        require("f_gochihand").add(Graphics);
+    else if (settings.font == "CabinSketch")
+        require("f_cabin").add(Graphics);
+    else if (settings.font == "Orbitron")
+        require("f_orbitron").add(Graphics);
+    else if (settings.font == "Monoton")
+        require("f_monoton").add(Graphics);
+    else if (settings.font == "Elite")
+        require("f_elite").add(Graphics);
+    else
+        require("f_lato").add(Graphics);
 }
 
 function stepsWidget() {
-  if (WIDGETS.activepedom !== undefined) {
-    return WIDGETS.activepedom;
-  } else if (WIDGETS.wpedom !== undefined) {
-    return WIDGETS.wpedom;
-  }
-  return undefined;
+    if (WIDGETS.activepedom !== undefined) {
+        return WIDGETS.activepedom;
+    } else if (WIDGETS.wpedom !== undefined) {
+        return WIDGETS.wpedom;
+    }
+    return undefined;
 }
 
 const infoData = {
-  ID_BLANK: { calc: () => '' },
-  ID_DATE:  { calc: () => {var d = (new Date).toString().split(" "); return d[2] + ' ' + d[1] + ' ' + d[3];} },
-  ID_DAY:   { calc: () => {var d = require("locale").dow(new Date).toLowerCase(); return d[0].toUpperCase() + d.substring(1);} },
-  ID_SR:    { calc: () => 'Sunrise: ' + sunRise },
-  ID_SS:    { calc: () => 'Sunset: ' + sunSet },
-  ID_STEP:  { calc: () => 'Steps: ' + stepsWidget().getSteps() },
-  ID_BATT:  { calc: () => 'Battery: ' + E.getBattery() + '%' },
-  ID_MEM:   { calc: () => {var val = process.memory(); return 'Ram: ' + Math.round(val.usage*100/val.total) + '%';} },
-  ID_ID:    { calc: () => {var val = NRF.getAddress().split(':'); return 'Id: ' + val[4] + val[5];} },
-  ID_FW:    { calc: () => 'Fw: ' + process.env.VERSION }
+    ID_BLANK: {
+        calc: () => ''
+    },
+    ID_DATE: {
+        calc: () => {
+            var d = (new Date).toString().split(" ");
+            return d[2] + ' ' + d[1] + ' ' + d[3];
+        }
+    },
+    ID_DAY: {
+        calc: () => {
+            var d = require("locale").dow(new Date).toLowerCase();
+            return d[0].toUpperCase() + d.substring(1);
+        }
+    },
+    ID_SR: {
+        calc: () => 'Sunrise: ' + sunRise
+    },
+    ID_SS: {
+        calc: () => 'Sunset: ' + sunSet
+    },
+    ID_STEP: {
+        calc: () => 'Steps: ' + stepsWidget().getSteps()
+    },
+    ID_BATT: {
+        calc: () => 'Battery: ' + E.getBattery() + '%'
+    },
+    ID_MEM: {
+        calc: () => {
+            var val = process.memory();
+            return 'Ram: ' + Math.round(val.usage * 100 / val.total) + '%';
+        }
+    },
+    ID_ID: {
+        calc: () => {
+            var val = NRF.getAddress().split(':');
+            return 'Id: ' + val[4] + val[5];
+        }
+    },
+    ID_FW: {
+        calc: () => 'Fw: ' + process.env.VERSION
+    }
 };
 
 const infoList = Object.keys(infoData).sort();
 let infoMode = infoList[0];
 
 function nextInfo() {
-  let idx = infoList.indexOf(infoMode);
-  if (idx > -1) {
-    if (idx === infoList.length - 1) infoMode = infoList[0];
-    else infoMode = infoList[idx + 1];
-  }
+    let idx = infoList.indexOf(infoMode);
+    if (idx > -1) {
+        if (idx === infoList.length - 1) infoMode = infoList[0];
+        else infoMode = infoList[idx + 1];
+    }
 }
 
 function prevInfo() {
-  let idx = infoList.indexOf(infoMode);
-  if (idx > -1) {
-    if (idx === 0) infoMode = infoList[infoList.length - 1];
-    else infoMode = infoList[idx - 1];
-  }
+    let idx = infoList.indexOf(infoMode);
+    if (idx > -1) {
+        if (idx === 0) infoMode = infoList[infoList.length - 1];
+        else infoMode = infoList[idx - 1];
+    }
 }
 
 
@@ -112,139 +149,139 @@ Based on function from the Bangle weather app so it should handle all of the con
 sent from gadget bridge.
 */
 function chooseIcon(condition) {
-  condition = condition.toLowerCase();
-  if (condition.includes("thunderstorm")) return stormIcon;
-  if (condition.includes("freezing")||condition.includes("snow")||
-    condition.includes("sleet")) {
-    return snowIcon;
-  }
-  if (condition.includes("drizzle")||
-    condition.includes("shower")) {
-    return rainIcon;
-  }
-  if (condition.includes("rain")) return rainIcon;
-  if (condition.includes("clear")) return sunIcon;
-  if (condition.includes("few clouds")) return partSunIcon;
-  if (condition.includes("scattered clouds")) return cloudIcon;
-  if (condition.includes("clouds")) return cloudIcon;
-  if (condition.includes("mist") ||
-    condition.includes("smoke") ||
-    condition.includes("haze") ||
-    condition.includes("sand") ||
-    condition.includes("dust") ||
-    condition.includes("fog") ||
-    condition.includes("ash") ||
-    condition.includes("squalls") ||
-    condition.includes("tornado")) {
+    condition = condition.toLowerCase();
+    if (condition.includes("thunderstorm")) return stormIcon;
+    if (condition.includes("freezing") || condition.includes("snow") ||
+        condition.includes("sleet")) {
+        return snowIcon;
+    }
+    if (condition.includes("drizzle") ||
+        condition.includes("shower")) {
+        return rainIcon;
+    }
+    if (condition.includes("rain")) return rainIcon;
+    if (condition.includes("clear")) return sunIcon;
+    if (condition.includes("few clouds")) return partSunIcon;
+    if (condition.includes("scattered clouds")) return cloudIcon;
+    if (condition.includes("clouds")) return cloudIcon;
+    if (condition.includes("mist") ||
+        condition.includes("smoke") ||
+        condition.includes("haze") ||
+        condition.includes("sand") ||
+        condition.includes("dust") ||
+        condition.includes("fog") ||
+        condition.includes("ash") ||
+        condition.includes("squalls") ||
+        condition.includes("tornado")) {
+        return cloudIcon;
+    }
     return cloudIcon;
-  }
-  return cloudIcon;
 }
 
 /**
 Get weather stored in json file by weather app.
 */
 function getWeather() {
-  let jsonWeather = storage.readJSON('weather.json');
-  return jsonWeather;
+    let jsonWeather = storage.readJSON('weather.json');
+    return jsonWeather;
 }
 
 function draw() {
-  var d = new Date();
-  var da = d.toString().split(" ");
-  var time = da[4].substr(0,5);
-  
-  var hh = da[4].substr(0,2);
-  var mm = da[4].substr(3,2);
-  var day = da[0];
-  var month_day = da[1] + " " + da[2];
-  
-  // fix hh for 12hr clock
-  var h2 = "0" + parseInt(hh) % 12 || 12;
-  if (parseInt(hh) > 12)
-    hh = h2.substr(h2.length -2);
+    var d = new Date();
+    var da = d.toString().split(" ");
+    var time = da[4].substr(0, 5);
 
-  var w = g.getWidth();
-  var h = g.getHeight();
-  var x = (g.getWidth()/2);
-  var y = (g.getHeight()/3);
+    var hh = da[4].substr(0, 2);
+    var mm = da[4].substr(3, 2);
+    var day = da[0];
+    var month_day = da[1] + " " + da[2];
 
-  var weatherJson = getWeather();
-  var w_temp;
-  var w_icon;
-  var w_wind;
+    // fix hh for 12hr clock
+    var h2 = "0" + parseInt(hh) % 12 || 12;
+    if (parseInt(hh) > 12)
+        hh = h2.substr(h2.length - 2);
 
-  if (settings.weather && weatherJson && weatherJson.weather) {
-      var currentWeather = weatherJson.weather;
-      const temp = locale.temp(currentWeather.temp-273.15).match(/^(\D*\d*)(.*)$/);
-      w_temp = temp[1] + " " + temp[2];
-      w_icon = chooseIcon(currentWeather.txt);
-      const wind = locale.speed(currentWeather.wind).match(/^(\D*\d*)(.*)$/);
-      w_wind = wind[1] + " " + wind[2] + " " + (currentWeather.wrose||'').toUpperCase();
-  } else {
-      w_temp = "Err";
-      w_wind = "???";
-      w_icon = errIcon;
-  }
+    var w = g.getWidth();
+    var h = g.getHeight();
+    var x = (g.getWidth() / 2);
+    var y = (g.getHeight() / 3);
 
-  g.reset();
-  g.clearRect(0, 30, w, h - 24);
-  
-  // draw a grid like graph paper
-  if (settings.grid && process.env.HWVERSION !=1) {
-    g.setColor("#0f0");
-    for (var gx=20; gx <= w; gx += 20)
-      g.drawLine(gx, 30, gx, h - 24); 
-    for (var gy=30; gy <= h - 24; gy += 20)
-      g.drawLine(0, gy, w, gy);
-  }
+    var weatherJson = getWeather();
+    var w_temp;
+    var w_icon;
+    var w_wind;
 
-  g.setColor(g.theme.fg);
+    if (settings.weather && weatherJson && weatherJson.weather) {
+        var currentWeather = weatherJson.weather;
+        const temp = locale.temp(currentWeather.temp - 273.15).match(/^(\D*\d*)(.*)$/);
+        w_temp = temp[1] + " " + temp[2];
+        w_icon = chooseIcon(currentWeather.txt);
+        const wind = locale.speed(currentWeather.wind).match(/^(\D*\d*)(.*)$/);
+        w_wind = wind[1] + " " + wind[2] + " " + (currentWeather.wrose || '').toUpperCase();
+    } else {
+        w_temp = "Err";
+        w_wind = "???";
+        w_icon = errIcon;
+    }
 
-  // draw weather line
-  if (settings.weather) {
-    g.drawImage(w_icon, (w/2) - 40, 24);
-    g.setFontLatoSmall();
-    g.setFontAlign(-1,0); // left aligned
-    if (drawCount % 2 == 0)
-      g.drawString(w_temp, (w/2) + 6, 24 + ((y - 24)/2));
+    g.reset();
+    g.clearRect(0, 30, w, h - 24);
+
+    // draw a grid like graph paper
+    if (settings.grid && process.env.HWVERSION != 1) {
+        g.setColor("#0f0");
+        for (var gx = 20; gx <= w; gx += 20)
+            g.drawLine(gx, 30, gx, h - 24);
+        for (var gy = 30; gy <= h - 24; gy += 20)
+            g.drawLine(0, gy, w, gy);
+    }
+
+    g.setColor(g.theme.fg);
+
+    // draw weather line
+    if (settings.weather) {
+        g.drawImage(w_icon, (w / 2) - 40, 24);
+        g.setFontLatoSmall();
+        g.setFontAlign(-1, 0); // left aligned
+        if (drawCount % 2 == 0)
+            g.drawString(w_temp, (w / 2) + 6, 24 + ((y - 24) / 2));
+        else
+            g.drawString((w_wind.split(' ').slice(0, 2).join(' ')), (w / 2) + 6, 24 + ((y - 24) / 2));
+        // display first 2 words of the wind string eg '4 mph'
+    }
+
+    if (settings.font == "Architect")
+        g.setFontArchitect();
+    else if (settings.font == "GochiHand")
+        g.setFontGochiHand();
+    else if (settings.font == "CabinSketch")
+        g.setFontCabinSketch();
+    else if (settings.font == "Orbitron")
+        g.setFontOrbitron();
+    else if (settings.font == "Monoton")
+        g.setFontMonoton();
+    else if (settings.font == "Elite")
+        g.setFontSpecialElite();
     else
-      g.drawString( (w_wind.split(' ').slice(0, 2).join(' ')), (w/2) + 6, 24 + ((y - 24)/2));
-  // display first 2 words of the wind string eg '4 mph'
-  }
-  
-  if (settings.font == "Architect")
-    g.setFontArchitect();
-  else if (settings.font == "GochiHand")
-    g.setFontGochiHand();
-  else if (settings.font == "CabinSketch")
-    g.setFontCabinSketch();
-  else if (settings.font == "Orbitron")
-    g.setFontOrbitron();
-  else if (settings.font == "Monoton")
-    g.setFontMonoton();
-  else if (settings.font == "Elite")
-    g.setFontSpecialElite();
-  else
-    g.setFontLato();
-    
-  g.setFontAlign(1,-1);  // right aligned
-  g.drawString(hh, x - 6, y);
-  g.setFontAlign(-1,-1); // left aligned
-  g.drawString(mm, x + 6, y);
+        g.setFontLato();
 
-  // for the colon
-  g.setFontAlign(0,-1); // centre aligned
-  g.drawString(":", x,y);
-  g.setFontLatoSmall();
-  g.setFontAlign(0, -1);
-  g.drawString((infoData[infoMode].calc()), w/2, h - 24 - 24);
+    g.setFontAlign(1, -1); // right aligned
+    g.drawString(hh, x - 6, y);
+    g.setFontAlign(-1, -1); // left aligned
+    g.drawString(mm, x + 6, y);
 
-  // recalc sunrise / sunset every hour
-  if (drawCount % 60 == 0)
-    updateSunRiseSunSet(new Date(), location.lat, location.lon);
-  drawCount++;
-  queueDraw();
+    // for the colon
+    g.setFontAlign(0, -1); // centre aligned
+    g.drawString(":", x, y);
+    g.setFontLatoSmall();
+    g.setFontAlign(0, -1);
+    g.drawString((infoData[infoMode].calc()), w / 2, h - 24 - 24);
+
+    // recalc sunrise / sunset every hour
+    if (drawCount % 60 == 0)
+        updateSunRiseSunSet(new Date(), location.lat, location.lon);
+    drawCount++;
+    queueDraw();
 }
 
 // timeout used to update every minute
@@ -252,28 +289,28 @@ var drawTimeout;
 
 // schedule a draw for the next minute
 function queueDraw() {
-  if (drawTimeout) clearTimeout(drawTimeout);
-  drawTimeout = setTimeout(function() {
-    drawTimeout = undefined;
-    prevInfo();
-    draw();
-  }, 60000 - (Date.now() % 60000));
+    if (drawTimeout) clearTimeout(drawTimeout);
+    drawTimeout = setTimeout(function() {
+        drawTimeout = undefined;
+        prevInfo();
+        draw();
+    }, 60000 - (Date.now() % 60000));
 }
 
 // Stop updates when LCD is off, restart when on
-Bangle.on('lcdPower',on=>{
-  if (on) {
-    draw(); // draw immediately, queue redraw
-  } else { // stop draw timer
-    if (drawTimeout) clearTimeout(drawTimeout);
-    drawTimeout = undefined;
-  }
+Bangle.on('lcdPower', on => {
+    if (on) {
+        draw(); // draw immediately, queue redraw
+    } else { // stop draw timer
+        if (drawTimeout) clearTimeout(drawTimeout);
+        drawTimeout = undefined;
+    }
 });
 
-Bangle.setUI("clockupdown", btn=> {
-  if (btn<0) prevInfo();
-  if (btn>0) nextInfo();
-  draw();
+Bangle.setUI("clockupdown", btn => {
+    if (btn < 0) prevInfo();
+    if (btn > 0) nextInfo();
+    draw();
 });
 
 loadSettings();

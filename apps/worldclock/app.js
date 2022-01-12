@@ -1,7 +1,7 @@
-const big = g.getWidth()>200;
+const big = g.getWidth() > 200;
 // Font for primary time and date
-const primaryTimeFontSize = big?6:5;
-const primaryDateFontSize = big?3:2;
+const primaryTimeFontSize = big ? 6 : 5;
+const primaryDateFontSize = big ? 3 : 2;
 
 // Font for single secondary time
 const secondaryTimeFontSize = 4;
@@ -72,82 +72,82 @@ var drawTimeout;
 
 // schedule a draw for the next minute
 function queueDraw() {
-  if (drawTimeout) clearTimeout(drawTimeout);
-  drawTimeout = setTimeout(function() {
-    drawTimeout = undefined;
-    draw();
-  }, 60000 - (Date.now() % 60000));
+    if (drawTimeout) clearTimeout(drawTimeout);
+    drawTimeout = setTimeout(function() {
+        drawTimeout = undefined;
+        draw();
+    }, 60000 - (Date.now() % 60000));
 }
 
 function doublenum(x) {
-  return x < 10 ? "0" + x : "" + x;
+    return x < 10 ? "0" + x : "" + x;
 }
 
 function getCurrentTimeFromOffset(dt, offset) {
-  return new Date(dt.getTime() + offset * 60 * 60 * 1000);
+    return new Date(dt.getTime() + offset * 60 * 60 * 1000);
 }
 
 function draw() {
-  // get date
-  var d = new Date();
-  var da = d.toString().split(" ");
+    // get date
+    var d = new Date();
+    var da = d.toString().split(" ");
 
-  // default draw styles
-  g.reset();
+    // default draw styles
+    g.reset();
 
-  // drawSting centered
-  g.setFontAlign(0, 0);
+    // drawSting centered
+    g.setFontAlign(0, 0);
 
-  // draw time
-  var time = da[4].substr(0, 5).split(":");
-  var hours = time[0],
-    minutes = time[1];
+    // draw time
+    var time = da[4].substr(0, 5).split(":");
+    var hours = time[0],
+        minutes = time[1];
 
-  g.setFont(font, primaryTimeFontSize);
-  g.drawString(`${hours}:${minutes}`, xyCenter, yposTime, true);
+    g.setFont(font, primaryTimeFontSize);
+    g.drawString(`${hours}:${minutes}`, xyCenter, yposTime, true);
 
-  // draw Day, name of month, Date
-  var date = [da[0], da[1], da[2]].join(" ");
-  g.setFont(font, primaryDateFontSize);
+    // draw Day, name of month, Date
+    var date = [da[0], da[1], da[2]].join(" ");
+    g.setFont(font, primaryDateFontSize);
 
-  g.drawString(date, xyCenter, yposDate, true);
+    g.drawString(date, xyCenter, yposDate, true);
 
-  // set gmt to UTC+0
-  var gmt = new Date(d.getTime() + d.getTimezoneOffset() * 60 * 1000);
+    // set gmt to UTC+0
+    var gmt = new Date(d.getTime() + d.getTimezoneOffset() * 60 * 1000);
 
-  // Loop through offset(s) and render
-  offsets.forEach((offset, index) => {
-    dx = getCurrentTimeFromOffset(gmt, offset[OFFSET_HOURS]);
-    hours = doublenum(dx.getHours());
-    minutes = doublenum(dx.getMinutes());
+    // Loop through offset(s) and render
+    offsets.forEach((offset, index) => {
+        dx = getCurrentTimeFromOffset(gmt, offset[OFFSET_HOURS]);
+        hours = doublenum(dx.getHours());
+        minutes = doublenum(dx.getMinutes());
 
-    if (offsets.length === 1) {
-      // For a single secondary timezone, draw it bigger and drop time zone to second line
-      const xOffset = 30;
-      g.setFont(font, secondaryTimeFontSize);
-      g.drawString(`${hours}:${minutes}`, xyCenter, yposTime2, true);
-      g.setFont(font, secondaryTimeZoneFontSize);
-      g.drawString(offset[OFFSET_TIME_ZONE], xyCenter, yposTime2 + 30, true);
+        if (offsets.length === 1) {
+            // For a single secondary timezone, draw it bigger and drop time zone to second line
+            const xOffset = 30;
+            g.setFont(font, secondaryTimeFontSize);
+            g.drawString(`${hours}:${minutes}`, xyCenter, yposTime2, true);
+            g.setFont(font, secondaryTimeZoneFontSize);
+            g.drawString(offset[OFFSET_TIME_ZONE], xyCenter, yposTime2 + 30, true);
 
-      // draw Day, name of month, Date
-      g.setFont(font, secondaryTimeZoneFontSize);
-      g.drawString(date, xyCenter, yposDate, true);
-    } else if (index < 4) {
-      // For > 1 extra timezones, render as columns / rows
-      g.setFont(font, secondaryRowColFontSize);
-      g.setFontAlign(-1, 0);
-      g.drawString(
-        offset[OFFSET_TIME_ZONE],
-        xcol1,
-        yposWorld + index * 15,
-        true
-      );
-      g.setFontAlign(1, 0);
-      g.drawString(`${hours}:${minutes}`, xcol2, yposWorld + index * 15, true);
-    }
-  });
+            // draw Day, name of month, Date
+            g.setFont(font, secondaryTimeZoneFontSize);
+            g.drawString(date, xyCenter, yposDate, true);
+        } else if (index < 4) {
+            // For > 1 extra timezones, render as columns / rows
+            g.setFont(font, secondaryRowColFontSize);
+            g.setFontAlign(-1, 0);
+            g.drawString(
+                offset[OFFSET_TIME_ZONE],
+                xcol1,
+                yposWorld + index * 15,
+                true
+            );
+            g.setFontAlign(1, 0);
+            g.drawString(`${hours}:${minutes}`, xcol2, yposWorld + index * 15, true);
+        }
+    });
 
-  queueDraw();
+    queueDraw();
 }
 
 // clean app screen
@@ -158,13 +158,13 @@ Bangle.loadWidgets();
 Bangle.drawWidgets();
 
 // Stop updates when LCD is off, restart when on
-Bangle.on('lcdPower',on=>{
-  if (on) {
-    draw(); // draw immediately, queue redraw
-  } else { // stop draw timer
-    if (drawTimeout) clearTimeout(drawTimeout);
-    drawTimeout = undefined;
-  }
+Bangle.on('lcdPower', on => {
+    if (on) {
+        draw(); // draw immediately, queue redraw
+    } else { // stop draw timer
+        if (drawTimeout) clearTimeout(drawTimeout);
+        drawTimeout = undefined;
+    }
 });
 
 // draw now

@@ -70,7 +70,7 @@ class Options {
             delay
         );
     }
-    
+
     bless(k) {
         Object.defineProperty(this, k, {
             get: () => this.backing[k],
@@ -85,7 +85,8 @@ class Options {
     showMenu(m) {
         if (m instanceof Function) m = m();
         if (m) {
-            for (const k in m) if ('init' in m[k]) m[k].value = m[k].init();
+            for (const k in m)
+                if ('init' in m[k]) m[k].value = m[k].init();
             m[''].selected = -1; // Workaround for self-selection bug.
             Bangle.on('drag', this.reactivator);
             this.active();
@@ -103,9 +104,11 @@ class Options {
         if (this.bored) clearTimeout(this.bored);
         this.bored = setTimeout(_ => this.showMenu(), 15000);
     }
-    
+
     reset() {
-        this.backing = {__proto__: this.constructor.defaults};
+        this.backing = {
+            __proto__: this.constructor.defaults
+        };
         this.writeBack(0);
     }
 }
@@ -114,17 +117,21 @@ class RomanOptions extends Options {
     constructor() {
         super();
         this.menu = {
-            '': {title: '* face options *'},
+            '': {
+                title: '* face options *'
+            },
             '< Back': _ => this.showMenu(),
             Ticks: {
                 init: _ => this.resolution,
-                min: 0, max: 3,
+                min: 0,
+                max: 3,
                 onchange: x => this.resolution = x,
                 format: x => ['seconds', 'seconds (up)', 'minutes', 'hours'][x]
             },
             'Display': {
                 init: _ => this.o24h == null ? 0 : 1 + this.o24h,
-                min: 0, max: 2,
+                min: 0,
+                max: 2,
                 onchange: x => this.o24h = [null, 0, 1][x],
                 format: x => ['system', '12h', '24h'][x]
             },
@@ -134,7 +141,8 @@ class RomanOptions extends Options {
             },
             Calendar: {
                 init: _ => this.calendric,
-                min: 0, max: 2,
+                min: 0,
+                max: 2,
                 onchange: x => this.calendric = x,
                 format: x => ['none', 'day', 'date'][x]
             },
@@ -142,11 +150,16 @@ class RomanOptions extends Options {
                 init: _ => this.autolight,
                 onchange: x => this.autolight = x
             },
-            Defaults: _ => {this.reset(); this.interact();}
+            Defaults: _ => {
+                this.reset();
+                this.interact();
+            }
         };
     }
-        
-    interact() {this.showMenu(this.menu);}
+
+    interact() {
+        this.showMenu(this.menu);
+    }
 }
 
 RomanOptions.id = 'pooqroman';
@@ -177,27 +190,28 @@ RomanOptions.defaults = {
 const heatshrink = require('heatshrink');
 const dec = x => E.toString(heatshrink.decompress(atob(x)));
 const romanPartsF = [
-  dec(
-    'wEBsEB3//7//9//+0AjUAguAg3AgYQJjfAgv+gH/8Fg/0gh/AgP4gf2h/j/+BCAP' +
-    'wgFggEggEQgEMgEHwEDEIIyDuED3kD7+H9vn2k/hEPgMP4Xevd+j4QB7kA9kAmkA' +
-    'hUGgOH8Hn3le4+GgH32PuvfGj+CCAMDgXD4dz+evt9DgcL7fXn87h8NCAMP+Ef/0' +
-    'eg+egPugF2j0bCAPAh3wh88h8P/8BNwI'
-  ), 97, dec('gUDgUGgUJgYFBhsBhMJhgA=='), 17
-];const fontF = [
-  dec(
-    'AAUwAIM/4F/8HguHAmABBAoIJBBoIUBkEwsEw//wAIIdDBoUQBoIfC+HB+Hj2F/m' +
-    'E+CIXAoHEsHMuHcmH8mHuuHH8GBGIUAwEBwEHwH/wH5+EBAIILCCAP8oH8EYXMmA' +
-    'BB5wjCgYjCAYMP8E+uF8mHsCIWHCIgCBAIXw4fw54tBgBsBGgUAnKLC99w40wAII' +
-    'FBBIINBCIM8gF+iHnmHDuHD8HnDYMAjizEMYJJBn+A+OAAYIHBBYKjDXYKvDYZYP' +
-    'D40AAIYMBZYgkC4Hg4DnDuH/8H/BYIVCv/wnEAjwBCAoIJBEIYRFh0Ag8AgPAEYQ' +
-    'RCJIJNBfYRXKnFAvlg9ihE8dwsfgkLFHMYgJF8DNCh+AUYWAA4ILBAAJGB/4PB+D' +
-    '9CgADCEoIPCJobbBB4IBBAoJdDEgXggvwhuwAIcH8EDRIh/BhkwAIMOuAPCMYQDB' +
-    'A4ILBCIcGsECoAPLU4oPDH42ggeAB4XEg/mh1zhkzh03g/+h/4J4nwg0AhjbDRII' +
-    'vCt/wAIIVFAoKTBCYIXBDIYHHEIYVFGJJxHSI8P/8H/6hLF44BBM4IABg8gh6NEh' +
-    'vwgngBoITBv/Av7PBV4kAsArCfYIVBuEABYNwA4I3BD4cPL4UAM4IXBBYQfC4kP8' +
-    '0AucAmcAu8PXogA='
-  ), 32, dec('gINMgUAhMHhIAGCQ0KAQIKBgwEBgcIBAQVEhIJBhAeIBQIADAoUDEQULBQcHg4FD' +
-    'CII='), 16
+    dec(
+        'wEBsEB3//7//9//+0AjUAguAg3AgYQJjfAgv+gH/8Fg/0gh/AgP4gf2h/j/+BCAP' +
+        'wgFggEggEQgEMgEHwEDEIIyDuED3kD7+H9vn2k/hEPgMP4Xevd+j4QB7kA9kAmkA' +
+        'hUGgOH8Hn3le4+GgH32PuvfGj+CCAMDgXD4dz+evt9DgcL7fXn87h8NCAMP+Ef/0' +
+        'eg+egPugF2j0bCAPAh3wh88h8P/8BNwI'
+    ), 97, dec('gUDgUGgUJgYFBhsBhMJhgA=='), 17
+];
+const fontF = [
+    dec(
+        'AAUwAIM/4F/8HguHAmABBAoIJBBoIUBkEwsEw//wAIIdDBoUQBoIfC+HB+Hj2F/m' +
+        'E+CIXAoHEsHMuHcmH8mHuuHH8GBGIUAwEBwEHwH/wH5+EBAIILCCAP8oH8EYXMmA' +
+        'BB5wjCgYjCAYMP8E+uF8mHsCIWHCIgCBAIXw4fw54tBgBsBGgUAnKLC99w40wAII' +
+        'FBBIINBCIM8gF+iHnmHDuHD8HnDYMAjizEMYJJBn+A+OAAYIHBBYKjDXYKvDYZYP' +
+        'D40AAIYMBZYgkC4Hg4DnDuH/8H/BYIVCv/wnEAjwBCAoIJBEIYRFh0Ag8AgPAEYQ' +
+        'RCJIJNBfYRXKnFAvlg9ihE8dwsfgkLFHMYgJF8DNCh+AUYWAA4ILBAAJGB/4PB+D' +
+        '9CgADCEoIPCJobbBB4IBBAoJdDEgXggvwhuwAIcH8EDRIh/BhkwAIMOuAPCMYQDB' +
+        'A4ILBCIcGsECoAPLU4oPDH42ggeAB4XEg/mh1zhkzh03g/+h/4J4nwg0AhjbDRII' +
+        'vCt/wAIIVFAoKTBCYIXBDIYHHEIYVFGJJxHSI8P/8H/6hLF44BBM4IABg8gh6NEh' +
+        'vwgngBoITBv/Av7PBV4kAsArCfYIVBuEABYNwA4I3BD4cPL4UAM4IXBBYQfC4kP8' +
+        '0AucAmcAu8PXogA='
+    ), 32, dec('gINMgUAhMHhIAGCQ0KAQIKBgwEBgcIBAQVEhIJBhAeIBQIADAoUDEQULBQcHg4FD' +
+        'CII='), 16
 ];
 const lockI = dec('iMSwMAgfwgf8geHgeB4PA8HguFwnH//9//+4gPf//v//3gE7//9//+8EHCAO///A');
 const batteryI = dec('h8SwMAgPggfAv/4//x//j//H/+P/8f/0//gOOA==');
@@ -210,8 +224,13 @@ const compassI = dec('iMRwMAgfgg/8g8ng0Q40ImcOjcHg+DwfB4Ph2Hw7FsolmkUxwEwuFwj/wE
 /*                           Squeezable strings                             */
 
 class Formattable {
-    width(g) {return this.w != null ? this.w : (this.w = g.stringWidth(this.text));}
-    print(g, x, y) {g.drawString(this.text, x, y); return this.width();}
+    width(g) {
+        return this.w != null ? this.w : (this.w = g.stringWidth(this.text));
+    }
+    print(g, x, y) {
+        g.drawString(this.text, x, y);
+        return this.width();
+    }
 }
 
 class Fixed extends Formattable {
@@ -219,7 +238,9 @@ class Fixed extends Formattable {
         super();
         this.text = text;
     }
-    squeeze() {return false;}
+    squeeze() {
+        return false;
+    }
 }
 
 class Squeezable extends Formattable {
@@ -235,94 +256,108 @@ class Squeezable extends Formattable {
         this.w = null;
         return true;
     }
-    get text() {return this.named.table[this.index];}
+    get text() {
+        return this.named.table[this.index];
+    }
 }
 
 class Named {
-  constructor(forms, table) {
-    this.forms = forms;
-    this.table = table;
-  }
-    on(index) {return new Squeezable(this, this.forms * index);}
+    constructor(forms, table) {
+        this.forms = forms;
+        this.table = table;
+    }
+    on(index) {
+        return new Squeezable(this, this.forms * index);
+    }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 /*                                   Face                                   */
 
 // Static geometry
-const barW = 26, barH = g.getHeight(), barX = g.getWidth() - barW, barY = 0;
-const faceW = g.getWidth() - barW, faceH = g.getHeight();
-const faceX = 0, faceY = 0, faceCX = faceW / 2, faceCY = faceH / 2;
-const rectX = faceX + 35, rectY = faceY + 24, rectW = 80, rectH = 128;
+const barW = 26,
+    barH = g.getHeight(),
+    barX = g.getWidth() - barW,
+    barY = 0;
+const faceW = g.getWidth() - barW,
+    faceH = g.getHeight();
+const faceX = 0,
+    faceY = 0,
+    faceCX = faceW / 2,
+    faceCY = faceH / 2;
+const rectX = faceX + 35,
+    rectY = faceY + 24,
+    rectW = 80,
+    rectH = 128;
 
 // Extended-Roman-numeral labels
 const layout = E.toUint8Array(
-  75, 23, // XII
-  132, 24, // I
-  132, 61, // II
-  132, 97, // III
-  132, 133, // IV
-  132, 170, // V
-  75, 171, // VI
-  18, 170, // VII
-  18, 133, // VIII
-  18, 97, // IX
-  18, 61, // X
-  18, 24 // XI
+    75, 23, // XII
+    132, 24, // I
+    132, 61, // II
+    132, 97, // III
+    132, 133, // IV
+    132, 170, // V
+    75, 171, // VI
+    18, 170, // VII
+    18, 133, // VIII
+    18, 97, // IX
+    18, 61, // X
+    18, 24 // XI
 );
 
 const numeral = (n, options) => [
-  'n', // 0
-  'abc', // I
-  'abdc', // II
-  'abddc', // III
-  'abefg', // IV
-  'hfg', // V
-  'hfibc', // VI
-  'hfibdc', // VII
-  'hfibddc', // VIII
-  'abjk', // IX
-  'kjk', // X
-  'kjbc', // XI
-  'kjbdc', // XII
-  'kjbddc', // XIII
-  'kjbefg', // XIV
-  'kjefg', // XV
-  'labc', // XVI
-  'labdc', // XVII
-  'labddc', // XVIII
-  'kjbjk', // XIX
-  'kjjk', // XX
-  'mabc', // XXI
-  'mabdc', // XXII
-  'mabddc', // XXIII
+    'n', // 0
+    'abc', // I
+    'abdc', // II
+    'abddc', // III
+    'abefg', // IV
+    'hfg', // V
+    'hfibc', // VI
+    'hfibdc', // VII
+    'hfibddc', // VIII
+    'abjk', // IX
+    'kjk', // X
+    'kjbc', // XI
+    'kjbdc', // XII
+    'kjbddc', // XIII
+    'kjbefg', // XIV
+    'kjefg', // XV
+    'labc', // XVI
+    'labdc', // XVII
+    'labddc', // XVIII
+    'kjbjk', // XIX
+    'kjjk', // XX
+    'mabc', // XXI
+    'mabdc', // XXII
+    'mabddc', // XXIII
 ][options.o24h ? n % 24 : (n + 11) % 12 + 1];
 
 const formatMonth = new Named(4, [
-  'January',   'Jan.',  'Jan', 'I',
-  'February',  'Feb.',  'Feb', 'II',
-  'March',     'Mar.',  'Mar', 'III',
-  'April',     'Apr.',  'Apr', 'IV',
-  'May',       'May',   'May', 'V',
-  'June',      'June',  'Jun', 'VI',
-  'July',      'July',  'Jul', 'VII',
-  'August',    'Aug.',  'Aug', 'VIII', // VIII *is* narrower than Aug, our I is thin.
-  'September', 'Sept.', 'Sep', 'IX',
-  'October',   'Oct.',  'Oct', 'X',
-  'November',  'Nov.',  'Nov', 'XI',
-  'December',  'Dec.',  'Dec', 'XII'
+    'January', 'Jan.', 'Jan', 'I',
+    'February', 'Feb.', 'Feb', 'II',
+    'March', 'Mar.', 'Mar', 'III',
+    'April', 'Apr.', 'Apr', 'IV',
+    'May', 'May', 'May', 'V',
+    'June', 'June', 'Jun', 'VI',
+    'July', 'July', 'Jul', 'VII',
+    'August', 'Aug.', 'Aug', 'VIII', // VIII *is* narrower than Aug, our I is thin.
+    'September', 'Sept.', 'Sep', 'IX',
+    'October', 'Oct.', 'Oct', 'X',
+    'November', 'Nov.', 'Nov', 'XI',
+    'December', 'Dec.', 'Dec', 'XII'
 ]);
 const formatDom = {
-  on: d => new Fixed(d.toString())
+    on: d => new Fixed(d.toString())
 };
 const formatDow = new Named(4, [
-  'Sunday',    'Sun.',   'Sun', 'Su',
-  'Monday',    'Mon.',   'Mon', 'M',
-  'Tuesday',   'Tues.',  'Tue', 'Tu',
-  'Wednesday', 'Weds.',  'Wed', 'W',
-  'Thursday',  'Thurs.', 'Thu', 'Th',
-  'Friday',    'Fri.',   'Fri', 'F',
-  'Saturday',  'Sat.',   'Sat', 'Sa'
+    'Sunday', 'Sun.', 'Sun', 'Su',
+    'Monday', 'Mon.', 'Mon', 'M',
+    'Tuesday', 'Tues.', 'Tue', 'Tu',
+    'Wednesday', 'Weds.', 'Wed', 'W',
+    'Thursday', 'Thurs.', 'Thu', 'Th',
+    'Friday', 'Fri.', 'Fri', 'F',
+    'Saturday', 'Sat.', 'Sat', 'Sa'
 ]);
 
 const hceil = x => Math.ceil(x / 3600000) * 3600000;
@@ -335,30 +370,42 @@ const events = {
     // Items are {time: number, wall: boolean, priority: number,
     //            past: bool, future: bool, precision: number,
     //            colour: colour, dramatic?: bool, event?: any}
-    fixed: [{time: Number.POSITIVE_INFINITY}], // indexed by ms absolute
-    wall: [{time: Number.POSITIVE_INFINITY}], // indexed by nominal ms + TZ ms
-    
+    fixed: [{
+        time: Number.POSITIVE_INFINITY
+    }], // indexed by ms absolute
+    wall: [{
+        time: Number.POSITIVE_INFINITY
+    }], // indexed by nominal ms + TZ ms
+
     clean: function(now, l) {
         let o = now.getTimezoneOffset() * 60000;
-        let tf = now.getTime() + l, tw = tf - o;
+        let tf = now.getTime() + l,
+            tw = tf - o;
         // Discard stale events:
         while (this.wall[0].time <= tw) this.wall.shift();
         while (this.fixed[0].time <= tf) this.fixed.shift();
     },
-    
+
     scan: function(now, from, to, f) {
         result = Infinity;
         let o = now.getTimezoneOffset() * 60000;
         let t = now.getTime() - o;
-        let c, p, i, l = from - o, h = to - o;
-        for (i = 0; (c = this.wall[i]).time < l; i++) ;
-        for (; (c = this.wall[i]).time < h; i++) {
+        let c, p, i, l = from - o,
+            h = to - o;
+        for (i = 0;
+            (c = this.wall[i]).time < l; i++);
+        for (;
+            (c = this.wall[i]).time < h; i++) {
             if ((p = c.time < t) ? c.past : c.future)
                 result = Math.min(result, f(c, new Date(c.time + o), p));
         }
-        l += o; h += o; t += o;
-        for (i = 0; (c = this.fixed[i]).time < l; i++) ;
-        for (; (c = this.fixed[i]).time < h; i++) {
+        l += o;
+        h += o;
+        t += o;
+        for (i = 0;
+            (c = this.fixed[i]).time < l; i++);
+        for (;
+            (c = this.fixed[i]).time < h; i++) {
             if ((p = c.time < t) ? c.past : c.future)
                 result = Math.min(f(c, new Date(c.time), p));
         }
@@ -368,7 +415,8 @@ const events = {
     span: function(now, from, to, width) {
         let o = now.getTimezoneOffset() * 60000;
         let t = now.getTime() - o;
-        let lfence = [], rfence = [];
+        let lfence = [],
+            rfence = [];
         this.scan(now, from, to, (e, d, p) => {
             if (p) {
                 for (let j = 0; j <= e.priority; j++) {
@@ -380,7 +428,7 @@ const events = {
                 }
             }
         });
-        for (let j = 0; ; j += 0.5) {
+        for (let j = 0;; j += 0.5) {
             if ((rfence[Math.ceil(j)] - lfence[Math.floor(j)] || 0) <= width) {
                 return [lfence[Math.floor(j)] || now, rfence[Math.ceil(j)] || now];
             }
@@ -433,7 +481,11 @@ class Sidebar {
         this.doHRM = Sidebar.status(_ => Bangle.isHRMOn(), HRMI);
         this.doGPS = Sidebar.status(_ => Bangle.isGPSOn(), GPSI, Sidebar.gpsColour(options));
     }
-    reset(rate) {this.y = this.initY; this.rate = rate; return this;}
+    reset(rate) {
+        this.y = this.initY;
+        this.rate = rate;
+        return this;
+    }
     print(t) {
         this.y += 4 + t.print(
             this.g.setColor(this.options.barFg).setFontAlign(-1, 1, 1),
@@ -441,8 +493,13 @@ class Sidebar {
         );
         return this;
     }
-    pad(n) {this.y += n; return this;}
-    free() {return this.h - this.y;}
+    pad(n) {
+        this.y += n;
+        return this;
+    }
+    free() {
+        return this.h - this.y;
+    }
     static status(p, i, c) {
         return function() {
             if (p()) {
@@ -461,7 +518,10 @@ class Sidebar {
         const c = Bangle.isCharging();
         const b = E.getBattery();
         if (c || b < 50) {
-            let g = this.g, x = this.x, y = this.y, options = this.options;
+            let g = this.g,
+                x = this.x,
+                y = this.y,
+                options = this.options;
             g.setColor(options.barFg).drawImage(batteryI, x + 4, y + 4);
             g.setColor(b <= 10 ? '#f00' : b <= 30 ? '#ff0' : '#0f0');
             const h = 13 * (100 - b) / 100;
@@ -480,7 +540,9 @@ class Sidebar {
                 compassI,
                 this.x + 4 + imageWidth(compassI) / 2,
                 this.y + 4 + imageHeight(compassI) / 2,
-                a ? {rotate: c.heading / 180 * Math.PI} : undefined
+                a ? {
+                    rotate: c.heading / 180 * Math.PI
+                } : undefined
             );
             this.y += 4 + imageHeight(compassI);
         }
@@ -494,16 +556,20 @@ class Roman {
         this.state = null;
         const options = this.options = new RomanOptions();
         this.events = events.loadFromSystem(this.options);
-        this.timescales  = [1000, [1000, 60000], 60000, 3600000];
+        this.timescales = [1000, [1000, 60000], 60000, 3600000];
         this.sidebar = new Sidebar(g, barX, barY, barW, barH, options);
         this.hours = Roman.hand(g, 3, 0.5, 12, _ => options.hourFg);
         this.minutes = Roman.hand(g, 2, 0.9, 60, _ => options.minuteFg);
         this.seconds = Roman.hand(g, 1, 0.9, 60, _ => options.secondFg);
     }
 
-    reset() {this.state = null;}
+    reset() {
+        this.state = null;
+    }
 
-    doIcons(which) {this.state.iconsOk = null;}
+    doIcons(which) {
+        this.state.iconsOk = null;
+    }
 
     // Watch hands. These could be improved, graphically.
     // If we restricted them to 60 positions, we could feasibly hand-draw them?
@@ -515,17 +581,21 @@ class Roman {
             let v = l * rectH / 2;
             let poly =
                 p <= 2 ? [faceCX + w, faceCY, faceCX - w, faceCY,
-                          faceCX + h * (p - 1), faceCY - v,
-                          faceCX + h * (p - 1) + 1, faceCY - v]
-                : p < 6 ? [faceCX + 1, faceCY + w, faceCX + 1, faceCY - w,
-                           faceCX + h, faceCY + v / 2 * (p - 4),
-                           faceCX + h, faceCY + v / 2 * (p - 4) + 1]
-                : p <= 8 ? [faceCX - w, faceCY + 1, faceCX + w, faceCY + 1,
-                            faceCX - h * (p - 7), faceCY + v,
-                            faceCX - h * (p - 7) - 1, faceCY + v]
-                : [faceCX, faceCY - w, faceCX, faceCY + w,
-                   faceCX - h, faceCY - v / 2 * (p - 10),
-                   faceCX - h, faceCY - v / 2 * (p - 10) - 1];
+                    faceCX + h * (p - 1), faceCY - v,
+                    faceCX + h * (p - 1) + 1, faceCY - v
+                ] :
+                p < 6 ? [faceCX + 1, faceCY + w, faceCX + 1, faceCY - w,
+                    faceCX + h, faceCY + v / 2 * (p - 4),
+                    faceCX + h, faceCY + v / 2 * (p - 4) + 1
+                ] :
+                p <= 8 ? [faceCX - w, faceCY + 1, faceCX + w, faceCY + 1,
+                    faceCX - h * (p - 7), faceCY + v,
+                    faceCX - h * (p - 7) - 1, faceCY + v
+                ] :
+                [faceCX, faceCY - w, faceCX, faceCY + w,
+                    faceCX - h, faceCY - v / 2 * (p - 10),
+                    faceCX - h, faceCY - v / 2 * (p - 10) - 1
+                ];
             g.fillPoly(poly);
         };
     }
@@ -533,13 +603,13 @@ class Roman {
     static pos(p, r) {
         let h = r * rectW / 2;
         let v = r * rectH / 2;
-        p = (p + 1) % 12;  
-        return p <= 2 ? [faceCX + h * (p - 1), faceCY - v]
-            : p < 6 ? [faceCX + h, faceCY + v / 2 * (p - 4)]
-            : p <= 8 ? [faceCX - h * (p - 7), faceCY + v]
-            : [faceCX - h, faceCY - v / 2 * (p - 10)];
+        p = (p + 1) % 12;
+        return p <= 2 ? [faceCX + h * (p - 1), faceCY - v] :
+            p < 6 ? [faceCX + h, faceCY + v / 2 * (p - 4)] :
+            p <= 8 ? [faceCX - h * (p - 7), faceCY + v] :
+            [faceCX - h, faceCY - v / 2 * (p - 10)];
     }
-    
+
     alert(e, date, now, past) {
         const g = this.g;
         g.setColor(e.colour);
@@ -562,7 +632,7 @@ class Roman {
         }
         return Infinity;
     }
-    
+
     render(d, rate) {
         const g = this.g;
         const state = this.state || (g.clear(true), this.state = {});
@@ -591,13 +661,13 @@ class Roman {
                 formatters.push(dow = formatDow.on(d.getDay()));
             }
             // Obnoxiously inefficient iterative method :(
-            let ava = sidebar.free() - 3, use, i = 0, j = 0;
+            let ava = sidebar.free() - 3,
+                use, i = 0,
+                j = 0;
             while ((use = formatters.reduce((l, f) => l + f.width(g) + 4, 0)) > ava &&
-                   j < formatters.length)
-                for (j = 0;
-                     !formatters[i++ % formatters.length].squeeze() &&
-                     j < formatters.length;
-                     j++) ;
+                j < formatters.length)
+                for (j = 0; !formatters[i++ % formatters.length].squeeze() &&
+                    j < formatters.length; j++);
             if (dow) sidebar.print(dow);
             sidebar.pad(ava - use);
             if (month) sidebar.print(month);
@@ -607,7 +677,8 @@ class Roman {
         // Hour labels and (purely aesthetic) box; clear inner face.
         let keyHour = d.getHours() < 12 ? 1 : 13;
         let alertSpan = events.span(d, hceil(d) - 39600000, hfloor(d) + 39600000, 39600000);
-        let l = alertSpan[0].getHours(), h = alertSpan[1].getHours();
+        let l = alertSpan[0].getHours(),
+            h = alertSpan[1].getHours();
         if ((l - keyHour + 24) % 24 >= 12 || (h - keyHour + 24) % 24 >= 12) keyHour = l;
         if (keyHour !== state.keyHour) {
             state.keyHour = keyHour;
@@ -623,7 +694,7 @@ class Roman {
             for (let h = keyHour; h < keyHour + 12; h++) {
                 g.drawString(
                     numeral(h % 24, options),
-                    faceX + layout[h % 12 * 2], 
+                    faceX + layout[h % 12 * 2],
                     faceY + layout[h % 12 * 2 + 1]
                 );
             }
@@ -641,7 +712,7 @@ class Roman {
             (e, t, p) => this.alert(e, t, d, p)
         );
         if (rate > requestedRate) rate = requestedRate;
-        
+
         // Hands
         // Here we are using incremental hands for hours and minutes.
         // If we quantised, we could use hand-crafted bitmaps, though.
@@ -666,11 +737,20 @@ class Clock {
         this.rates = {};
 
         this.options.on('done', () => this.start());
-        
+
         this.listeners = {
-            charging: _ => {face.doIcons('charging'); this.active();},
-            lock: _ => {face.doIcons('locked'); this.active();},
-            faceUp: up => {this.conservative = !up; this.active();},
+            charging: _ => {
+                face.doIcons('charging');
+                this.active();
+            },
+            lock: _ => {
+                face.doIcons('locked');
+                this.active();
+            },
+            faceUp: up => {
+                this.conservative = !up;
+                this.active();
+            },
             twist: _ => this.options.autolight && Bangle.setLCDPower(true),
             drag: e => {
                 if (this.t0) {
@@ -694,8 +774,10 @@ class Clock {
                         this.t0 = null;
                     }
                 } else if (e.b) {
-                    this.t0 = Date.now(); this.e0 = e;
-                    this.xN = this.xX = e.x; this.yN = this.yX = e.y;
+                    this.t0 = Date.now();
+                    this.e0 = e;
+                    this.xN = this.xX = e.x;
+                    this.yN = this.yX = e.y;
                 }
             }
         };
@@ -721,7 +803,7 @@ class Clock {
         this.face.reset(); // Cancel any ongoing background rendering
         return this;
     }
-    
+
     active() {
         const prev = this.rate;
         const now = Date.now();

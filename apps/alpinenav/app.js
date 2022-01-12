@@ -112,12 +112,11 @@ function process_GPS() {
                 log_size += 1;
             }
         }
-    }
-    else {
+    } else {
         g.setColor(position_colour);
         g.fillCircle(120, 120, 3);
     }
-  draw();
+    draw();
 }
 
 function rescale() {
@@ -147,42 +146,49 @@ g.clear();
 process_GPS();
 var poll_GPS = setInterval(process_GPS, 9000);
 
-setWatch(function () {
+setWatch(function() {
     if (!button_lock) {
         waypoints.splice(1);
         process_GPS();
     }
-}, BTN2, { repeat: true, edge: "falling" });
+}, BTN2, {
+    repeat: true,
+    edge: "falling"
+});
 
-setWatch(function () {
+setWatch(function() {
     if (!button_lock) {
         if (!pause_tracker) {
             Bangle.setCompassPower(0);
             Bangle.setGPSPower(0);
             pause_tracker = true;
-        }
-        else {
+        } else {
             Bangle.setCompassPower(1);
             Bangle.setGPSPower(1);
             pause_tracker = false;
         }
     }
-}, BTN3, { repeat: true, edge: "falling" });
+}, BTN3, {
+    repeat: true,
+    edge: "falling"
+});
 
-setWatch(function () {
+setWatch(function() {
     if (button_lock) {
         button_lock = false;
         g.setFontAlign(0, 0);
         g.drawString(" ", 120, 220, true);
-    }
-    else {
+    } else {
         button_lock = true;
         g.setFontAlign(0, 0);
         g.drawString("X", 120, 220, true);
     }
-}, BTN1, { repeat: true, edge: "falling" });
+}, BTN1, {
+    repeat: true,
+    edge: "falling"
+});
 
-Bangle.on('GPS', function (g) {
+Bangle.on('GPS', function(g) {
     if (g.fix) {
         if (waypoints.length == 0) {
             file = require("Storage").open("alpine_log.csv", "w");
@@ -208,8 +214,7 @@ Bangle.on('GPS', function (g) {
             temp.lon = 0;
             process_GPS();
             waypoints.push(temp);
-        }
-        else {
+        } else {
             current_lat = g.lat - origin_lat;
             current_lon = origin_lon - g.lon;
             current_speed = g.speed;
@@ -220,7 +225,7 @@ Bangle.on('GPS', function (g) {
     }
 });
 
-Bangle.on('mag', function (m) {
+Bangle.on('mag', function(m) {
     if (isNaN(m.heading))
         compass_heading = "---";
     else
@@ -231,7 +236,7 @@ Bangle.on('mag', function (m) {
     g.fillRect(140, 30, 190, 55);
     g.setColor(foregound_colour);
     g.setFont("6x8", 2);
-    if(compass_heading<100)
-      compass_heading = " " + compass_heading.toString();
+    if (compass_heading < 100)
+        compass_heading = " " + compass_heading.toString();
     g.drawString(compass_heading, 150, 15, true);
 });

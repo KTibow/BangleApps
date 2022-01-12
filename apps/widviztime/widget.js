@@ -44,7 +44,7 @@
 
     Bangle.on('lock', (locked) => {
         if (!locked) {
-          reveal();
+            reveal();
             setTimeout(function() {
                 hide();
             }, 4000);

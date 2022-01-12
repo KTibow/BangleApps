@@ -74,18 +74,23 @@ function countDown() {
         clearInterval(interval);
         g.drawString("Finished", g.getWidth() / 2, g.getHeight() / 2);
         Bangle.buzz(500, 1);
-    }
-    else
+    } else
         g.drawString(fmtMSS(counter), g.getWidth() / 2, g.getHeight() / 2);
 }
 
 update_timer();
 
-setWatch(btn1Pressed, BTN1, { repeat: true });
-setWatch(btn2Pressed, BTN2, { repeat: true });
-setWatch(btn3Pressed, BTN3, { repeat: true });
+setWatch(btn1Pressed, BTN1, {
+    repeat: true
+});
+setWatch(btn2Pressed, BTN2, {
+    repeat: true
+});
+setWatch(btn3Pressed, BTN3, {
+    repeat: true
+});
 
-Bangle.on('HRM', function (hrm) {
+Bangle.on('HRM', function(hrm) {
     for (let i = 0; i < hrm.raw.length; i++) {
         value = hrm.raw[i];
         if (value < -2)

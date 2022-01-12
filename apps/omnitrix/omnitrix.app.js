@@ -6,7 +6,9 @@ g.setColor(0.7, 0.7, 0.7).fillPoly([240, 0, 170, 0, 220, 120, 170, 240, 240, 240
 g.setColor(0, 1, 0).fillPoly([90, 0, 38, 120, 90, 240, 150, 240, 202, 120, 150, 0]);
 
 var avatar = {
-    width: 109, height: 140, bpp: 1,
+    width: 109,
+    height: 140,
+    bpp: 1,
     transparent: 0,
 };
 
@@ -24,12 +26,12 @@ const avatar_shadow = [
 ];
 
 var blinkFlag = 0;
+
 function blink() {
     if (blinkFlag) {
         g.clear();
         blinkFlag ^= 1;
-    }
-    else {
+    } else {
         g.setColor(0, 1, 0).fillPoly([0, 0, 0, 240, 240, 240, 240, 0]);
         blinkFlag ^= 1;
     }
@@ -37,8 +39,12 @@ function blink() {
 
 function morf() {
     a = setInterval(blink, 10);
-    setTimeout(() => { clearTimeout(a); }, 500);
-    setTimeout(() => { load(); }, 1500);
+    setTimeout(() => {
+        clearTimeout(a);
+    }, 500);
+    setTimeout(() => {
+        load();
+    }, 1500);
 }
 
 var i = 0;
@@ -72,9 +78,13 @@ function init() {
         else next();
     });
 
-    setWatch(next, BTN1, { repeat: true });
+    setWatch(next, BTN1, {
+        repeat: true
+    });
     setWatch(morf, BTN2);
-    setWatch(prev, BTN3, { repeat: true });
+    setWatch(prev, BTN3, {
+        repeat: true
+    });
 
 }
 

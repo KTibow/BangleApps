@@ -29,13 +29,31 @@ function main() {
 }
 
 function registerInputHandlers() {
-    setWatch(onPrimaryButtonPressed, BTN1, { repeat: true });
-    setWatch(onResetButtonPressed, BTN2, { repeat: true });
-    setWatch(onExitButtonPressed, BTN3, { repeat: true });
-    setWatch(onDecreaseRemainingSecondsPressed, BTN4, { repeat: true, edge: "rising" });
-    setWatch(onIncreaseRemainingSecondsPressed, BTN5, { repeat: true, edge: "rising" });
-    setWatch(onDecreaseRemainingSecondsReleased, BTN4, { repeat: true, edge: "falling" });
-    setWatch(onIncreaseRemainingSecondsReleased, BTN5, { repeat: true, edge: "falling" });
+    setWatch(onPrimaryButtonPressed, BTN1, {
+        repeat: true
+    });
+    setWatch(onResetButtonPressed, BTN2, {
+        repeat: true
+    });
+    setWatch(onExitButtonPressed, BTN3, {
+        repeat: true
+    });
+    setWatch(onDecreaseRemainingSecondsPressed, BTN4, {
+        repeat: true,
+        edge: "rising"
+    });
+    setWatch(onIncreaseRemainingSecondsPressed, BTN5, {
+        repeat: true,
+        edge: "rising"
+    });
+    setWatch(onDecreaseRemainingSecondsReleased, BTN4, {
+        repeat: true,
+        edge: "falling"
+    });
+    setWatch(onIncreaseRemainingSecondsReleased, BTN5, {
+        repeat: true,
+        edge: "falling"
+    });
 }
 
 function draw() {
@@ -202,7 +220,7 @@ function onDecreaseRemainingSecondsPressed() {
 
     decreasingInterval = setInterval(() => {
         remainingSeconds -= 60;
-        
+
         if (remainingSeconds < 0) {
             remainingSeconds = 0;
         }

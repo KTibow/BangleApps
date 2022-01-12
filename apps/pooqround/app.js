@@ -26,7 +26,7 @@
 // This only works for Bangle 2.
 
 const isString = x => typeof x === 'string',
-      imageWidth = i => isString(i) ? i.charCodeAt(0) : i.width;
+    imageWidth = i => isString(i) ? i.charCodeAt(0) : i.width;
 
 //////////////////////////////////////////////////////////////////////////////
 /*                           System integration                             */
@@ -58,7 +58,7 @@ class Options {
             delay
         );
     }
-    
+
     bless(k) {
         Object.defineProperty(this, k, {
             get: () => this.backing[k],
@@ -73,7 +73,8 @@ class Options {
     showMenu(m) {
         if (m instanceof Function) m = m();
         if (m) {
-            for (const k in m) if ('init' in m[k]) m[k].value = m[k].init();
+            for (const k in m)
+                if ('init' in m[k]) m[k].value = m[k].init();
             m[''].selected = -1; // Workaround for self-selection bug.
             Bangle.on('drag', this.reactivator);
             this.active();
@@ -90,9 +91,11 @@ class Options {
         if (this.bored) clearTimeout(this.bored);
         this.bored = setTimeout(_ => this.showMenu(), 15000);
     }
-    
+
     reset() {
-        this.backing = {__proto__: this.constructor.defaults};
+        this.backing = {
+            __proto__: this.constructor.defaults
+        };
         this.writeBack(0);
     }
 }
@@ -101,17 +104,21 @@ class RoundOptions extends Options {
     constructor() {
         super();
         this.menu = () => ({
-            '': {title: '* face options *'},
+            '': {
+                title: '* face options *'
+            },
             '< Back': _ => this.showMenu(),
             Ticks: {
                 init: _ => this.resolution,
-                min: 0, max: 3,
+                min: 0,
+                max: 3,
                 onchange: x => this.resolution = x,
                 format: x => ['seconds', 'seconds (up)', 'minutes', 'hours'][x]
             },
             Calendar: {
                 init: _ => this.calendric,
-                min: 0, max: 5,
+                min: 0,
+                max: 5,
                 onchange: x => this.calendric = x,
                 format: x => ['none', 'day', 'date', 'both', 'month', 'full'][x],
             },
@@ -119,11 +126,16 @@ class RoundOptions extends Options {
                 init: _ => this.autorotate,
                 onchange: x => this.autorotate = x
             },
-            Defaults: _ => {this.reset(); this.interact();}
+            Defaults: _ => {
+                this.reset();
+                this.interact();
+            }
         });
     }
-  
-    interact() {this.showMenu(this.menu);}
+
+    interact() {
+        this.showMenu(this.menu);
+    }
 }
 
 RoundOptions.id = 'pooqround';
@@ -142,119 +154,126 @@ RoundOptions.defaults = {
 const heatshrink = require('heatshrink');
 const dec = x => E.toString(heatshrink.decompress(atob(x)));
 const y10F = [
-  dec(
-    'g///EAh////AA4IIBgPwgE+gAOBg/AngXB+EPAYM8gfggEfgF8D4OAj4dB8EDAYI' +
-    'fBBAISBAAMOAYUB4AECnEAkAuBgEQBAPgIYX8IYX/wYDCEwIiMMgUcgECCIZlBAY' +
-    'N4CoRUBIoMP8AZBge8MoMB8+B8B4B+E/gf4jw/B/kD4ADBEQMPSYXgoAfBnEwgeA' +
-    'hw7BvEDx4PBgHn4EB8E7LQM8h/eJ4MDBgIpB+H+g/wnE/WwMMG4ReBn4zBJYKcDH' +
-    '4IABv+AXoSGCv0eAYP/FIMB/4iBTAIJBGIJ6B/yQCb4RDBEQTlBHoIOBn51BwC+B' +
-    'MoWDAwKYBRgKYBCYM8hwKBMoODegPA8F+gZlBewP4hz/BE4QrBGgM/LAV//4+BAY' +
-    'JyBPwM/KQMeGQMPFwM8H4UHBIPwGQNwZgPwnhxBGQJxBGQK5BGQKWDOwUACALlBI' +
-    'YRrB8H///gnI+COwJGBgaUBWgqVDhgDCZYIADFIKAB84eBIwImBXwP8MoPwviYCI' +
-    'AKYBIAKYB4JlCPwJlBS4IdC/IeBFwJlCh6XCY4Q2BLYMIDQN8PIPwg+B4B2B8FwG' +
-    'oN4TgPAnk+MoM+v6tBGQOAZQJ3CQwUAA'
-  ), 48, dec('hgAI'), 34
-];const y1F = [
-  dec(
-    'g//AAPggE/AoX8gF/AoX+gF8CoU+gHwAoUPgAZBEIQFGCIodFFIo1FIIoADnEAgQ' +
-    'FCjkAgwFCh0Ahg1EBoIABgeAFIf/4A1DFQIED/5MDGAYADEQYwDRwgMDhAYEH4Nw' +
-    'AoUeAok/QYl/wAFD/fAHgUD+PgvAFBj/g+E/4EBLAN4j5SCgE8h4EB/AwCAoOAVA' +
-    'PgggeBFoPgQgRLB8E8I4fgXQS/B8KwBMgOA8YFCgfA9+eAoMB4H/j/ACIPA/kPCQ' +
-    'JIB/DMDMoJSBboQVBKoIDBSYZOBAAQlCAATpEg/4Xwc/QIZyBwBcBgf//gxBa4Qb' +
-    'Ba4LZDv/4LwRfCGAcBGAYABC4IYCD4QjCR4IFDR4R6BR4QFDMAIFDF4IFBC4IIBA' +
-    'oLEBBYQlBI4IFDR4ZrBR4QFBTgJMDHoaaCdQSmCC4SyCYYJJB+CHBj+Aj8ASYJNB' +
-    'BINwIIOAM4ILDAYN/wABBB4JBBI45vCRYgADApEHL4pHB8AECFIPhAYLCCAggFBA' +
-    'gaNCYwgFEbAkAwAFEc4SPCj/+LIKPBv6PEAoRnBFIMDFYLXCKoTLDa4YRDBYIdDh' +
-    '4FDMoQ1DK4ZBBMQIDBJYbWBFIMEIIQpBgxxBgZRBh8AAYN8AoQVBjgbBAoTZBvwR' +
-    'CvEBF4IdB+E/OIp9CJgZBCQQUAA='
-  ), 48, dec('hgAI'), 48
-];const y10sF = [
-  dec(
-    'j/+gP//0PgE8mEAmHwgfBBQINB8AWDgcAoEGAYMMj///H///wBwNgAQPAAQMgg8B' +
-    'wE+hkA9kwg8Y+F4mP/4Fg/AVD4EBgcCg0MnEMmfgmH94PD4f+hkHIIgbBg44B/ng' +
-    'h/H/H8n4IBg4QBhwUC//Bgf+FYMwAIPAjHDwPjg//gEPLgUAOYMAn/+DAM8j1gmH' +
-    'h8fDBAMIHIRwDQAJtBg/8mH+gHPwEDCII/DAAM+n8B/v+h0+jkwuEw8fhV4UD8Yr' +
-    'DjxDB/0Ch88CoLEB+fPwK0BKIOACoQA='
-  ), 48, dec('hAAI'), 22
-];const y1sF = [
-  dec(
-    'j///0A/4ABgfAgEPgwNBg0MAYMMjwDBvAWB//gh4DBEAUDgEgAYQeBgcDEwQSCCY' +
-    'oDCiACBwFgGoOBwEAnODBwPhw/Ag+Bw/gv0Bwf/+EBwAkBgPgCYOA4EQgIeB8ASB' +
-    'g/AgcGnuAg0N8fAnkfIwPwnEB/40BgE8IYX8AYN/7hDB/kcg4xBv4TBC4kcLgUcv' +
-    '4ZBIgJIBHoNgHoJ8BgOGKQMHhijBnkYHoQlEv4DBRYWAv+eOgPwmEDg4mBXIXwni' +
-    'SBDwRICSwIABWIM/HoM//57BEoMGv7dC/DrCLoU4eYfAv4kB8f/wPB98HLgP4TQM' +
-    'B+EGh0PvE8QwN/+EP8E/LAK6CBIMAwPg+EDDwNgh8GJQP8h8Hz/gN4P+gBMBJIMA'
-  ), 48, dec('hEHhAAGA'), 31
-];const d10F = [
-  dec(
-    'AAXgjEAjkHgEDwPAgFwvEAh0f///44CB/ICB/4aDAQMcAQMDwAhBuAhBj0B4EH4E' +
-    'wgP4h0Av4JBj3gnEHzkHgPjwF4/Fwh/+CQP/HwMD4E4gJLCvAuBj0ADgOGg+B8fA' +
-    'uF5FoMeDQPH/l4vP8g/+vg4BzkAg/gA='
-  ), 49, dec('hcMhYA=='), 27
-];const d1F = [
-  dec(
-    'AB1/+AECj///4FCAgP/8EAgf/4F//EAg4CBgf8gEPwAUBn0AhwaCAYMeAoUPgEcA' +
-    'oUHAowRFDoopFGopBFJopZGBgIKCAB5BBgA1CAoMBAokDCIgTCAYRTDAoI6CHgU/' +
-    'Aol/Aog1GAqgAIhgCBn4CBvjZCLIKMBPIJZBcIMB+4lBMoMD84rDg/HL4cPw4FDj' +
-    '5rEnwFEvgFE/AFBaYMB+CJCwED8AFC8EP4CbC/F/wCnC//+H4bbCAoQWBO594EAI' +
-    'TBgBrCAQTtBPQUD4EQQwRHBuEAjwuBCQRdBjxOBLoU8j47DvF/Aofz/IFCgPv4IF' +
-    'Cgf/EYUPg43BFIUPIYIBBjwnCH4N8ZgT9B/jPCj//+AUBE4P/MoQANnwFETgIACg' +
-    'YFEh/uAod/xwQEagQ6B/AFDHIIFCg4hBAoV/JIIFBaAJaDFQgFKFIYFZABN/JAM4' +
-    'KYSvBjhICAoLjBd4IPBEgLvBvDjCAIL1BboITBAoc8AogVBAoZ2BDoTnCFIQuBDI' +
-    'UeFwIlCnguBGIV4BAIhB4PwCgJJB//gEwJbCwDvCM4LuPC4TjD/4cE//4Fwh/BcY' +
-    'K9BIAX/96DCegIJBQYXwTIJxBn+AAoarBAoUBFYIFCgZ9BDoR3CE4LSDE4I1CCoJ' +
-    'BDJARNCZoRZDHAQDBDQYABSIQACSIYABDQjACFobABHIaMDIoQADFwSFCFwIEBAo' +
-    'N4g4EBAoPwUAIABgPnUonfQgIuC/41Dh5tDEwJGEn46EvhdJACCJDv6VDAYPDJIS' +
-    'lB86tCg+B+7HDDALHEnzHEPILpBcILvDAooRFDoopFGopBFJopZFMowAFZgs/VAI' +
-    '7BgAbCAoMB/InBAoMD8CkBAoWALIIgBeoJ7DLYYHDPYZbCNoQLDEoYNBGIQjBgI9' +
-    'BF4Q4BHYcPJ4JHC/5ZC///fwc/OwkPCAQA=='
-  ), 48, dec('ikPigAGA'), 48
-];const dowF = [
-  dec(
-    'gf8AYNwgEP/4FBvEAj//wEAnkAn0H4EAjwNBgPgAoQZBAoMOgHwAongCIQFDDoIF' +
-    'FDoPggYFBF4IFBGoI7B+AFCE4NwCIIlCuAdBIYU4gPwn5VBjEA//+M4d//AFDh4W' +
-    'BB4IgBAAX/B4n/PoQACJQIcEAokHAqAXFEYhLF/6tCApIADn4ED/zFBAAX8gaGBA' +
-    'AZZFQIR2GdQQYRBYgXFEYoWRKQQWCLoRrEHgoAIg7LEj7LEn4bEvk+AodwhwFD+C' +
-    '5E8DFEAqIdFFIo1FIIpNFLIoEEAtShCVwQEDVwIFDKAJBvAAv/Bgn/RIjzGjwFEW' +
-    'YicBAqAXFEYh6CRIgFKTYzjEAwt/AxxvDHAkf//AAgMDPIgVBGAnwAoYRBIYk/S4' +
-    'kDMIgeBFIQEBBYRTBCAZ3FAggAMg4zEj7LEn7LEv++AodzxwFD+ePAofjw4FVDoo' +
-    'pFv+eIImcJomYLImAAoZeEAtTyBAAQFEVYIFDSQIvhAojaCFwgABh4YEngFEuAqJ' +
-    'gPAAocDApYuEgP/fgl/+B9HAAv+Aon8HQMOIAkeAokcAohaDAoM4Aol4AohmDAoJ' +
-    'BDAoJsDAo7vhABZuBQYoFDv4FEYgpjDZRgFYGYYpHGoqxDAAMEAokDdwQbBh//DY' +
-    'cf/+ALoU+g/AbIV4gLfDDILrDIIIFD8ARCAoYdBAoodB8EDAoIvBAoI1BHYPwAoQ' +
-    'nBuARBEoVwDoJDCnEB+E/KoMYXYP+Wgd//DGDh4WBgEZMoQABnPnAodz4YQCgHjw' +
-    'IFP+YXE/IjEeoIFDn//CIanBAoY='
-  ), 48, dec('kElkMljsljw='), 48
-];const mF = [
-  dec(
-    '/AEDvEH4AFCgPAnwMDh0B+AGD8EPwAFCg8AvgMDuED8AMEj4MDDwI0DhwOB/4ACC' +
-    '4M/AoX8HgIMDCoI0EAAI0EgA0DnACBGgXHL4Q0Bjn+IYXAgfOCwRpBnPHEQmcuAG' +
-    'DBg3csAGDj4mCAAX/QwhkBWSEDDIp3BAoZ3BBgkeDIp9FOYQMJDIomGh5NFv/wVo' +
-    'YABYIgZBYIYABgKWBHAcPHAKsCgF4VoJDD4AVCIYbtBfAnwgYDBg+Ag6bBEQM8EQ' +
-    'KoCDwMDwP9EQI0Bnk9540DZ4Y/CZ4Y0BbggwBDIY0BgP8JIbcB7yBE/pjDEAOQbZ' +
-    '8fRwT7DAAL7E/4zEjh9EKwLCEnB9BBhIZFgPzEwkP/jcFe4iYBdYLcEAwr5CBgYj' +
-    'Hh65BAxU/AwjNCIhEH/BkEGYqTCRwYMFACE4AonHZ4kcIQkB5yOEnPHIYmcuAMK7' +
-    'lgNJJQBJojkBKSB3BDIk/DIkBBgseDIpmEOYwMGDIsAOYkAgxBGGYjzBIwoMDXYI' +
-    'tCaAQFCCwP8jiECCwMBBhAZGEwwzHIAxNGTY5UKTYIMEjkORwomEnEHBhQZFgPzT' +
-    'gkP/hBEv+ACYivFe3adBAAfwAwoNFGYJkGh/+Axc/AwkfAoggFg/4ZgwzDj4GDiD' +
-    '7CAAPxRQswNIp1FBgnH4TPE/0gC4fO8wMDnPHsAMDzl2BhXcsxpFBgZQB+xqE/4z' +
-    'DAAMCLRJ3BwaWFBgvjDAkfuAGEu4MFfoYZBW4v/eIn/8CzEvEHBocB4E+BgcOgIn' +
-    'DgHgh+ANAcAvgMDuED8AMEj4MDDwI0DhyECAAQXBn4FCf4MBBgYVBGggABGghrBD' +
-    'gQqCGgJ0BL4QJBTYJDCBIMBJYRpCJoIAEUIoMGPIgmDVAYMFKgQAODJh3BBgkeDI' +
-    'p9FnAMLDIomGh5NFv/we372/exgZDe0BpCDIbBBDIl/EwonBAogMEHIIZDD4KUBH' +
-    'wYFDCAPBOwQWCjgMHDI4mGGYwcC+JNFiDAFOIswEAmDDAn8kAME8QYEjwMDAAN2Y' +
-    'QtgTonmYQoMDEwP2YQoZEgECJoozEv5NEj/+LQaYB8YMDn0fM4mAu4MDnEHuAMD8' +
-    'KVEIAPgEwn+WAuAK4LABj7PDwEAvhJBCwUB8EP8EffQMOgH4C4ITB+EHAYN4RwMA' +
-    'ng/BE4PwDYITCnw2BF4YKBF4LwDgInBKYLoFFQIAJgZCBAAZdCTYjOE/p6DgE954' +
-    'fEziUDgE544ME7gtEj/OExUP7hAEnJTKAAxuBFoa4BOokfBgkB4AzEniZBewhaEB' +
-    'goZGj61BRxMHWQIADjwJCIgLICJQQABDIL9BAAKoBg4iCgYTBKoZABhwnDJoJCDg' +
-    '4OCAAQXBewIABJoI5DHQSLBAAP8B4I6CcQgANgbVEOg0fEAkB8KOEnBNBVBIMMjh' +
-    'yEWo0MhhSPgJoBwCZDNwp2BJor2LJpjAFAAImEJwI2BAAfwj4GEXYgMBAwKlFv4G' +
-    'GFQpYFXQx0BAwx6DLQIGCIIgeCIAkHBgoAPn4FEh/8HQpPEn0fVCPhO4kfZ4hvGg' +
-    'YSEgRGFngFEgf4AwkfSws/EwgtBBhQZFEw0cOwIHEuF4AocHWIL2LBgsHGoaBBn7' +
-    'SD+DZEnzIFI4MPAoS1CAwbVRTYqoGWosB/p7EnvPD4mcbgk544ME7jcF5wmKh/cI' +
-    'Ak5LUvhGYk4VAIfDwBaEBgsB4AZEjkOGYnA4AA=='
-  ), 49, dec('k0jk0kksmj0lk8lAwIA='), 52
+    dec(
+        'g///EAh////AA4IIBgPwgE+gAOBg/AngXB+EPAYM8gfggEfgF8D4OAj4dB8EDAYI' +
+        'fBBAISBAAMOAYUB4AECnEAkAuBgEQBAPgIYX8IYX/wYDCEwIiMMgUcgECCIZlBAY' +
+        'N4CoRUBIoMP8AZBge8MoMB8+B8B4B+E/gf4jw/B/kD4ADBEQMPSYXgoAfBnEwgeA' +
+        'hw7BvEDx4PBgHn4EB8E7LQM8h/eJ4MDBgIpB+H+g/wnE/WwMMG4ReBn4zBJYKcDH' +
+        '4IABv+AXoSGCv0eAYP/FIMB/4iBTAIJBGIJ6B/yQCb4RDBEQTlBHoIOBn51BwC+B' +
+        'MoWDAwKYBRgKYBCYM8hwKBMoODegPA8F+gZlBewP4hz/BE4QrBGgM/LAV//4+BAY' +
+        'JyBPwM/KQMeGQMPFwM8H4UHBIPwGQNwZgPwnhxBGQJxBGQK5BGQKWDOwUACALlBI' +
+        'YRrB8H///gnI+COwJGBgaUBWgqVDhgDCZYIADFIKAB84eBIwImBXwP8MoPwviYCI' +
+        'AKYBIAKYB4JlCPwJlBS4IdC/IeBFwJlCh6XCY4Q2BLYMIDQN8PIPwg+B4B2B8FwG' +
+        'oN4TgPAnk+MoM+v6tBGQOAZQJ3CQwUAA'
+    ), 48, dec('hgAI'), 34
+];
+const y1F = [
+    dec(
+        'g//AAPggE/AoX8gF/AoX+gF8CoU+gHwAoUPgAZBEIQFGCIodFFIo1FIIoADnEAgQ' +
+        'FCjkAgwFCh0Ahg1EBoIABgeAFIf/4A1DFQIED/5MDGAYADEQYwDRwgMDhAYEH4Nw' +
+        'AoUeAok/QYl/wAFD/fAHgUD+PgvAFBj/g+E/4EBLAN4j5SCgE8h4EB/AwCAoOAVA' +
+        'PgggeBFoPgQgRLB8E8I4fgXQS/B8KwBMgOA8YFCgfA9+eAoMB4H/j/ACIPA/kPCQ' +
+        'JIB/DMDMoJSBboQVBKoIDBSYZOBAAQlCAATpEg/4Xwc/QIZyBwBcBgf//gxBa4Qb' +
+        'Ba4LZDv/4LwRfCGAcBGAYABC4IYCD4QjCR4IFDR4R6BR4QFDMAIFDF4IFBC4IIBA' +
+        'oLEBBYQlBI4IFDR4ZrBR4QFBTgJMDHoaaCdQSmCC4SyCYYJJB+CHBj+Aj8ASYJNB' +
+        'BINwIIOAM4ILDAYN/wABBB4JBBI45vCRYgADApEHL4pHB8AECFIPhAYLCCAggFBA' +
+        'gaNCYwgFEbAkAwAFEc4SPCj/+LIKPBv6PEAoRnBFIMDFYLXCKoTLDa4YRDBYIdDh' +
+        '4FDMoQ1DK4ZBBMQIDBJYbWBFIMEIIQpBgxxBgZRBh8AAYN8AoQVBjgbBAoTZBvwR' +
+        'CvEBF4IdB+E/OIp9CJgZBCQQUAA='
+    ), 48, dec('hgAI'), 48
+];
+const y10sF = [
+    dec(
+        'j/+gP//0PgE8mEAmHwgfBBQINB8AWDgcAoEGAYMMj///H///wBwNgAQPAAQMgg8B' +
+        'wE+hkA9kwg8Y+F4mP/4Fg/AVD4EBgcCg0MnEMmfgmH94PD4f+hkHIIgbBg44B/ng' +
+        'h/H/H8n4IBg4QBhwUC//Bgf+FYMwAIPAjHDwPjg//gEPLgUAOYMAn/+DAM8j1gmH' +
+        'h8fDBAMIHIRwDQAJtBg/8mH+gHPwEDCII/DAAM+n8B/v+h0+jkwuEw8fhV4UD8Yr' +
+        'DjxDB/0Ch88CoLEB+fPwK0BKIOACoQA='
+    ), 48, dec('hAAI'), 22
+];
+const y1sF = [
+    dec(
+        'j///0A/4ABgfAgEPgwNBg0MAYMMjwDBvAWB//gh4DBEAUDgEgAYQeBgcDEwQSCCY' +
+        'oDCiACBwFgGoOBwEAnODBwPhw/Ag+Bw/gv0Bwf/+EBwAkBgPgCYOA4EQgIeB8ASB' +
+        'g/AgcGnuAg0N8fAnkfIwPwnEB/40BgE8IYX8AYN/7hDB/kcg4xBv4TBC4kcLgUcv' +
+        '4ZBIgJIBHoNgHoJ8BgOGKQMHhijBnkYHoQlEv4DBRYWAv+eOgPwmEDg4mBXIXwni' +
+        'SBDwRICSwIABWIM/HoM//57BEoMGv7dC/DrCLoU4eYfAv4kB8f/wPB98HLgP4TQM' +
+        'B+EGh0PvE8QwN/+EP8E/LAK6CBIMAwPg+EDDwNgh8GJQP8h8Hz/gN4P+gBMBJIMA'
+    ), 48, dec('hEHhAAGA'), 31
+];
+const d10F = [
+    dec(
+        'AAXgjEAjkHgEDwPAgFwvEAh0f///44CB/ICB/4aDAQMcAQMDwAhBuAhBj0B4EH4E' +
+        'wgP4h0Av4JBj3gnEHzkHgPjwF4/Fwh/+CQP/HwMD4E4gJLCvAuBj0ADgOGg+B8fA' +
+        'uF5FoMeDQPH/l4vP8g/+vg4BzkAg/gA='
+    ), 49, dec('hcMhYA=='), 27
+];
+const d1F = [
+    dec(
+        'AB1/+AECj///4FCAgP/8EAgf/4F//EAg4CBgf8gEPwAUBn0AhwaCAYMeAoUPgEcA' +
+        'oUHAowRFDoopFGopBFJopZGBgIKCAB5BBgA1CAoMBAokDCIgTCAYRTDAoI6CHgU/' +
+        'Aol/Aog1GAqgAIhgCBn4CBvjZCLIKMBPIJZBcIMB+4lBMoMD84rDg/HL4cPw4FDj' +
+        '5rEnwFEvgFE/AFBaYMB+CJCwED8AFC8EP4CbC/F/wCnC//+H4bbCAoQWBO594EAI' +
+        'TBgBrCAQTtBPQUD4EQQwRHBuEAjwuBCQRdBjxOBLoU8j47DvF/Aofz/IFCgPv4IF' +
+        'Cgf/EYUPg43BFIUPIYIBBjwnCH4N8ZgT9B/jPCj//+AUBE4P/MoQANnwFETgIACg' +
+        'YFEh/uAod/xwQEagQ6B/AFDHIIFCg4hBAoV/JIIFBaAJaDFQgFKFIYFZABN/JAM4' +
+        'KYSvBjhICAoLjBd4IPBEgLvBvDjCAIL1BboITBAoc8AogVBAoZ2BDoTnCFIQuBDI' +
+        'UeFwIlCnguBGIV4BAIhB4PwCgJJB//gEwJbCwDvCM4LuPC4TjD/4cE//4Fwh/BcY' +
+        'K9BIAX/96DCegIJBQYXwTIJxBn+AAoarBAoUBFYIFCgZ9BDoR3CE4LSDE4I1CCoJ' +
+        'BDJARNCZoRZDHAQDBDQYABSIQACSIYABDQjACFobABHIaMDIoQADFwSFCFwIEBAo' +
+        'N4g4EBAoPwUAIABgPnUonfQgIuC/41Dh5tDEwJGEn46EvhdJACCJDv6VDAYPDJIS' +
+        'lB86tCg+B+7HDDALHEnzHEPILpBcILvDAooRFDoopFGopBFJopZFMowAFZgs/VAI' +
+        '7BgAbCAoMB/InBAoMD8CkBAoWALIIgBeoJ7DLYYHDPYZbCNoQLDEoYNBGIQjBgI9' +
+        'BF4Q4BHYcPJ4JHC/5ZC///fwc/OwkPCAQA=='
+    ), 48, dec('ikPigAGA'), 48
+];
+const dowF = [
+    dec(
+        'gf8AYNwgEP/4FBvEAj//wEAnkAn0H4EAjwNBgPgAoQZBAoMOgHwAongCIQFDDoIF' +
+        'FDoPggYFBF4IFBGoI7B+AFCE4NwCIIlCuAdBIYU4gPwn5VBjEA//+M4d//AFDh4W' +
+        'BB4IgBAAX/B4n/PoQACJQIcEAokHAqAXFEYhLF/6tCApIADn4ED/zFBAAX8gaGBA' +
+        'AZZFQIR2GdQQYRBYgXFEYoWRKQQWCLoRrEHgoAIg7LEj7LEn4bEvk+AodwhwFD+C' +
+        '5E8DFEAqIdFFIo1FIIpNFLIoEEAtShCVwQEDVwIFDKAJBvAAv/Bgn/RIjzGjwFEW' +
+        'YicBAqAXFEYh6CRIgFKTYzjEAwt/AxxvDHAkf//AAgMDPIgVBGAnwAoYRBIYk/S4' +
+        'kDMIgeBFIQEBBYRTBCAZ3FAggAMg4zEj7LEn7LEv++AodzxwFD+ePAofjw4FVDoo' +
+        'pFv+eIImcJomYLImAAoZeEAtTyBAAQFEVYIFDSQIvhAojaCFwgABh4YEngFEuAqJ' +
+        'gPAAocDApYuEgP/fgl/+B9HAAv+Aon8HQMOIAkeAokcAohaDAoM4Aol4AohmDAoJ' +
+        'BDAoJsDAo7vhABZuBQYoFDv4FEYgpjDZRgFYGYYpHGoqxDAAMEAokDdwQbBh//DY' +
+        'cf/+ALoU+g/AbIV4gLfDDILrDIIIFD8ARCAoYdBAoodB8EDAoIvBAoI1BHYPwAoQ' +
+        'nBuARBEoVwDoJDCnEB+E/KoMYXYP+Wgd//DGDh4WBgEZMoQABnPnAodz4YQCgHjw' +
+        'IFP+YXE/IjEeoIFDn//CIanBAoY='
+    ), 48, dec('kElkMljsljw='), 48
+];
+const mF = [
+    dec(
+        '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' +
+        'Ak5LUvhGYk4VAIfDwBaEBgsB4AZEjkOGYnA4AA=='
+    ), 49, dec('k0jk0kksmj0lk8lAwIA='), 52
 ];
 const lockI = dec('hURwMAj0P485w1h3/4g15wFgjPmgOAs+Yg0B//AA');
 const lockSI = dec('hMNwMAjkfjHMt/8g1zgOc4FnmEf/AA==');
@@ -268,7 +287,7 @@ const y100sI = dec('hcKwMAsOWvHZ+c2s1s4uYmcD4EwA');
 //////////////////////////////////////////////////////////////////////////////
 /*                                 Status                                   */
 
-const status = (p, i) => function (g, x, y, rl) { // Nested arrows are currently broken!
+const status = (p, i) => function(g, x, y, rl) { // Nested arrows are currently broken!
     if (!p()) return x;
     if (rl) x -= imageWidth(i);
     g.setColor(g.theme.fg).drawImage(i, x, y);
@@ -297,15 +316,25 @@ const doHRM = status(_ => Bangle.isHRMOn(), HRMI); // Might show Bangle.getHRM()
 class Round {
     constructor(g) {
         this.g = g;
-        this.b = Graphics.createArrayBuffer(g.getWidth(), g.getHeight(), 1, {msb: true});
+        this.b = Graphics.createArrayBuffer(g.getWidth(), g.getHeight(), 1, {
+            msb: true
+        });
         this.bI = {
-            width: this.b.getWidth(), height: this.b.getHeight(), bpp: this.b.getBPP(),
-            buffer: this.b.buffer, transparent: 0
+            width: this.b.getWidth(),
+            height: this.b.getHeight(),
+            bpp: this.b.getBPP(),
+            buffer: this.b.buffer,
+            transparent: 0
         };
-        this.c = Graphics.createArrayBuffer(g.getWidth(), g.getHeight(), 1, {msb: true});
+        this.c = Graphics.createArrayBuffer(g.getWidth(), g.getHeight(), 1, {
+            msb: true
+        });
         this.cI = {
-            width: this.c.getWidth(), height: this.c.getHeight(), bpp: this.c.getBPP(),
-            buffer: this.c.buffer, transparent: 0
+            width: this.c.getWidth(),
+            height: this.c.getHeight(),
+            bpp: this.c.getBPP(),
+            buffer: this.c.buffer,
+            transparent: 0
         };
         this.options = new RoundOptions();
         this.timescales = [1000, [1000, 60000], 60000, 900000];
@@ -322,19 +351,27 @@ class Round {
         this.r = this.xc - this.minR;
     }
 
-    reset(clear) {this.state = {}; clear == null || this.g.clear(true).setRotation(clear);}
-
-    doIcons(which) {
-      this.state[which] = null;
+    reset(clear) {
+        this.state = {};
+        clear == null || this.g.clear(true).setRotation(clear);
     }
 
-    enhanceUntil(t) {this.enhance = t;}
+    doIcons(which) {
+        this.state[which] = null;
+    }
+
+    enhanceUntil(t) {
+        this.enhance = t;
+    }
 
     pie(f, a0, a1, invert) {
         if (!invert) return this.pie(f, a1, a0 + 1, true);
-        const t0 = Math.tan(a0 * 2 * Math.PI), t1 = Math.tan(a1 * 2 * Math.PI);
-        let i0 = Math.floor(a0 * 4 + 0.5), i1 = Math.floor(a1 * 4 + 0.5);
-        const x = f.getWidth() / 2, y = f.getHeight() / 2;
+        const t0 = Math.tan(a0 * 2 * Math.PI),
+            t1 = Math.tan(a1 * 2 * Math.PI);
+        let i0 = Math.floor(a0 * 4 + 0.5),
+            i1 = Math.floor(a1 * 4 + 0.5);
+        const x = f.getWidth() / 2,
+            y = f.getHeight() / 2;
         const poly = [
             x + (i1 & 2 ? -x : x) * (i1 & 1 ? 1 : t1),
             y + (i1 & 2 ? y : -y) / (i1 & 1 ? t1 : 1),
@@ -349,37 +386,52 @@ class Round {
         );
         return f.setColor(0).fillPoly(poly);
     }
-    
+
     hand(t, d, c0, r0, c1, r1) {
         const g = this.g;
         t *= Math.PI / 30;
         const r = this.r,
-              z = 2 * r0 + 1,
-              x = this.xc + r * Math.sin(t), y = this.yc - r * Math.cos(t),
-              x0 = x - r0, y0 = y - r0;
-        d = d ? d[0] : Graphics.createArrayBuffer(z, z, 4, {msb: true});
-        for (let i = 0; i < z; i++) for (let j = 0; j < z; j++) {
-          d.setPixel(i, j, g.getPixel(x0 + i, y0 + j));
-        }
+            z = 2 * r0 + 1,
+            x = this.xc + r * Math.sin(t),
+            y = this.yc - r * Math.cos(t),
+            x0 = x - r0,
+            y0 = y - r0;
+        d = d ? d[0] : Graphics.createArrayBuffer(z, z, 4, {
+            msb: true
+        });
+        for (let i = 0; i < z; i++)
+            for (let j = 0; j < z; j++) {
+                d.setPixel(i, j, g.getPixel(x0 + i, y0 + j));
+            }
         g.setColor(c0).fillCircle(x, y, r0);
         if (c1 !== undefined) g.setColor(c1).fillCircle(x, y, r1);
         return [d, x0, y0];
     }
 
     render(d, rate) {
-        const g = this.g, b = this.b, bI = this.bI, c = this.c, cI = this.cI,
-              e = d < this.enhance,
-              state = this.state, options = this.options,
-              cal = options.calendric, res = options.resolution,
-              dow = (e || cal === 1 || cal > 2) && d.getDay(),
-              ts = res < 2 && d.getSeconds(),
-              tm = (e || res < 3) && d.getMinutes() + ts / 60,
-              th = d.getHours() + d.getMinutes() / 60,
-              dd = (e || cal > 1) && d.getDate(),
-              dm = (e || cal > 3) && d.getMonth(),
-              dy = (e || cal > 4) && d.getFullYear();
-        const xc = this.xc, yc = this.yc, r = this.r,
-              dlr = xc * 3/4, dlw = 8, dlhw = 4;
+        const g = this.g,
+            b = this.b,
+            bI = this.bI,
+            c = this.c,
+            cI = this.cI,
+            e = d < this.enhance,
+            state = this.state,
+            options = this.options,
+            cal = options.calendric,
+            res = options.resolution,
+            dow = (e || cal === 1 || cal > 2) && d.getDay(),
+            ts = res < 2 && d.getSeconds(),
+            tm = (e || res < 3) && d.getMinutes() + ts / 60,
+            th = d.getHours() + d.getMinutes() / 60,
+            dd = (e || cal > 1) && d.getDate(),
+            dm = (e || cal > 3) && d.getMonth(),
+            dy = (e || cal > 4) && d.getFullYear();
+        const xc = this.xc,
+            yc = this.yc,
+            r = this.r,
+            dlr = xc * 3 / 4,
+            dlw = 8,
+            dlhw = 4;
 
         // Restore saveunders for fast-moving, overdrawing indicators.
         if (state.sd) g.drawImage.apply(g, state.sd);
@@ -394,19 +446,20 @@ class Round {
         }
 
         const locked = Bangle.isLocked(),
-              charging = Bangle.isCharging(),
-              battery = E.getBattery(),
-              HRMOn = Bangle.isHRMOn();
+            charging = Bangle.isCharging(),
+            battery = E.getBattery(),
+            HRMOn = Bangle.isHRMOn();
         if (dy !== state.dy ||
             locked !== state.locked ||
             charging !== state.charging ||
             Math.abs(battery - state.battery) > 2 ||
             HRMOn !== state.HRMOn
-           ) {
+        ) {
             g.setColor(g.theme.bg).fillPoly(this.tr);
             const u = dy % 10;
             if (charging || battery < 50 || HRMOn || locked && dy !== +dy) {
-                let x = 172, y = 5;
+                let x = 172,
+                    y = 5;
                 x = doLocked(g, x, y, true);
                 x = doPower(g, x, y, true);
                 x = doHRM(g, x, y, true);
@@ -476,7 +529,7 @@ class Clock {
         this.rates = {};
 
         this.options.on('done', () => this.start());
-        
+
         this.listeners = {
             lcdPower: on => on ? this.active() : this.inactive(),
             charging: on => {
@@ -491,7 +544,10 @@ class Clock {
                 }
                 this.active();
             },
-            lock: () => {face.doIcons('locked'); this.active();},
+            lock: () => {
+                face.doIcons('locked');
+                this.active();
+            },
             faceUp: up => {
                 this.conservative = !up;
                 this.active();
@@ -527,8 +583,10 @@ class Clock {
                         this.t0 = null;
                     }
                 } else if (e.b) {
-                    this.t0 = Date.now(); this.e0 = e;
-                    this.xN = this.xX = e.x; this.yN = this.yX = e.y;
+                    this.t0 = Date.now();
+                    this.e0 = e;
+                    this.xN = this.xX = e.x;
+                    this.yN = this.yX = e.y;
                 }
             }
         };
@@ -541,15 +599,15 @@ class Clock {
     orientation(a) {
         return Math.abs(a.z) < 0.85 ?
             Math.abs(a.y) > Math.abs(a.x) ? a.y < 0 ? 0 : 2 : a.x > 0 ? 1 : 3 :
-        0;
+            0;
     }
-    
+
     rotation() {
         return this.options.autorotate && Bangle.isCharging() ?
             this.orientation(Bangle.getAccel()) :
             0;
     }
-    
+
     redraw(rate) {
         const now = this.updated = new Date();
         if (this.refresh) this.face.reset(this.attitude = this.rotation());
@@ -570,10 +628,10 @@ class Clock {
         this.face.reset(); // Cancel any ongoing background rendering
         return this;
     }
-    
+
     active() {
         const prev = this.rate,
-              now = Date.now();
+            now = Date.now();
         let rate = Infinity;
         for (const k in this.rates) {
             let r = this.rates[k];
@@ -582,7 +640,7 @@ class Clock {
         }
         const delay = rate - now % rate + 1;
         this.refresh = true;
-        
+
         if (rate !== prev) {
             this.inactive();
             this.redraw(rate);

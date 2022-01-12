@@ -24,86 +24,139 @@ Based on function from the Bangle weather app so it should handle all of the con
 sent from gadget bridge.
 */
 function chooseIcon(condition) {
-  condition = condition.toLowerCase();
-  if (condition.includes("thunderstorm")) return stormIcon;
-  if (condition.includes("freezing")||condition.includes("snow")||
-    condition.includes("sleet")) {
-    return snowIcon;
-  }
-  if (condition.includes("drizzle")||
-    condition.includes("shower")) {
-    return rainIcon;
-  }
-  if (condition.includes("rain")) return rainIcon;
-  if (condition.includes("clear")) return sunIcon;
-  if (condition.includes("few clouds")) return partSunIcon;
-  if (condition.includes("scattered clouds")) return cloudIcon;
-  if (condition.includes("clouds")) return cloudIcon;
-  if (condition.includes("mist") ||
-    condition.includes("smoke") ||
-    condition.includes("haze") ||
-    condition.includes("sand") ||
-    condition.includes("dust") ||
-    condition.includes("fog") ||
-    condition.includes("ash") ||
-    condition.includes("squalls") ||
-    condition.includes("tornado")) {
+    condition = condition.toLowerCase();
+    if (condition.includes("thunderstorm")) return stormIcon;
+    if (condition.includes("freezing") || condition.includes("snow") ||
+        condition.includes("sleet")) {
+        return snowIcon;
+    }
+    if (condition.includes("drizzle") ||
+        condition.includes("shower")) {
+        return rainIcon;
+    }
+    if (condition.includes("rain")) return rainIcon;
+    if (condition.includes("clear")) return sunIcon;
+    if (condition.includes("few clouds")) return partSunIcon;
+    if (condition.includes("scattered clouds")) return cloudIcon;
+    if (condition.includes("clouds")) return cloudIcon;
+    if (condition.includes("mist") ||
+        condition.includes("smoke") ||
+        condition.includes("haze") ||
+        condition.includes("sand") ||
+        condition.includes("dust") ||
+        condition.includes("fog") ||
+        condition.includes("ash") ||
+        condition.includes("squalls") ||
+        condition.includes("tornado")) {
+        return cloudIcon;
+    }
     return cloudIcon;
-  }
-  return cloudIcon;
 }
 
 /*
-* Choose weather icon to display based on weather conditition code
-* https://openweathermap.org/weather-conditions#Weather-Condition-Codes-2
-*/
+ * Choose weather icon to display based on weather conditition code
+ * https://openweathermap.org/weather-conditions#Weather-Condition-Codes-2
+ */
 function chooseIconByCode(code) {
-  const codeGroup = Math.round(code / 100);
-  switch (codeGroup) {
-    case 2: return stormIcon;
-    case 3: return rainIcon;
-    case 5: return rainIcon;
-    case 6: return snowIcon;
-    case 7: return cloudIcon;
-    case 8:
-      switch (code) {
-        case 800: return sunIcon;
-        case 801: return partSunIcon;
-        default: return cloudIcon;
-      }
-      break;
-    default: return cloudIcon;
-  }
+    const codeGroup = Math.round(code / 100);
+    switch (codeGroup) {
+        case 2:
+            return stormIcon;
+        case 3:
+            return rainIcon;
+        case 5:
+            return rainIcon;
+        case 6:
+            return snowIcon;
+        case 7:
+            return cloudIcon;
+        case 8:
+            switch (code) {
+                case 800:
+                    return sunIcon;
+                case 801:
+                    return partSunIcon;
+                default:
+                    return cloudIcon;
+            }
+            break;
+        default:
+            return cloudIcon;
+    }
 }
 
 /**
 Get weather stored in json file by weather app.
 */
 function getWeather() {
-  let jsonWeather = storage.readJSON('weather.json');
-  return jsonWeather;
+    let jsonWeather = storage.readJSON('weather.json');
+    return jsonWeather;
 }
 
-var clockLayout = new Layout( {
-  type:"v", c: [
-    {type:"txt", font:"35%", halign: 0, fillx:1, pad: 8, label:"00:00", id:"time" },
-    {type: "h", fillx: 1, c: [
-        {type:"txt", font:"10%", label:"THU", id:"dow" },
-        {type:"txt", font:"10%", label:"01/01/1970", id:"date" }
-      ]
-    },
-    {type: "h", valign : 1, fillx:1, c: [
-      {type: "img", filly: 1, id: "weatherIcon", src: sunIcon},
-      {type: "v", fillx:1, c: [
-          {type: "h", c: [
-            {type: "txt", font: "10%", id: "temp", label: "000 °C"},
-          ]},
-          {type: "h", c: [
-            {type: "txt", font: "10%", id: "wind", label: "00 km/h"},
-          ]}
-        ]
-      },
-    ]}]
+var clockLayout = new Layout({
+    type: "v",
+    c: [{
+            type: "txt",
+            font: "35%",
+            halign: 0,
+            fillx: 1,
+            pad: 8,
+            label: "00:00",
+            id: "time"
+        },
+        {
+            type: "h",
+            fillx: 1,
+            c: [{
+                    type: "txt",
+                    font: "10%",
+                    label: "THU",
+                    id: "dow"
+                },
+                {
+                    type: "txt",
+                    font: "10%",
+                    label: "01/01/1970",
+                    id: "date"
+                }
+            ]
+        },
+        {
+            type: "h",
+            valign: 1,
+            fillx: 1,
+            c: [{
+                    type: "img",
+                    filly: 1,
+                    id: "weatherIcon",
+                    src: sunIcon
+                },
+                {
+                    type: "v",
+                    fillx: 1,
+                    c: [{
+                            type: "h",
+                            c: [{
+                                type: "txt",
+                                font: "10%",
+                                id: "temp",
+                                label: "000 °C"
+                            }, ]
+                        },
+                        {
+                            type: "h",
+                            c: [{
+                                type: "txt",
+                                font: "10%",
+                                id: "wind",
+                                label: "00 km/h"
+                            }, ]
+                        }
+                    ]
+                },
+            ]
+        }
+    ]
 });
 
 // timeout used to update every minute
@@ -111,45 +164,44 @@ var drawTimeout;
 
 // schedule a draw for the next minute
 function queueDraw() {
-  if (drawTimeout) clearTimeout(drawTimeout);
-  drawTimeout = setTimeout(function() {
-    drawTimeout = undefined;
-    draw();
-  }, 60000 - (Date.now() % 60000));
+    if (drawTimeout) clearTimeout(drawTimeout);
+    drawTimeout = setTimeout(function() {
+        drawTimeout = undefined;
+        draw();
+    }, 60000 - (Date.now() % 60000));
 }
 
 function draw() {
-  var date = new Date();
-  clockLayout.time.label = locale.time(date, 1);
-  clockLayout.date.label = locale.date(date, 1).toUpperCase();
-  clockLayout.dow.label = locale.dow(date, 1).toUpperCase() + " ";
-  var weatherJson = getWeather();
-  if(weatherJson && weatherJson.weather){
-      var currentWeather = weatherJson.weather;
-      const temp = locale.temp(currentWeather.temp-273.15).match(/^(\D*\d*)(.*)$/);
-      clockLayout.temp.label = temp[1] + " " + temp[2];
-      const code = currentWeather.code || -1;
-      if (code > 0) {
-        clockLayout.weatherIcon.src = chooseIconByCode(code);
-      } else {
-        clockLayout.weatherIcon.src = chooseIcon(currentWeather.txt);
-      }
-      const wind = locale.speed(currentWeather.wind).match(/^(\D*\d*)(.*)$/);
-      clockLayout.wind.label = wind[1] + " " + wind[2] + " " + (currentWeather.wrose||'').toUpperCase();
-  }
-  else{
-      clockLayout.temp.label = "Err";
-      clockLayout.wind.label = "No Data";
-      clockLayout.weatherIcon.src = errIcon;
-  }
-  clockLayout.clear();
-  clockLayout.render();
-  // queue draw in one minute
-  queueDraw();
+    var date = new Date();
+    clockLayout.time.label = locale.time(date, 1);
+    clockLayout.date.label = locale.date(date, 1).toUpperCase();
+    clockLayout.dow.label = locale.dow(date, 1).toUpperCase() + " ";
+    var weatherJson = getWeather();
+    if (weatherJson && weatherJson.weather) {
+        var currentWeather = weatherJson.weather;
+        const temp = locale.temp(currentWeather.temp - 273.15).match(/^(\D*\d*)(.*)$/);
+        clockLayout.temp.label = temp[1] + " " + temp[2];
+        const code = currentWeather.code || -1;
+        if (code > 0) {
+            clockLayout.weatherIcon.src = chooseIconByCode(code);
+        } else {
+            clockLayout.weatherIcon.src = chooseIcon(currentWeather.txt);
+        }
+        const wind = locale.speed(currentWeather.wind).match(/^(\D*\d*)(.*)$/);
+        clockLayout.wind.label = wind[1] + " " + wind[2] + " " + (currentWeather.wrose || '').toUpperCase();
+    } else {
+        clockLayout.temp.label = "Err";
+        clockLayout.wind.label = "No Data";
+        clockLayout.weatherIcon.src = errIcon;
+    }
+    clockLayout.clear();
+    clockLayout.render();
+    // queue draw in one minute
+    queueDraw();
 }
 
 g.clear();
-Bangle.setUI("clock");  // Show launcher when middle button pressed
+Bangle.setUI("clock"); // Show launcher when middle button pressed
 Bangle.loadWidgets();
 Bangle.drawWidgets();
 clockLayout.render();

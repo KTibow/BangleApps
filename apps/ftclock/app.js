@@ -7,29 +7,29 @@ let drawTimeout;
 
 // schedule a draw for the next minute
 function queueDraw() {
-  if (drawTimeout) clearTimeout(drawTimeout);
-  drawTimeout = setTimeout(function() {
-    drawTimeout = undefined;
-    draw();
-  }, 60000 - (Date.now() % 60000));
+    if (drawTimeout) clearTimeout(drawTimeout);
+    drawTimeout = setTimeout(function() {
+        drawTimeout = undefined;
+        draw();
+    }, 60000 - (Date.now() % 60000));
 }
 
 
 function draw() {
-  g.reset();
-  g.setBgColor("#ffffff");
-  let date = new Date();
-  let timeStr = require("locale").time(date,1);
-  let next420 = getNextFourTwenty();
-  g.clearRect(0,26,g.getWidth(),g.getHeight());
-  g.setColor("#00ff00").setFontAlign(0,-1).setFont("Teletext10x18Ascii",2);
-  g.drawString(next420.minutes? timeStr: `\0${leaf_img}${timeStr}\0${leaf_img}`, g.getWidth()/2, 28);
-  g.setColor("#000000");
-  g.setFontAlign(-1,-1).setFont("Teletext10x18Ascii");
-  g.drawString(g.wrapString(next420.text, g.getWidth()-8).join("\n"),4,60);
+    g.reset();
+    g.setBgColor("#ffffff");
+    let date = new Date();
+    let timeStr = require("locale").time(date, 1);
+    let next420 = getNextFourTwenty();
+    g.clearRect(0, 26, g.getWidth(), g.getHeight());
+    g.setColor("#00ff00").setFontAlign(0, -1).setFont("Teletext10x18Ascii", 2);
+    g.drawString(next420.minutes ? timeStr : `\0${leaf_img}${timeStr}\0${leaf_img}`, g.getWidth() / 2, 28);
+    g.setColor("#000000");
+    g.setFontAlign(-1, -1).setFont("Teletext10x18Ascii");
+    g.drawString(g.wrapString(next420.text, g.getWidth() - 8).join("\n"), 4, 60);
 
-  // queue draw in one minute
-  queueDraw();
+    // queue draw in one minute
+    queueDraw();
 }
 
 // Clear the screen once, at startup
@@ -40,13 +40,13 @@ Bangle.drawWidgets();
 // draw immediately at first, queue update
 draw();
 // Stop updates when LCD is off, restart when on
-Bangle.on('lcdPower',on=>{
-  if (on) {
-    draw(); // draw immediately, queue redraw
-  } else { // stop draw timer
-    if (drawTimeout) clearTimeout(drawTimeout);
-    drawTimeout = undefined;
-  }
+Bangle.on('lcdPower', on => {
+    if (on) {
+        draw(); // draw immediately, queue redraw
+    } else { // stop draw timer
+        if (drawTimeout) clearTimeout(drawTimeout);
+        drawTimeout = undefined;
+    }
 });
 // Show launcher when middle button pressed
 Bangle.setUI("clock");

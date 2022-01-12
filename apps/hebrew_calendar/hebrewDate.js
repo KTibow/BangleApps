@@ -13,11 +13,32 @@
  *      RBI Software Systems
  *      bhastings@rbi.com
  */
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-var GREG_SDN_OFFSET = 32045, DAYS_PER_5_MONTHS = 153, DAYS_PER_4_YEARS = 1461, DAYS_PER_400_YEARS = 146097;
-var HALAKIM_PER_HOUR = 1080, HALAKIM_PER_DAY = 25920, HALAKIM_PER_LUNAR_CYCLE = 29 * HALAKIM_PER_DAY + 13753, HALAKIM_PER_METONIC_CYCLE = HALAKIM_PER_LUNAR_CYCLE * (12 * 19 + 7);
-var HEB_SDN_OFFSET = 347997, NEW_MOON_OF_CREATION = 31524, NOON = 18 * HALAKIM_PER_HOUR, AM3_11_20 = 9 * HALAKIM_PER_HOUR + 204, AM9_32_43 = 15 * HALAKIM_PER_HOUR + 589;
-var SUN = 0, MON = 1, TUES = 2, WED = 3, THUR = 4, FRI = 5, SAT = 6;
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(obj) {
+    return typeof obj;
+} : function(obj) {
+    return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+};
+var GREG_SDN_OFFSET = 32045,
+    DAYS_PER_5_MONTHS = 153,
+    DAYS_PER_4_YEARS = 1461,
+    DAYS_PER_400_YEARS = 146097;
+var HALAKIM_PER_HOUR = 1080,
+    HALAKIM_PER_DAY = 25920,
+    HALAKIM_PER_LUNAR_CYCLE = 29 * HALAKIM_PER_DAY + 13753,
+    HALAKIM_PER_METONIC_CYCLE = HALAKIM_PER_LUNAR_CYCLE * (12 * 19 + 7);
+var HEB_SDN_OFFSET = 347997,
+    NEW_MOON_OF_CREATION = 31524,
+    NOON = 18 * HALAKIM_PER_HOUR,
+    AM3_11_20 = 9 * HALAKIM_PER_HOUR + 204,
+    AM9_32_43 = 15 * HALAKIM_PER_HOUR + 589;
+var SUN = 0,
+    MON = 1,
+    TUES = 2,
+    WED = 3,
+    THUR = 4,
+    FRI = 5,
+    SAT = 6;
+
 function weekdayarr(d0, d1, d2, d3, d4, d5, d6) {
     this[0] = d0;
     this[1] = d1;
@@ -27,6 +48,7 @@ function weekdayarr(d0, d1, d2, d3, d4, d5, d6) {
     this[5] = d5;
     this[6] = d6;
 }
+
 function gregmontharr(m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11) {
     this[0] = m0;
     this[1] = m1;
@@ -41,6 +63,7 @@ function gregmontharr(m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11) {
     this[10] = m10;
     this[11] = m11;
 }
+
 function hebrewmontharr(m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13) {
     this[0] = m0;
     this[1] = m1;
@@ -57,6 +80,7 @@ function hebrewmontharr(m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m
     this[12] = m12;
     this[13] = m13;
 }
+
 function monthsperyeararr(m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12, m13, m14, m15, m16, m17, m18) {
     this[0] = m0;
     this[1] = m1;
@@ -78,7 +102,10 @@ function monthsperyeararr(m0, m1, m2, m3, m4, m5, m6, m7, m8, m9, m10, m11, m12,
     this[17] = m17;
     this[18] = m18;
 }
-var gWeekday = new weekdayarr("Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"), gMonth = new gregmontharr("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"), hMonth = new hebrewmontharr("Tishri", "Heshvan", "Kislev", "Tevet", "Shevat", "AdarI", "AdarII", "Nisan", "Iyyar", "Sivan", "Tammuz", "Av", "Elul"), mpy = new monthsperyeararr(12, 12, 13, 12, 12, 13, 12, 13, 12, 12, 13, 12, 12, 13, 12, 12, 13, 12, 13);
+var gWeekday = new weekdayarr("Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "Satur"),
+    gMonth = new gregmontharr("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"),
+    hMonth = new hebrewmontharr("Tishri", "Heshvan", "Kislev", "Tevet", "Shevat", "AdarI", "AdarII", "Nisan", "Iyyar", "Sivan", "Tammuz", "Av", "Elul"),
+    mpy = new monthsperyeararr(12, 12, 13, 12, 12, 13, 12, 13, 12, 12, 13, 12, 12, 13, 12, 12, 13, 12, 13);
 /**
  * hebrewDate
  * Convert the Gregorian dates  into Hebrew calendar dates.
@@ -95,21 +122,28 @@ var gWeekday = new weekdayarr("Sun", "Mon", "Tues", "Wednes", "Thurs", "Fri", "S
  */
 function hebrewDate(inputDateOrYear) {
     var inputMonth, inputDate;
-    var hebrewMonth = 0, hebrewDate = 0, hebrewYear = 0, metonicCycle = 0, metonicYear = 0, moladDay = 0, moladHalakim = 0;
+    var hebrewMonth = 0,
+        hebrewDate = 0,
+        hebrewYear = 0,
+        metonicCycle = 0,
+        metonicYear = 0,
+        moladDay = 0,
+        moladHalakim = 0;
+
     function GregorianToSdn(inputYear, inputMonth, inputDay) {
-        var year = 0, month = 0, sdn = void 0;
+        var year = 0,
+            month = 0,
+            sdn = void 0;
         // Make year a positive number
         if (inputYear < 0) {
             year = inputYear + 4801;
-        }
-        else {
+        } else {
             year = inputYear + 4800;
         }
         // Adjust the start of the year
         if (inputMonth > 2) {
             month = inputMonth - 3;
-        }
-        else {
+        } else {
             month = inputMonth + 9;
             year--;
         }
@@ -119,8 +153,12 @@ function hebrewDate(inputDateOrYear) {
         sdn += inputDay - GREG_SDN_OFFSET;
         return sdn;
     }
+
     function SdnToHebrew(sdn) {
-        var tishri1 = 0, tishri1After = 0, yearLength = 0, inputDay = sdn - HEB_SDN_OFFSET;
+        var tishri1 = 0,
+            tishri1After = 0,
+            yearLength = 0,
+            inputDay = sdn - HEB_SDN_OFFSET;
         FindTishriMolad(inputDay);
         tishri1 = Tishri1(metonicYear, moladDay, moladHalakim);
         if (inputDay >= tishri1) {
@@ -130,8 +168,7 @@ function hebrewDate(inputDateOrYear) {
                 if (inputDay < tishri1 + 30) {
                     hebrewMonth = 1;
                     hebrewDate = inputDay - tishri1 + 1;
-                }
-                else {
+                } else {
                     hebrewMonth = 2;
                     hebrewDate = inputDay - tishri1 - 29;
                 }
@@ -142,8 +179,7 @@ function hebrewDate(inputDateOrYear) {
             moladDay += Math.floor(moladHalakim / HALAKIM_PER_DAY);
             moladHalakim = moladHalakim % HALAKIM_PER_DAY;
             tishri1After = Tishri1((metonicYear + 1) % 19, moladDay, moladHalakim);
-        }
-        else {
+        } else {
             // It found Tishri 1 at the end of the year.
             hebrewYear = metonicCycle * 19 + metonicYear;
             if (inputDay >= tishri1 - 177) {
@@ -151,30 +187,24 @@ function hebrewDate(inputDateOrYear) {
                 if (inputDay > tishri1 - 30) {
                     hebrewMonth = 13;
                     hebrewDate = inputDay - tishri1 + 30;
-                }
-                else if (inputDay > tishri1 - 60) {
+                } else if (inputDay > tishri1 - 60) {
                     hebrewMonth = 12;
                     hebrewDate = inputDay - tishri1 + 60;
-                }
-                else if (inputDay > tishri1 - 89) {
+                } else if (inputDay > tishri1 - 89) {
                     hebrewMonth = 11;
                     hebrewDate = inputDay - tishri1 + 89;
-                }
-                else if (inputDay > tishri1 - 119) {
+                } else if (inputDay > tishri1 - 119) {
                     hebrewMonth = 10;
                     hebrewDate = inputDay - tishri1 + 119;
-                }
-                else if (inputDay > tishri1 - 148) {
+                } else if (inputDay > tishri1 - 148) {
                     hebrewMonth = 9;
                     hebrewDate = inputDay - tishri1 + 148;
-                }
-                else {
+                } else {
                     hebrewMonth = 8;
                     hebrewDate = inputDay - tishri1 + 178;
                 }
                 return;
-            }
-            else {
+            } else {
                 if (mpy[(hebrewYear - 1) % 19] == 13) {
                     hebrewMonth = 7;
                     hebrewDate = inputDay - tishri1 + 207;
@@ -186,8 +216,7 @@ function hebrewDate(inputDateOrYear) {
                         return;
                     hebrewMonth--;
                     hebrewDate += 30;
-                }
-                else {
+                } else {
                     hebrewMonth = 6;
                     hebrewDate = inputDay - tishri1 + 207;
                     if (hebrewDate > 0)
@@ -217,8 +246,7 @@ function hebrewDate(inputDateOrYear) {
                 return;
             }
             moladDay -= 30;
-        }
-        else {
+        } else {
             // Heshvan has 29 days
             if (moladDay <= 29) {
                 hebrewMonth = 2;
@@ -231,6 +259,7 @@ function hebrewDate(inputDateOrYear) {
         hebrewMonth = 3;
         hebrewDate = moladDay;
     }
+
     function FindTishriMolad(inputDay) {
         // Estimate the metonic cycle number.  Note that this may be an under
         // estimate because there are 6939.6896 days in a metonic cycle not
@@ -258,8 +287,12 @@ function hebrewDate(inputDateOrYear) {
             moladHalakim = moladHalakim % HALAKIM_PER_DAY;
         }
     }
+
     function MoladOfMetonicCycle() {
-        var r1 = void 0, r2 = void 0, d1 = void 0, d2 = void 0;
+        var r1 = void 0,
+            r2 = void 0,
+            d1 = void 0,
+            d2 = void 0;
         // Start with the time of the first molad after creation.
         r1 = NEW_MOON_OF_CREATION;
         // Calculate gMetonicCycle * HALAKIM_PER_METONIC_CYCLE.  The upper 32
@@ -278,8 +311,12 @@ function hebrewDate(inputDateOrYear) {
         moladDay = d2 << 16 | d1;
         moladHalakim = r1;
     }
+
     function Tishri1(metonicYear, moladDay, moladHalakim) {
-        var tishri1 = moladDay, dow = tishri1 % 7, leapYear = metonicYear == 2 || metonicYear == 5 || metonicYear == 7 || metonicYear == 10 || metonicYear == 13 || metonicYear == 16 || metonicYear == 18, lastWasLeapYear = metonicYear == 3 || metonicYear == 6 || metonicYear == 8 || metonicYear == 11 || metonicYear == 14 || metonicYear == 17 || metonicYear == 0;
+        var tishri1 = moladDay,
+            dow = tishri1 % 7,
+            leapYear = metonicYear == 2 || metonicYear == 5 || metonicYear == 7 || metonicYear == 10 || metonicYear == 13 || metonicYear == 16 || metonicYear == 18,
+            lastWasLeapYear = metonicYear == 3 || metonicYear == 6 || metonicYear == 8 || metonicYear == 11 || metonicYear == 14 || metonicYear == 17 || metonicYear == 0;
         // Apply rules 2,3 and 4
         if (moladHalakim >= NOON || !leapYear && dow == TUES && moladHalakim >= AM3_11_20 || lastWasLeapYear && dow == MON && moladHalakim >= AM9_32_43) {
             tishri1++;

@@ -40,86 +40,103 @@ var drawTimeout;
 
 // schedule a draw for the next minute
 function queueDraw() {
-  if (drawTimeout) clearTimeout(drawTimeout);
-  drawTimeout = setTimeout(function() {
-    drawTimeout = undefined;
-    draw();
-  }, 60000 - (Date.now() % 60000));
+    if (drawTimeout) clearTimeout(drawTimeout);
+    drawTimeout = setTimeout(function() {
+        drawTimeout = undefined;
+        draw();
+    }, 60000 - (Date.now() % 60000));
 }
 
 function drawBackground() {
-  g.setBgColor(0,0,0);
-  g.setColor(1,1,1);
-  g.clear();
-  g.drawImage(imgBg,0,0);
-  g.reset();
+    g.setBgColor(0, 0, 0);
+    g.setColor(1, 1, 1);
+    g.clear();
+    g.drawImage(imgBg, 0, 0);
+    g.reset();
 }
 
-function draw(){
-  drawBackground();
-  var date = new Date();
-  var h = date.getHours(), m = date.getMinutes();
-  var d = date.getDate(), w = date.getDay();
-  g.reset();
-  g.setBgColor(0,0,0);
-  g.setColor(1,1,1);
+function draw() {
+    drawBackground();
+    var date = new Date();
+    var h = date.getHours(),
+        m = date.getMinutes();
+    var d = date.getDate(),
+        w = date.getDay();
+    g.reset();
+    g.setBgColor(0, 0, 0);
+    g.setColor(1, 1, 1);
 
-  //draw 24 hr indicator and 12 hr specific behavior
-  if (is24hr){
-    g.drawImage(img24hr,32, 65);
-    if (leadingZero){
-      h = ("0"+h).substr(-2);
-      }
-  } else if (h > 12) {
-    g.drawImage(imgPM,40, 70);
-    h = h - 12;
-    if (leadingZero){
-      h = ("0"+h).substr(-2);
-    } else {
-      h = " " + h;
+    //draw 24 hr indicator and 12 hr specific behavior
+    if (is24hr) {
+        g.drawImage(img24hr, 32, 65);
+        if (leadingZero) {
+            h = ("0" + h).substr(-2);
+        }
+    } else if (h > 12) {
+        g.drawImage(imgPM, 40, 70);
+        h = h - 12;
+        if (leadingZero) {
+            h = ("0" + h).substr(-2);
+        } else {
+            h = " " + h;
+        }
+    } else if (h === 0) {
+        // display 12:00 instead of 00:00 for 12 hr mode
+        h = "12";
     }
-  } else if (h === 0) {
-    // display 12:00 instead of 00:00 for 12 hr mode
-    h = "12";
-  }
 
-  //draw separator
-  if (separator){
-  g.drawImage(imgSep, 85,98);}
-
-  //draw day of week
-  var imgW = null;
-  if (w == 0) {imgW = imgSun;}
-  if (w == 1) {imgW = imgMon;}
-  if (w == 2) {imgW = imgTue;}
-  if (w == 3) {imgW = imgWed;}
-  if (w == 4) {imgW = imgThu;}
-  if (w == 5) {imgW = imgFri;}
-  if (w == 6) {imgW = imgSat;}
-  g.drawImage(imgW, 85, 63);
-
-
-  // draw nums
-  // draw time
-  g.setColor(0,0,0);
-  g.setBgColor(1,1,1);
-  g.setFontCustom(fontNum, 48, 28, 41);
-  if (h<10) {
-    if (leadingZero) {
-      h = ("0"+h).substr(-2);
-    } else {
-      h = " " + h;
+    //draw separator
+    if (separator) {
+        g.drawImage(imgSep, 85, 98);
     }
-  }
-  g.drawString(h, 25, 90, true);
-  g.drawString(("0"+m).substr(-2), 92, 90, true);
-  // draw date
-  g.setFontCustom(fontDate, 48, 12, 15);
-  g.drawString(("0"+d).substr(-2), 123,63, true);
 
-  // widget redraw
-  Bangle.drawWidgets();
-  queueDraw();
+    //draw day of week
+    var imgW = null;
+    if (w == 0) {
+        imgW = imgSun;
+    }
+    if (w == 1) {
+        imgW = imgMon;
+    }
+    if (w == 2) {
+        imgW = imgTue;
+    }
+    if (w == 3) {
+        imgW = imgWed;
+    }
+    if (w == 4) {
+        imgW = imgThu;
+    }
+    if (w == 5) {
+        imgW = imgFri;
+    }
+    if (w == 6) {
+        imgW = imgSat;
+    }
+    g.drawImage(imgW, 85, 63);
+
+
+    // draw nums
+    // draw time
+    g.setColor(0, 0, 0);
+    g.setBgColor(1, 1, 1);
+    g.setFontCustom(fontNum, 48, 28, 41);
+    if (h < 10) {
+        if (leadingZero) {
+            h = ("0" + h).substr(-2);
+        } else {
+            h = " " + h;
+        }
+    }
+    g.drawString(h, 25, 90, true);
+    g.drawString(("0" + m).substr(-2), 92, 90, true);
+    // draw date
+    g.setFontCustom(fontDate, 48, 12, 15);
+    g.drawString(("0" + d).substr(-2), 123, 63, true);
+
+    // widget redraw
+    Bangle.drawWidgets();
+    queueDraw();
 }
 
 /**
@@ -128,17 +145,21 @@ function draw(){
  * widgets and black watch. So set the colours to the dark theme.
  *
  */
-g.setTheme({bg:"#000",fg:"#fff",dark:true}).clear();
+g.setTheme({
+    bg: "#000",
+    fg: "#fff",
+    dark: true
+}).clear();
 draw();
 
 //the following section is also from waveclk
-Bangle.on('lcdPower',on=>{
-  if (on) {
-    draw(); // draw immediately, queue redraw
-  } else { // stop draw timer
-    if (drawTimeout) clearTimeout(drawTimeout);
-    drawTimeout = undefined;
-  }
+Bangle.on('lcdPower', on => {
+    if (on) {
+        draw(); // draw immediately, queue redraw
+    } else { // stop draw timer
+        if (drawTimeout) clearTimeout(drawTimeout);
+        drawTimeout = undefined;
+    }
 });
 
 Bangle.setUI("clock");

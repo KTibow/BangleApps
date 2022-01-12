@@ -2,20 +2,20 @@ E.showMessage("Jingle Bells");
 
 var eventEmitter = new Object();
 
-function strofa(notes, times, current, next){
-  eventEmitter.on(current, () => {
-    if (notes.length == 0) {
-      eventEmitter.emit(next);
-      return;
-    }
-    let note = notes.shift();
-    let time = times.shift();
-    Bangle.beep(time, note).then(() => {
-      setTimeout(() => {
-        eventEmitter.emit(current);
-      }, time);
+function strofa(notes, times, current, next) {
+    eventEmitter.on(current, () => {
+        if (notes.length == 0) {
+            eventEmitter.emit(next);
+            return;
+        }
+        let note = notes.shift();
+        let time = times.shift();
+        Bangle.beep(time, note).then(() => {
+            setTimeout(() => {
+                eventEmitter.emit(current);
+            }, time);
+        });
     });
-  });
 }
 
 var one = [2637, 2637, 2637, 2637, 2637, 2637, 2637, 3135, 2093, 2349, 2637];

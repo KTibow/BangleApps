@@ -155,8 +155,8 @@ function drawDigits(lastText, thisText, n) {
         if (lastCh != thisCh) {
             var ch, chn = n;
             if ((thisCh - 1 == lastCh ||
-                (thisCh == 0 && lastCh == 5) ||
-                (thisCh == 0 && lastCh == 9)))
+                    (thisCh == 0 && lastCh == 5) ||
+                    (thisCh == 0 && lastCh == 9)))
                 ch = lastCh;
             else {
                 ch = thisCh;
@@ -214,7 +214,7 @@ function showTime() {
         return;
     }
     var n = 0;
-    animInterval = setInterval(function () {
+    animInterval = setInterval(function() {
         n += 1 / 10;
         if (n >= 1) {
             n = 1;
@@ -226,7 +226,7 @@ function showTime() {
     lastTime = t;
 }
 
-Bangle.on('lcdPower', function (on) {
+Bangle.on('lcdPower', function(on) {
     if (animInterval) {
         clearInterval(animInterval);
         animInterval = undefined;

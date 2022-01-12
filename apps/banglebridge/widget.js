@@ -29,12 +29,12 @@
      */
     function accel() {
 
-        Bangle.on('accel', function (acc) {
+        Bangle.on('accel', function(acc) {
             // acc = {x,y,z,diff,mag}
             accelN = acc;
         });
 
-        setInterval(function () {
+        setInterval(function() {
 
             acclS = accelN.x + "##" + accelN.y + "##" + accelN.z + "\n" + accelN.diff + "##" + accelN.mag;
             data[3] = accelN;
@@ -44,7 +44,7 @@
 
     function btt() {
 
-        setInterval(function () {
+        setInterval(function() {
 
             bttS = E.getBattery(); //return String
             data[2] = E.getBattery();
@@ -57,13 +57,13 @@
     function compss() {
 
         Bangle.setCompassPower(1);
-        Bangle.on('mag', function (mag) {
+        Bangle.on('mag', function(mag) {
             // mag = {x,y,z,dx,dy,dz,heading}
             compssN = mag;
         });
 
 
-        setInterval(function () {
+        setInterval(function() {
 
             compssS = "A: " + compssN.x + " ## " + compssN.y + " ## " + compssN.z + "\n" +
                 "B: " + compssN.dx + " ## " + compssN.dy + " ## " + compssN.dz + " ## " + "\n" +
@@ -78,13 +78,13 @@
     function gps() {
 
         Bangle.setGPSPower(1);
-        Bangle.on('GPS', function (gps) {
+        Bangle.on('GPS', function(gps) {
             // gps = {lat,lon,alt,speed,etc}
             gpsN = gps;
 
         });
 
-        setInterval(function () {
+        setInterval(function() {
 
             gpsS = "A: " + gpsN.lat + " ## " + gpsN.lon + " ## " + gpsN.alt + "\n" + "B: " + gpsN.speed + " ## " + gpsN.course + " ## " + gpsN.time + "\n" +
                 "C: " + gpsN.satellites + " ## " + gpsN.fix; //return String
@@ -161,7 +161,7 @@
             roundInsert(nueva);
 
 
-            msr.forEach(function (number) {
+            msr.forEach(function(number) {
                 normalize += number;
             });
             normalize = normalize / msr.length;
@@ -173,7 +173,7 @@
 
 
 
-        setInterval(function () {
+        setInterval(function() {
 
             if (!isNaN(hrmN)) {
 
@@ -203,7 +203,7 @@
         });
 
 
-        setInterval(function () {
+        setInterval(function() {
 
             stepS = String.valueOf(stepN); //return String
             data[1] = stepN;
@@ -217,7 +217,7 @@
         //need power control
         Bangle.setHRMPower(1);
 
-        Bangle.on('HRM', function (hrm) {
+        Bangle.on('HRM', function(hrm) {
             hrmN = hrm.bpm;
 
 
@@ -233,19 +233,19 @@
     }
 
     var flip = 1;
-    Bangle.on('lcdPower', function (on) {
+    Bangle.on('lcdPower', function(on) {
         /*
          prueba ++;
          Bangle.drawWidgets();
          g.setFont("Vector", 45);
          g.drawString(prueba,100,200);*/
         if (flip == 1) { //when off
-           
+
             flip = 0;
             //Bangle.buzz(1000);
             g.clear();
         } else { //when on
-           
+
             flip = 1;
             g.setFont("Vector", 30);
             g.drawString(data[0], 65, 180);
@@ -256,8 +256,8 @@
 
 
     function draw() {
-       g.drawImage(storage.read("banglebridge.watch.img"),this.x + 1,this.y + 1);
-       g.drawImage(storage.read("banglebridge.heart.img"), 145, 167);
+        g.drawImage(storage.read("banglebridge.watch.img"), this.x + 1, this.y + 1);
+        g.drawImage(storage.read("banglebridge.heart.img"), 145, 167);
     }
 
 
@@ -266,12 +266,12 @@
 
     initSensors();
     // Bangle.drawWidgets();
-   // Terminal.println("Running BangleBridge");
+    // Terminal.println("Running BangleBridge");
     data[0] = 80.5;
     g.setFont("Vector", 30);
     g.drawString(data[0], 65, 180);
-   // Bangle.drawWidgets();
-    setInterval(function () {
+    // Bangle.drawWidgets();
+    setInterval(function() {
         //console.log("---------------------------------------------------------------");
         //console.log(data);
         //Bluetooth.println(data[0]);
@@ -293,10 +293,10 @@
         //draw();
 
     }, 5 * 1000);
-  
-      WIDGETS["banglebridge"]={
+
+    WIDGETS["banglebridge"] = {
         area: "tl",
         width: 10,
         draw: draw,
-      };
+    };
 })(); //End of Widget
