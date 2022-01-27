@@ -56,7 +56,10 @@ function findPeriod() {
     for (let period of todaySchedule) {
         const periodEndHour = period[0] + (period[2] == "pm" ? 12 : 0);
         const periodEndMinute = period[1];
-        if (hour <= periodEndHour && minute < periodEndMinute) {
+        if (
+            hour < periodEndHour ||
+            (hour == periodEndHour && minute < periodEndMinute)
+        ) {
             displayPeriod(period, periodEndHour, periodEndMinute);
             return;
         }
