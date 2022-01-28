@@ -55,21 +55,21 @@ function findPeriod() {
             return;
         }
     }
-    g.clearRect(0, g.getWidth() / 2 - 12.5, g.getWidth(), g.getHeight() / 2 + 12.5);
-    g.setFont("Vector", 25);
-    g.drawString("[nothing upcoming]", g.getWidth() / 2, g.getHeight() / 2);
-    g.clearRect(
-        0,
-        g.getWidth() / 2 + 80 - 40,
-        g.getWidth(),
-        g.getHeight() / 2 + 80 + 40
-    );
+    g.clearRect(0, g.getWidth() / 2 - 40, g.getWidth(), g.getHeight() / 2 + 40);
     g.setFont("Vector", 80);
     g.drawString(
         `(${convertTo12Hr(hour)}:${padMinute(minute)})`,
         g.getWidth() / 2,
-        g.getHeight() / 2 + 80
+        g.getHeight() / 2
     );
+    g.clearRect(
+        0,
+        g.getWidth() / 2 + 80 - 12.5,
+        g.getWidth(),
+        g.getHeight() / 2 + 80 + 12.5
+    );
+    g.setFont("Vector", 25);
+    g.drawString("[nothing upcoming]", g.getWidth() / 2, g.getHeight() / 2 + 80);
 }
 
 function displayPeriod(period, periodEndHour, periodEndMinute) {
