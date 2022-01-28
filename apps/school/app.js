@@ -112,7 +112,19 @@ function displayPeriod(period, periodEndHour, periodEndMinute) {
 }
 
 g.clear();
+const interval = setInterval(findPeriod, 1000);
+
 Bangle.loadWidgets();
 Bangle.drawWidgets();
-const interval = setInterval(findPeriod, 1000);
 Bangle.setUI("clock");
+let whenPressed = 0;
+function onMenuPress() {
+    whenPressed = Date.now();
+}
+function onMenuRelease() {
+    if (Date.now() - whenPressed < 500) {
+        Bangle.showLauncher();
+    }
+}
+setWatch(onMenuPress, BTN2, { repeat: true, edge: "rising" });
+setWatch(onMenuRelease, BTN2, { repeat: true, edge: "falling" });
