@@ -51,8 +51,9 @@ function findPeriod() {
         const periodEndHour = convertTo24Hr(period[0], period[2]);
         const periodEndMinute = period[1];
         if (
-            hour < periodEndHour ||
-            (hour == periodEndHour && minute < periodEndMinute)
+            (hour < periodEndHour ||
+                (hour == periodEndHour && minute < periodEndMinute)) &&
+            !periodDisplayed
         ) {
             displayPeriod(period, periodEndHour, periodEndMinute);
             periodDisplayed = true;
