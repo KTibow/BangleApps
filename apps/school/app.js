@@ -120,13 +120,13 @@ let whenPressed = 0;
 let whenReleased = 0;
 function onMenuPress() {
     whenPressed = Date.now();
-    setTimeout(goToMenu, 1000);
+    setTimeout(goToMenu, 1500);
 }
 function onMenuRelease() {
     whenReleased = Date.now();
 }
 function goToMenu() {
-    if (whenReleased - whenPressed > 1000) {
+    if (whenPressed > whenReleased) {
         Bangle.buzz(200);
         Bangle.showLauncher();
     }
