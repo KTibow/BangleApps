@@ -6,6 +6,7 @@
   "description": "Timer to when school period ends.",
   "icon": "app.png",
   "tags": "",
+  "type": "clock",
   "supports": ["BANGLEJS"],
   "storage": [
     { "name": "school.app.js", "url": "app.js" },
