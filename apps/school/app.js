@@ -47,7 +47,10 @@ function findPeriod() {
     for (let period of todaySchedule) {
         const periodEndHour = convertTo24Hr(period[0], period[2]);
         const periodEndMinute = period[1];
-        if (hour < periodEndHour || (hour == periodEndHour && minute < periodEndMinute)) {
+        if (
+            hour < periodEndHour ||
+            (hour == periodEndHour && minute < periodEndMinute)
+        ) {
             displayPeriod(period, periodEndHour, periodEndMinute);
             return;
         }
@@ -55,7 +58,12 @@ function findPeriod() {
     g.clearRect(0, g.getWidth() / 2 - 12.5, g.getWidth(), g.getHeight() / 2 + 12.5);
     g.setFont("Vector", 25);
     g.drawString("[nothing upcoming]", g.getWidth() / 2, g.getHeight() / 2);
-    g.clearRect(0, g.getWidth() / 2 + 80 - 40, g.getWidth(), g.getHeight() / 2 + 80 + 40);
+    g.clearRect(
+        0,
+        g.getWidth() / 2 + 80 - 40,
+        g.getWidth(),
+        g.getHeight() / 2 + 80 + 40
+    );
     g.setFont("Vector", 80);
     g.drawString(
         `(${convertTo12Hr(hour)}:${padMinute(minute)})`,
@@ -81,8 +89,17 @@ function displayPeriod(period, periodEndHour, periodEndMinute) {
     g.setFont("Vector", 30);
     const currentTime = `${convertTo12Hr(hour)}:${padMinute(minute)}`;
     const endTime = `${convertTo12Hr(periodEndHour)}:${padMinute(periodEndMinute)})`;
-    g.clearRect(0, g.getWidth() / 2 + 50 - 15, g.getWidth(), g.getHeight() / 2 + 50 + 15);
-    g.drawString(`(${currentTime} -> ${endTime}`, g.getWidth() / 2, g.getHeight() / 2 + 50);
+    g.clearRect(
+        0,
+        g.getWidth() / 2 + 50 - 15,
+        g.getWidth(),
+        g.getHeight() / 2 + 50 + 15
+    );
+    g.drawString(
+        `(${currentTime} -> ${endTime}`,
+        g.getWidth() / 2,
+        g.getHeight() / 2 + 50
+    );
     if (timeLeft <= 30) {
         Bangle.setLCDPower(1);
     }
@@ -95,4 +112,7 @@ function displayPeriod(period, periodEndHour, periodEndMinute) {
 }
 
 g.clear();
+Bangle.loadWidgets();
+Bangle.drawWidgets();
 const interval = setInterval(findPeriod, 1000);
+Bangle.setUI("clock");
