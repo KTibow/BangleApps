@@ -116,7 +116,6 @@ const interval = setInterval(findPeriod, 1000);
 
 Bangle.loadWidgets();
 Bangle.drawWidgets();
-Bangle.setUI("clock");
 let whenPressed = 0;
 function onMenuPress() {
     whenPressed = Date.now();
