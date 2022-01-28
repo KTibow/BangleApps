@@ -117,12 +117,17 @@ const interval = setInterval(findPeriod, 1000);
 Bangle.loadWidgets();
 Bangle.drawWidgets();
 let whenPressed = 0;
+let whenReleased = 0;
 function onMenuPress() {
     whenPressed = Date.now();
+    setTimeout(goToMenu, 1000);
 }
 function onMenuRelease() {
-    if (Date.now() - whenPressed > 1500) {
-        Bangle.buzz(500);
+    whenReleased = Date.now();
+}
+function goToMenu() {
+    if (whenReleased - whenPressed > 1000) {
+        Bangle.buzz(200);
         Bangle.showLauncher();
     }
 }
