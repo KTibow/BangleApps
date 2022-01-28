@@ -3,8 +3,8 @@ const blockDay = [
     [8, 20, "am"],
     [10, 10, "am"],
     [11, 13, "am"],
-    [11, 43, "am"],
-    [12, 35, "am"],
+    [11, 43, "am", 1],
+    [12, 35, "am", 0.4],
     [2, 25, "pm"],
 ];
 const wednesday = [
@@ -12,8 +12,8 @@ const wednesday = [
     [8, 32, "am"],
     [9, 18, "am"],
     [10, 4, "am"],
-    [10, 38, "am"],
-    [11, 24, "am"],
+    [10, 38, "am", 1],
+    [11, 24, "am", 0.4],
     [12, 10, "am"],
     [12, 55, "am"],
 ];
@@ -55,6 +55,9 @@ function findPeriod() {
                 (hour == periodEndHour && minute < periodEndMinute)) &&
             !periodDisplayed
         ) {
+            if (period.length == 4) {
+                Bangle.setLCDBrightness(period[3]);
+            }
             displayPeriod(period, periodEndHour, periodEndMinute);
             periodDisplayed = true;
         }
@@ -140,6 +143,7 @@ const interval = setInterval(findPeriod, 1000);
 
 Bangle.loadWidgets();
 Bangle.drawWidgets();
+
 let whenPressed = 0;
 let whenReleased = 0;
 function onMenuPress() {
