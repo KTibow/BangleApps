@@ -38,8 +38,11 @@ function convertTo12Hr(hours) {
     return hours % 12 || 12;
 }
 
+let periodActiveBefore = false;
+
 function findPeriod() {
     g.setFontAlign(0, 0);
+    let periodDisplayed = false;
     const weekday = new Date().getDay();
     const hour = new Date().getHours();
     const minute = new Date().getMinutes();
@@ -52,23 +55,43 @@ function findPeriod() {
             (hour == periodEndHour && minute < periodEndMinute)
         ) {
             displayPeriod(period, periodEndHour, periodEndMinute);
-            return;
+            periodDisplayed = true;
         }
     }
-    g.clearRect(0, g.getWidth() / 2 - 40, g.getWidth(), g.getHeight() / 2 + 40);
+    periodActiveBefore = periodDisplayed;
+    if (periodActiveBefore && !periodDisplayed) {
+        g.clearRect(0, g.getWidth() / 2 - 25, g.getWidth(), g.getHeight() / 2 + 25);
+        g.clearRect(
+            0,
+            g.getWidth() / 2 + 50 - 15,
+            g.getWidth(),
+            g.getHeight() / 2 + 50 + 15
+        );
+    }
+    if (!periodActiveBefore && periodDisplayed) {
+        g.clearRect(0, g.getWidth() / 2 - 40, g.getWidth(), g.getHeight() / 2 + 40);
+        g.clearRect(
+            0,
+            g.getWidth() / 2 + 80 - 12.5,
+            g.getWidth(),
+            g.getHeight() / 2 + 80 + 12.5
+        );
+    }
+    if (periodDisplayed) return;
     g.setFont("Vector", 80);
+    g.clearRect(0, g.getWidth() / 2 - 40, g.getWidth(), g.getHeight() / 2 + 40);
     g.drawString(
         `(${convertTo12Hr(hour)}:${padMinute(minute)})`,
         g.getWidth() / 2,
         g.getHeight() / 2
     );
+    g.setFont("Vector", 25);
     g.clearRect(
         0,
         g.getWidth() / 2 + 80 - 12.5,
         g.getWidth(),
         g.getHeight() / 2 + 80 + 12.5
     );
-    g.setFont("Vector", 25);
     g.drawString("[nothing upcoming]", g.getWidth() / 2, g.getHeight() / 2 + 80);
 }
 
