@@ -122,7 +122,8 @@ function onMenuPress() {
     whenPressed = Date.now();
 }
 function onMenuRelease() {
-    if (Date.now() - whenPressed < 500) {
+    if (Date.now() - whenPressed > 1500) {
+        Bangle.buzz(500);
         Bangle.showLauncher();
     }
 }
