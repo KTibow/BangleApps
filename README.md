@@ -72,6 +72,18 @@ try and keep filenames short to avoid overflowing the buffer.
 },
 ```
 
+### Screenshots
+
+In the app `metadata.json` file you can add a list of screenshots with a line like: `"screenshots" : [ { url:"screenshot.png" } ],`
+
+To get a screenshot you can:
+
+* Type `g.dump()` in the left-hand side of the Web IDE when connected to a Bangle.js 2 - you can then
+right-click and save the image shown in the terminal (this only works on Bangle.js 2 - Bangle.js 1 is
+unable to read data back from the LCD controller).
+* Run your code in the emulator and use the screenshot button in the bottom right of the window.
+
+
 ## Testing
 
 ### Online
@@ -134,6 +146,7 @@ Apps are listed in the Bangle.js menu, accessible from a clock app via the middl
 * `app.png` - app icon - 48x48px
 * `app-icon.js` - JS version of the icon (made with http://www.espruino.com/Image+Converter) for use in Bangle.js's menu
 * `app.js` - app code
+* `ChangeLog` - A file containing a list of changes to your app so users can see what's changed
 
 #### `app-icon.js`
 
@@ -189,9 +202,23 @@ When the widget is to be drawn, `x` and `y` values are set up in `WIDGETS["mywid
 and `draw` can then use `this.x` and `this.y` to figure out where it needs to draw to.
 
 
+### ChangeLog
+
+This is a file containing a list of changes to your app so users can see what's changed, for example:
+
+```
+0.01: New App!
+0.02: Changed the colors
+0.03: Made the app run quicker
+```
+
+Entries should be newest last, with the version number of the last entry matching the version in `metadata.json`
+
+Please keep the same format at the example as the file needs to be parsed by the BangleApps tools.
+
 ### `app.info` format
 
-This is the file that's **auto-generated** and loaded onto Bangle.js by the App Loader,
+This is the file that's **auto-generated** from `metadata.json` and loaded onto Bangle.js by the App Loader,
 and which gives information about the app for the Launcher.
 
 ```
@@ -228,6 +255,7 @@ and which gives information about the app for the Launcher.
   "screenshots" : [ { url:"screenshot.png" } ], // optional screenshot for app
   "type":"...",               // optional(if app) -  
                               //   'app' - an application
+                              //   'clock' - a clock - required for clocks to automatically start
                               //   'widget' - a widget
                               //   'launch' - replacement launcher app
                               //   'bootloader' - code that runs at startup only
@@ -514,7 +542,6 @@ The [`testing`](testing) folder contains snippets of code that might be useful f
 
 * `testing/colors.js` - 16 bit colors as name value pairs
 * `testing/gpstrack.js` - code to store a GPS track in Bangle.js storage and output it back to the console
-* `testing/map` - code for splitting an image into map tiles and then displaying them
 
 ## Credits
 
