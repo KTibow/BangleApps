@@ -1,0 +1,13 @@
+{
+  "id": "bangled",
+  "name": "Bangled",
+  "version": "0.01",
+  "description": "Multipurpose clock.",
+  "icon": "app.png",
+  "type": "clock",
+  "supports": ["BANGLEJS"],
+  "storage": [
+    { "name": "bangled.app.js", "url": "app.js" },
+    { "name": "bangled.img", "url": "app-icon.js", "evaluate": true }
+  ]
+}
