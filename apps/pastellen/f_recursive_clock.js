@@ -1,5 +1,5 @@
 exports.add = function (graphics) {
-  graphics.prototype.setFontRecursive = function (scale) {
+  graphics.prototype.setFontRecursiveClock = function (scale) {
     // Actual height 80 (79 - 0)
     this.setFontCustom(
       E.toString(
