@@ -1,16 +1,17 @@
 {
-  "id": "pastellen",
-  "name": "Pastellen",
+  "id": "flicc",
+  "name": "Flicc",
   "version": "0.1",
   "description": "A clock for KTibow by KTibow",
   "icon": "icon.png",
   "type": "clock",
-  "tags": "clock, weather, tool",
+  "tags": "clock",
   "supports": ["BANGLEJS"],
   "allow_emulator": true,
   "storage": [
     { "name": "pastellen.app.js", "url": "app.js" },
     { "name": "f_recursive_clock.js", "url": "f_recursive_clock.js" },
-    { "name": "f_recursive_text.js", "url": "f_recursive_text.js" }
+    { "name": "f_recursive_text.js", "url": "f_recursive_text.js" },
+    { "name": "weather_icons.js", "url": "weather_icons.js" }
   ]
 }
