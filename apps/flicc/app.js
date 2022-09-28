@@ -133,4 +133,5 @@ setInterval(() => {
 Bangle.on("charging", (charging) => {
   drawWidgets(230, new Date(), charging);
 });
+Bangle.setUI("clock");
 g.clear();
