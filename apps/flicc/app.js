@@ -141,10 +141,9 @@ function draw(now) {
   countingDown = false;
   if (classDataDay != now.getDay()) {
     classDataDay = now.getDay();
-    // classData = JSON.parse(
-    //   require("Storage").open(`classes-${classDataDay}.json`, "r").readLine() || "[]"
-    // );
-    classData = JSON.parse(require("Storage").open("classes-2.json", "r").readLine());
+    classData = JSON.parse(
+      require("Storage").open(`classes-${classDataDay}.json`, "r").readLine() || "[]"
+    );
   }
   const currentMinute = Math.floor(now.getTime() / 60000) - offset;
   const minuteOfDay = currentMinute % (60 * 24);
@@ -156,6 +155,9 @@ function draw(now) {
     if (remainingMins == 1) {
       if (remainingSeconds == 30) {
         Bangle.buzz(100);
+      }
+      if (remainingSeconds == 10) {
+        Bangle.buzz(300);
       }
       if (remainingSeconds <= 30) {
         Bangle.setLCDPower(1);
@@ -215,7 +217,11 @@ function draw(now) {
         lastWeatherUpdate = currentMinute;
       }
       if (currentMinute != lastSubUpdate) {
-        drawSub(`Steps: ${Bangle.getHealthStatus("day").steps}`);
+        drawSub(
+          classes[1]
+            ? `${classes[1].name} in ${classes[1].room} - ${classes[1].start - minuteOfDay}m`
+            : `${Bangle.getHealthStatus("day").steps} steps`
+        );
         lastSubUpdate = currentMinute;
       }
     }
@@ -231,6 +237,16 @@ setInterval(() => {
     draw(now);
     console.log(Date.now() - now.getTime());
   }
+  const minutePortion = now.getTime() % (60 * 1000);
+  if (minutePortion < 100) {
+    g.clearRect(0, 235, 240, 240);
+  }
+  g.setColor(100 / 255, 230 / 255, 250 / 255).fillRect(
+    0,
+    235,
+    (minutePortion / (60 * 1000)) * 240,
+    240
+  );
   if (countingDown) {
     g.clearRect(210, 145, 230, 170);
     g.setColor(1, 1, 1)
@@ -241,5 +257,8 @@ setInterval(() => {
 }, 100);
 Bangle.on("lcdPower", () => {
   draw(new Date());
+});
+Bangle.on("charging", (charging) => {
+  drawWidgets(new Date(), charging);
 });
 draw(new Date());
