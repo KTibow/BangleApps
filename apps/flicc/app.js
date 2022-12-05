@@ -1,12 +1,16 @@
 ///<reference path="../../typescript/types/main.d.ts" />
+// MEMORY: 116
 require("f_recursive_clock.js").add(Graphics);
 require("f_recursive_text.js").add(Graphics);
+// MEMORY: 1380
 const offset = new Date().getTimezoneOffset();
 const weatherIcons = require("weather_icons.js");
+// MEMORY: 1444
 
 let weatherData = JSON.parse(require("Storage").open("weather.json", "r").readLine() || "[]");
 let classDataDay;
 let classData;
+// MEMORY: 1736
 
 let cachedClasses;
 let cachedClassesMinute;
@@ -30,6 +34,7 @@ function getTime(now) {
   const minute = now.getMinutes().toString().padStart(2, "0");
   return hour + ":" + minute;
 }
+// MEMORY: 1791
 
 const buffer = Graphics.createArrayBuffer(240, 80, 1, { msb: true })
   .setFont("RecursiveClock")
@@ -132,6 +137,7 @@ function drawWeather(now) {
 let lastSubUpdate;
 function drawSub(str) {
   g.clearRect(0, 160, 240, 160 + 25);
+  g.clearRect(50, 160 + 25, 240 - 50, 160 + 50);
   g.setColor(g.theme.fg).setFont("RecursiveText").setFontAlign(0, -1).drawString(str, 120, 160);
 }
 
@@ -153,8 +159,11 @@ function draw(now) {
     const remainingSeconds = Math.floor(60 - ((now.getTime() / 1000) % 60));
     // Draw class
     if (remainingMins == 1) {
-      if (remainingSeconds == 30) {
+      if (remainingSeconds == 60) {
         Bangle.buzz(100);
+      }
+      if (remainingSeconds == 30) {
+        Bangle.buzz(300);
       }
       if (remainingSeconds == 10) {
         Bangle.buzz(300);
@@ -175,7 +184,7 @@ function draw(now) {
         lastSubUpdate = 0;
       }
       if (Bangle.isLCDOn()) {
-        clock(`${remainingMins}:${remainingSeconds.toString().padStart(2, "0")}`);
+        clock(`${remainingMins - 1}:${remainingSeconds.toString().padStart(2, "0")}`);
         if (currentMinute - lastWidgetUpdate > 3) {
           drawWidgets(now, Bangle.isCharging());
           lastWidgetUpdate = currentMinute;
@@ -219,7 +228,8 @@ function draw(now) {
       if (currentMinute != lastSubUpdate) {
         drawSub(
           classes[1]
-            ? `${classes[1].name} in ${classes[1].room} - ${classes[1].start - minuteOfDay}m`
+            ? `${classes[1].room}: ${classes[1].start - minuteOfDay}m
+${classes[1].name}`
             : `${Bangle.getHealthStatus("day").steps} steps`
         );
         lastSubUpdate = currentMinute;
@@ -229,8 +239,11 @@ function draw(now) {
   }
 }
 
-Bangle.setUI("clock");
 g.clear();
+draw(new Date());
+Bangle.setUI({
+  mode: "clock",
+});
 setInterval(() => {
   const now = new Date();
   if (now.getMilliseconds() < 100) {
@@ -243,7 +256,7 @@ setInterval(() => {
   }
   g.setColor(100 / 255, 230 / 255, 250 / 255).fillRect(
     0,
-    235,
+    236,
     (minutePortion / (60 * 1000)) * 240,
     240
   );
@@ -255,10 +268,9 @@ setInterval(() => {
       .drawString("." + Math.floor(10 - now.getMilliseconds() / 100), 200, 145);
   }
 }, 100);
-Bangle.on("lcdPower", () => {
-  draw(new Date());
-});
-Bangle.on("charging", (charging) => {
-  drawWidgets(new Date(), charging);
-});
-draw(new Date());
+const lcdDraw = (on) => on && draw(new Date());
+const chargingDraw = (charging) => drawWidgets(new Date(), charging);
+Bangle.on("lcdPower", lcdDraw);
+Bangle.on("charging", chargingDraw);
+Bangle.loadWidgets();
+require("widget_utils").hide();
