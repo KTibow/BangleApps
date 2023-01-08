@@ -1,17 +1,12 @@
 {
   "id": "flicc",
   "name": "Flicc",
-  "version": "0.1",
+  "version": "0.2",
   "description": "A clock for KTibow by KTibow",
   "icon": "icon.png",
   "type": "clock",
   "tags": "clock",
-  "supports": ["BANGLEJS"],
+  "supports": ["BANGLEJS2"],
   "allow_emulator": true,
-  "storage": [
-    { "name": "flicc.app.js", "url": "app.js" },
-    { "name": "f_recursive_clock.js", "url": "f_recursive_clock.js" },
-    { "name": "f_recursive_text.js", "url": "f_recursive_text.js" },
-    { "name": "weather_icons.js", "url": "weather_icons.js" }
-  ]
+  "storage": [{ "name": "flicc.app.js", "url": "app.js" }]
 }

@@ -1,19 +1,35 @@
 ///<reference path="../../typescript/types/main.d.ts" />
-// MEMORY: 116
-require("f_recursive_clock.js").add(Graphics);
-require("f_recursive_text.js").add(Graphics);
-// MEMORY: 1380
+
+Graphics.prototype.setFont4x5Numeric = function (scale) {
+  this.setFontCustom(
+    atob("CAZMA/H4PgvXoK1+DhPg7W4P1uCEPg/X4O1+BQA"),
+    46,
+    atob("AgQEAgQEBAQEBAQEAg"),
+    5 | (scale << 8)
+  );
+};
 const offset = new Date().getTimezoneOffset();
-const weatherIcons = require("weather_icons.js");
-// MEMORY: 1444
+let classDataDay, classData, currentTimeout;
 
-let weatherData = JSON.parse(require("Storage").open("weather.json", "r").readLine() || "[]");
-let classDataDay;
-let classData;
-// MEMORY: 1736
+function bigCountdown(remaining, now) {
+  g.setFont("4x5Numeric", 19)
+    .setFontAlign(0, -1)
+    .setColor(1, 1, 1)
+    .clear()
+    .drawString(remaining, (176 + 19) / 2, 20)
+    .setFont("4x5Numeric", 5)
+    .drawString(now, (176 + 5) / 2, 176 - 40);
+}
+function bigTime(h, m) {
+  g.setFont("4x5Numeric", 15)
+    .setFontAlign(1, -1)
+    .setColor(1, 1, 1)
+    .clear()
+    .drawString(h, 176 - 10 + 15, 10)
+    .drawString(m, 176 - 10 + 15, 176 - 10 - 15 * 5);
+}
 
-let cachedClasses;
-let cachedClassesMinute;
+let cachedClasses, cachedClassesMinute;
 function getClasses(minute, classes) {
   if (cachedClassesMinute == minute) return cachedClasses;
   const applicableClasses = classes.filter((classItem) => {
@@ -29,248 +45,30 @@ function getClasses(minute, classes) {
   cachedClassesMinute = minute;
   return cachedClasses;
 }
-function getTime(now) {
-  const hour = now.getHours() % 12 || 12;
-  const minute = now.getMinutes().toString().padStart(2, "0");
-  return hour + ":" + minute;
-}
-// MEMORY: 1791
 
-const buffer = Graphics.createArrayBuffer(240, 80, 1, { msb: true })
-  .setFont("RecursiveClock")
-  .setFontAlign(0, 0);
-function countdown(seconds) {
-  buffer.clear().drawString(seconds, 60, 40);
-  g.setColor(100 / 255, 230 / 255, 250 / 255).drawImage(buffer, 0, 40, { scale: 2 });
-}
-let lastTimeUpdate;
-function clock(str) {
-  buffer.clear().drawString(str, 120, 40);
-  g.setColor(100 / 255, 230 / 255, 250 / 255).drawImage(buffer, 0, 80);
-}
-
-let lastWidgetUpdate;
-function drawWidgets(now, charging) {
-  const padding = 10;
-  g.clearRect(0, 240 - padding - 19, 240, 240 - padding);
-  if (charging) {
-    g.setColor(100 / 255, 200 / 255, 100 / 255);
-  } else {
-    g.setColor(g.theme.fg);
-  }
-  g.drawPoly([
-    padding,
-    240 - padding,
-    padding + 10,
-    240 - padding,
-    padding + 10,
-    240 - padding - 20,
-    padding + 6,
-    240 - padding - 20,
-    padding + 6,
-    240 - padding - 21,
-    padding + 4,
-    240 - padding - 21,
-    padding + 4,
-    240 - padding - 20,
-    padding,
-    240 - padding - 20,
-    padding,
-    240 - padding,
-  ]);
-  const battery = E.getBattery();
-  const batteryHeight = (battery / 100) * 20;
-  for (let currentHeight = 1; currentHeight < batteryHeight; currentHeight++) {
-    const drawingAt = 240 - padding - currentHeight;
-    if (currentHeight > 0.8 * 20) {
-      g.setColor(100 / 255, 200 / 255, 100 / 255);
-    } else if (currentHeight < 0.2 * 20) {
-      g.setColor(200 / 255, 100 / 255, 100 / 255);
-    } else {
-      g.setColor(100 / 255, 100 / 255, 200 / 255);
-    }
-    g.drawLine(11, drawingAt, 19, drawingAt);
-  }
-
-  const monthName = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
-  ][now.getMonth()];
-  const dayOfMonth = now.getDate().toString();
-  g.setColor(g.theme.fg)
-    .setFont("RecursiveText")
-    .setFontAlign(1, -1)
-    .drawString(`${monthName} ${dayOfMonth}`, 230, 240 - padding - 20);
-}
-let lastWeatherUpdate;
-function drawWeather(now) {
-  const datestamp =
-    now.getFullYear() +
-    "-" +
-    (now.getMonth() + 1).toString().padStart(2, "0") +
-    "-" +
-    now.getDate().toString().padStart(2, "0");
-  const currentWeather = weatherData.find((weather) => weather[0] == datestamp);
-  g.clearRect(0, 55, 240, 55 + 25);
-  if (currentWeather) {
-    g.setColor(g.theme.fg).setFont("RecursiveText").setFontAlign(-1, -1);
-    const info = Math.round(currentWeather[2]) + " - " + Math.round(currentWeather[3]);
-    let x = 120 - g.stringWidth(info) / 2;
-    const icon = weatherIcons[currentWeather[1]];
-    if (icon) {
-      x += 19 / 2;
-      g.drawImage(icon, x - 20, 57);
-    }
-    g.drawString(info, x, 55);
-  }
-}
-let lastSubUpdate;
-function drawSub(str) {
-  g.clearRect(0, 160, 240, 160 + 25);
-  g.clearRect(50, 160 + 25, 240 - 50, 160 + 50);
-  g.setColor(g.theme.fg).setFont("RecursiveText").setFontAlign(0, -1).drawString(str, 120, 160);
-}
-
-let countingDown;
-let lastMode;
-function draw(now) {
-  countingDown = false;
+function draw() {
+  const now = new Date();
+  const nowStr = require("locale").time(now, 1).trim();
   if (classDataDay != now.getDay()) {
     classDataDay = now.getDay();
     classData = JSON.parse(
       require("Storage").open(`classes-${classDataDay}.json`, "r").readLine() || "[]"
     );
+    // classData = [{ name: "Math", room: "117", start: 400, end: 1200 }];
+    // classData = [];
   }
   const currentMinute = Math.floor(now.getTime() / 60000) - offset;
   const minuteOfDay = currentMinute % (60 * 24);
   const classes = getClasses(minuteOfDay, classData);
+
   if (classes[0]) {
     const remainingMins = classes[0].end - minuteOfDay;
-    const remainingSeconds = Math.floor(60 - ((now.getTime() / 1000) % 60));
-    // Draw class
-    if (remainingMins == 1) {
-      if (remainingSeconds == 60) {
-        Bangle.buzz(100);
-      }
-      if (remainingSeconds == 30) {
-        Bangle.buzz(300);
-      }
-      if (remainingSeconds == 10) {
-        Bangle.buzz(300);
-      }
-      if (remainingSeconds <= 30) {
-        Bangle.setLCDPower(1);
-      }
-      countdown(remainingSeconds);
-      countingDown = true;
-      lastMode = 2;
-    } else {
-      if (lastMode != 1) {
-        if (lastMode != 0) {
-          g.clear();
-          lastWidgetUpdate = 0;
-          lastWeatherUpdate = 0;
-        }
-        lastSubUpdate = 0;
-      }
-      if (Bangle.isLCDOn()) {
-        clock(`${remainingMins - 1}:${remainingSeconds.toString().padStart(2, "0")}`);
-        if (currentMinute - lastWidgetUpdate > 3) {
-          drawWidgets(now, Bangle.isCharging());
-          lastWidgetUpdate = currentMinute;
-        }
-        if (currentMinute - lastWeatherUpdate > 60) {
-          drawWeather(now);
-          lastWeatherUpdate = currentMinute;
-        }
-        if (currentMinute != lastSubUpdate) {
-          drawSub(
-            `${getTime(now)} - ${Math.floor(classes[0].end / 60) % 12 || 12}:${classes[0].end % 60}`
-          );
-          lastSubUpdate = currentMinute;
-        }
-      }
-      lastMode = 1;
-    }
+    bigCountdown(remainingMins, nowStr);
   } else {
-    if (lastMode != 0) {
-      if (lastMode != 1) {
-        g.clear();
-        lastWidgetUpdate = 0;
-        lastWeatherUpdate = 0;
-      }
-      lastSubUpdate = 0;
-      lastTimeUpdate = 0;
-    }
-    if (Bangle.isLCDOn()) {
-      if (currentMinute != lastTimeUpdate) {
-        clock(getTime(now));
-        lastTimeUpdate = currentMinute;
-      }
-      if (currentMinute - lastWidgetUpdate > 3) {
-        drawWidgets(now, Bangle.isCharging());
-        lastWidgetUpdate = currentMinute;
-      }
-      if (currentMinute - lastWeatherUpdate > 60) {
-        drawWeather(now);
-        lastWeatherUpdate = currentMinute;
-      }
-      if (currentMinute != lastSubUpdate) {
-        drawSub(
-          classes[1]
-            ? `${classes[1].room}: ${classes[1].start - minuteOfDay}m
-${classes[1].name}`
-            : `${Bangle.getHealthStatus("day").steps} steps`
-        );
-        lastSubUpdate = currentMinute;
-      }
-    }
-    lastMode = 0;
+    bigTime(nowStr.split(":")[0], nowStr.split(":")[1]);
   }
+  if (currentTimeout) clearTimeout(currentTimeout);
+  currentTimeout = setTimeout(draw, 60000 - (Date.now() % 60000));
 }
-
-g.clear();
-draw(new Date());
-Bangle.setUI({
-  mode: "clock",
-});
-setInterval(() => {
-  const now = new Date();
-  if (now.getMilliseconds() < 100) {
-    draw(now);
-    console.log(Date.now() - now.getTime());
-  }
-  const minutePortion = now.getTime() % (60 * 1000);
-  if (minutePortion < 100) {
-    g.clearRect(0, 235, 240, 240);
-  }
-  g.setColor(100 / 255, 230 / 255, 250 / 255).fillRect(
-    0,
-    236,
-    (minutePortion / (60 * 1000)) * 240,
-    240
-  );
-  if (countingDown) {
-    g.clearRect(210, 145, 230, 170);
-    g.setColor(1, 1, 1)
-      .setFont("RecursiveText")
-      .setFontAlign(-1, -1)
-      .drawString("." + Math.floor(10 - now.getMilliseconds() / 100), 200, 145);
-  }
-}, 100);
-const lcdDraw = (on) => on && draw(new Date());
-const chargingDraw = (charging) => drawWidgets(new Date(), charging);
-Bangle.on("lcdPower", lcdDraw);
-Bangle.on("charging", chargingDraw);
-Bangle.loadWidgets();
-require("widget_utils").hide();
+draw();
+Bangle.setUI("clock");
