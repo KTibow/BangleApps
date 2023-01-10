@@ -54,7 +54,14 @@ function draw() {
     classData = JSON.parse(
       require("Storage").open(`classes-${classDataDay}.json`, "r").readLine() || "[]"
     );
-    // classData = [{ name: "Math", room: "117", start: 400, end: 1200 }];
+    // classData = [
+    //   {
+    //     name: "Math",
+    //     room: "117",
+    //     start: 400,
+    //     end: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 2,
+    //   },
+    // ];
     // classData = [];
   }
   const currentMinute = Math.floor(now.getTime() / 60000) - offset;
@@ -64,6 +71,19 @@ function draw() {
   if (classes[0]) {
     const remainingMins = classes[0].end - minuteOfDay;
     bigCountdown(remainingMins, nowStr);
+    if (remainingMins == 1) {
+      Bangle.buzz(500);
+      let interval = setInterval(() => {
+        const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000);
+        if (remainingTime == 60) return clearInterval(interval);
+        if (remainingTime <= 30) Bangle.setLCDBrightness(1);
+        g.setFont("4x5Numeric", 19)
+          .setFontAlign(0, -1)
+          .setColor(1, 1, 1)
+          .clear()
+          .drawString(remainingTime, (176 + 19) / 2, 20);
+      }, 1000);
+    }
   } else {
     bigTime(nowStr.split(":")[0], nowStr.split(":")[1]);
   }
