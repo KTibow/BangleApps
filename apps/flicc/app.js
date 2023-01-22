@@ -9,7 +9,7 @@ Graphics.prototype.setFont4x5Numeric = function (scale) {
   );
 };
 const offset = new Date().getTimezoneOffset();
-let classDataDay, classData, currentTimeout;
+let classDataDay, classData, currentTimeout, interval;
 
 function bigCountdown(remaining, now) {
   g.setFont("4x5Numeric", 19)
@@ -27,6 +27,12 @@ function bigTime(h, m) {
     .clear()
     .drawString(h, 176 - 10 + 15, 10)
     .drawString(m, 176 - 10 + 15, 176 - 10 - 15 * 5);
+}
+function countDown() {
+  const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000);
+  if (remainingTime <= 30) Bangle.setLCDPower(1);
+  g.setFont("4x5Numeric", 19).setFontAlign(0, 0).setColor(1, 1, 1).clear().drawString(a, 97.5, 88);
+  if (remainingTime > 0) setTimeout(countDown, 1000 - (Date.now() % 1000));
 }
 
 let cachedClasses, cachedClassesMinute;
@@ -73,16 +79,7 @@ function draw() {
     bigCountdown(remainingMins, nowStr);
     if (remainingMins == 1) {
       Bangle.buzz(500);
-      let interval = setInterval(() => {
-        const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000);
-        if (remainingTime == 60) return clearInterval(interval);
-        if (remainingTime <= 30) Bangle.setLCDBrightness(1);
-        g.setFont("4x5Numeric", 19)
-          .setFontAlign(0, -1)
-          .setColor(1, 1, 1)
-          .clear()
-          .drawString(remainingTime, (176 + 19) / 2, 20);
-      }, 1000);
+      countDown();
     }
   } else {
     bigTime(nowStr.split(":")[0], nowStr.split(":")[1]);
@@ -90,5 +87,7 @@ function draw() {
   if (currentTimeout) clearTimeout(currentTimeout);
   currentTimeout = setTimeout(draw, 60000 - (Date.now() % 60000));
 }
+Bangle.loadWidgets();
+require("widget_utils").hide();
 draw();
 Bangle.setUI("clock");
