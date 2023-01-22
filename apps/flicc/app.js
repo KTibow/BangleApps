@@ -9,7 +9,7 @@ Graphics.prototype.setFont4x5Numeric = function (scale) {
   );
 };
 const offset = new Date().getTimezoneOffset();
-let classDataDay, classData, currentTimeout, interval;
+let classDataDay, classData, currentTimeout;
 
 function bigCountdown(remaining, now) {
   g.setFont("4x5Numeric", 19)
