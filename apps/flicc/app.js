@@ -39,13 +39,13 @@ function bigTime(h, m) {
     .drawString(m, 176 - 8 + 15, 9 + 75 + 9);
 }
 function countDown() {
-  const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000) + 1;
+  const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000);
   if (remainingTime <= 30) Bangle.setLCDPower(1);
   g.setFont("4x5Numeric", 19)
     .setFontAlign(0, 0)
     .setColor(1, 1, 1)
     .clear()
-    .drawString(remainingTime, 97.5, 88);
+    .drawString(remainingTime + 1, 97.5, 88);
   if (remainingTime > 0) setTimeout(countDown, 1000 - (Date.now() % 1000));
 }
 
