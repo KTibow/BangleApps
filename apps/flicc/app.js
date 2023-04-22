@@ -140,14 +140,17 @@ function drawInfo() {
     .drawString(battery, 10, 10 + 30 + 10)
     .setFont("6x8", 3)
     .setFontAlign(-1, 0)
-    .drawString("%", 10 + 40, 10 + 30 + 10 + 13)
+    .drawString("%", 10 + 40 + (battery == 100 ? 20 : 0), 10 + 30 + 10 + 13)
     .setFontAlign(-1, -1);
   if (currentWeather) {
-    g.setFont("4x5Numeric", 5);
     const low = Math.round(currentWeather[2]);
     const high = Math.round(currentWeather[3]);
-    const info = low + " TO " + high + ". " + currentWeather[4].toUpperCase();
-    g.setFont("4x5", 3).drawString(g.wrapString(info, 176).join("\n"), 10, 85);
+    let y = 85;
+    g.setFont("4x5", 3).drawString(`${low} TO ${high}.`, 10, y);
+    for (const line of g.wrapString(currentWeather[1].toUpperCase(), 156)) {
+      y += 18;
+      g.drawString(line, 10, y)
+    }
   }
 }
 Bangle.on("swipe", (x, y) => {
