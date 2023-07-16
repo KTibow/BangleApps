@@ -76,7 +76,7 @@ const APP_KEYS = [
   'id', 'name', 'shortName', 'version', 'icon', 'screenshots', 'description', 'tags', 'type',
   'sortorder', 'readme', 'custom', 'customConnect', 'interface', 'storage', 'data',
   'supports', 'allow_emulator',
-  'dependencies', 'provides_modules'
+  'dependencies', 'provides_modules', 'provides_widgets', "default"
 ];
 const STORAGE_KEYS = ['name', 'url', 'content', 'evaluate', 'noOverwite', 'supports', 'noOverwrite'];
 const DATA_KEYS = ['name', 'wildcard', 'storageFile', 'url', 'content', 'evaluate'];
@@ -92,8 +92,12 @@ const INTERNAL_FILES_IN_APP_TYPE = { // list of app types and files they SHOULD 
 };
 /* These are warnings we know about but don't want in our output */
 var KNOWN_WARNINGS = [
-"App gpsrec data file wildcard .gpsrc? does not include app ID",
-"App widmessages storage file messagewidget is also listed as storage file for app widmsggrid",
+  "App gpsrec data file wildcard .gpsrc? does not include app ID",
+  "App owmweather data file weather.json is also listed as data file for app weather",
+  "App messagegui storage file messagegui is also listed as storage file for app messagelist",
+  "App carcrazy has a setting file but no corresponding data entry (add `\"data\":[{\"name\":\"carcrazy.settings.json\"}]`)",
+  "App loadingscreen has a setting file but no corresponding data entry (add `\"data\":[{\"name\":\"loadingscreen.settings.json\"}]`)",
+  "App trex has a setting file but no corresponding data entry (add `\"data\":[{\"name\":\"trex.settings.json\"}]`)",
 ];
 
 function globToRegex(pattern) {
@@ -123,6 +127,7 @@ apps.forEach((app,appIdx) => {
   if (!fs.existsSync(APPSDIR+app.id)) ERROR(`App ${app.id} has no directory`);
   if (!app.name) ERROR(`App ${app.id} has no name`, {file:metadataFile});
   var isApp = !app.type || app.type=="app";
+  var appTags = app.tags ? app.tags.split(",") : [];
   if (app.name.length>20 && !app.shortName && isApp) ERROR(`App ${app.id} has a long name, but no shortName`, {file:metadataFile});
   if (app.type && !METADATA_TYPES.includes(app.type))
     ERROR(`App ${app.id} 'type' is one one of `+METADATA_TYPES, {file:metadataFile});
@@ -161,15 +166,24 @@ apps.forEach((app,appIdx) => {
         ERROR(`App ${app.id} screenshot file ${screenshot.url} not found`, {file:metadataFile});
     });
   }
-  if (app.readme && !fs.existsSync(appDir+app.readme)) ERROR(`App ${app.id} README file doesn't exist`, {file:metadataFile});
+  if (app.readme) {
+    if (!fs.existsSync(appDir+app.readme))
+      ERROR(`App ${app.id} README file doesn't exist`, {file:metadataFile});
+  } else {
+    let readme = fs.readdirSync(appDir).find(f => f.toLowerCase().includes("readme"));
+    if (readme)
+      ERROR(`App ${app.id} has a README in the directory (${readme}) but it's not linked`, {file:metadataFile});
+  }
   if (app.custom && !fs.existsSync(appDir+app.custom)) ERROR(`App ${app.id} custom HTML doesn't exist`, {file:metadataFile});
   if (app.customConnect && !app.custom) ERROR(`App ${app.id} has customConnect but no customn HTML`, {file:metadataFile});
   if (app.interface && !fs.existsSync(appDir+app.interface)) ERROR(`App ${app.id} interface HTML doesn't exist`, {file:metadataFile});
   if (app.dependencies) {
+    if (app.dependencies.clock_info && !appTags.includes("clkinfo"))
+      WARN(`App ${app.id} uses clock_info but doesn't have clkinfo tag`, {file:metadataFile});
     if (("object"==typeof app.dependencies) && !Array.isArray(app.dependencies)) {
       Object.keys(app.dependencies).forEach(dependency => {
-        if (!["type","app","module"].includes(app.dependencies[dependency]))
-          ERROR(`App ${app.id} 'dependencies' must all be tagged 'type/app/module' right now`, {file:metadataFile});
+        if (!["type","app","module","widget"].includes(app.dependencies[dependency]))
+          ERROR(`App ${app.id} 'dependencies' must all be tagged 'type/app/module/widget' right now`, {file:metadataFile});
         if (app.dependencies[dependency]=="type" && !METADATA_TYPES.includes(dependency))
           ERROR(`App ${app.id} 'type' dependency must be one of `+METADATA_TYPES, {file:metadataFile});
       });
@@ -177,6 +191,8 @@ apps.forEach((app,appIdx) => {
       ERROR(`App ${app.id} 'dependencies' must be an object`, {file:metadataFile});
   }
 
+  if (app.storage.find(f=>f.name.endsWith(".clkinfo.js")) && !appTags.includes("clkinfo"))
+    WARN(`App ${app.id} provides ...clkinfo.js but doesn't have clkinfo tag`, {file:metadataFile});
   var fileNames = [];
   app.storage.forEach((file) => {
     if (!file.name) ERROR(`App ${app.id} has a file with no name`, {file:metadataFile});
@@ -240,12 +256,16 @@ apps.forEach((app,appIdx) => {
         if (a>=0 && b>=0 && a<b)
           WARN(`Clock ${app.id} file calls loadWidgets before setUI (clock widget/etc won't be aware a clock app is running)`, {file:appDirRelative+file.url, line : fileContents.substr(0,a).split("\n").length});
       }
+      // if settings, suggest adding to datafiles
+      if (/\.settings?\.js$/.test(file.name) && (!app.data || app.data.every(d => !d.name || !d.name.endsWith(".json")))) {
+        WARN(`App ${app.id} has a setting file but no corresponding data entry (add \`"data":[{"name":"${app.id}.settings.json"}]\`)`, {file:appDirRelative+file.url});
+      }
     }
     for (const key in file) {
       if (!STORAGE_KEYS.includes(key)) ERROR(`App ${app.id} file ${file.name} has unknown key ${key}`, {file:appDirRelative+file.url});
     }
     // warn if JS icon is the wrong size
-    if (file.name == app.id+".img") {
+    if (file.name == app.id+".img" && file.evaluate) {
         let icon;
         let match = fileContents.match(/^\s*E\.toArrayBuffer\(atob\(\"([^"]*)\"\)\)\s*$/);
         if (match==null) match = fileContents.match(/^\s*atob\(\"([^"]*)\"\)\s*$/);

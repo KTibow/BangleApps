@@ -29,6 +29,7 @@ exports.show = function() {
 
 /// Remove any intervals/handlers/etc that we might have added. Does NOT re-show widgets that were hidden
 exports.cleanup = function() {
+  delete exports.autohide;
   delete Bangle.appRect;
   if (exports.swipeHandler) {
     Bangle.removeListener("swipe", exports.swipeHandler);
@@ -50,24 +51,32 @@ exports.cleanup = function() {
 
 /** Put widgets offscreen, and allow them to be swiped
 back onscreen with a downwards swipe. Use .show to undo.
-Bangle.js 2 only at the moment. */
-exports.swipeOn = function() {
+First parameter controls automatic hiding time, 0 equals not hiding at all.
+Default value is 2000ms until hiding.
+Bangle.js 2 only at the moment. On Bangle.js 1 widgets will be hidden permanently.
+
+Note: On Bangle.js 1 is is possible to draw widgets in an offscreen area of the LCD
+and use Bangle.setLCDOffset. However we can't detect a downward swipe so how to
+actually make this work needs some thought.
+*/
+exports.swipeOn = function(autohide) {
+  if (process.env.HWVERSION!==2) return exports.hide();
   exports.cleanup();
   if (!global.WIDGETS) return;
-
+  exports.autohide=autohide===undefined?2000:autohide;
   /* TODO: maybe when widgets are offscreen we don't even
   store them in an offscreen buffer? */
 
   // force app rect to be fullscreen
   Bangle.appRect = { x: 0, y: 0, w: g.getWidth(), h: g.getHeight(), x2: g.getWidth()-1, y2: g.getHeight()-1 };
   // setup offscreen graphics for widgets
-  let og = Graphics.createArrayBuffer(g.getWidth(),24,16,{msb:true});
+  let og = Graphics.createArrayBuffer(g.getWidth(),26,16,{msb:true});
   og.theme = g.theme;
   og._reset = og.reset;
   og.reset = function() {
     return this._reset().setColor(g.theme.fg).setBgColor(g.theme.bg);
   };
-  og.reset().clearRect(0,0,og.getWidth(),og.getHeight());
+  og.reset().clearRect(0,0,og.getWidth(),23).fillRect(0,24,og.getWidth(),25);
   let _g = g;
   let offset = -24; // where on the screen are we? -24=hidden, 0=full visible
 
@@ -79,7 +88,7 @@ exports.swipeOn = function() {
   }
 
   for (var w of global.WIDGETS) {
-    if (w._draw) return; // already hidden
+    if (w._draw) continue; // already hidden
     w._draw = w.draw;
     w.draw = function() {
       g=og;
@@ -125,13 +134,16 @@ exports.swipeOn = function() {
       clearTimeout(exports.hideTimeout);
       delete exports.hideTimeout;
     }
-    if (ud>0 && offset<0) anim(4, function() {
+    let cb;
+    if (exports.autohide > 0) cb = function() {
       exports.hideTimeout = setTimeout(function() {
         anim(-4);
-      }, 2000);
-    });
+      }, exports.autohide);
+    }
+    if (ud>0 && offset<0) anim(4, cb);
     if (ud<0 && offset>-24) anim(-4);
 
   };
   Bangle.on("swipe", exports.swipeHandler);
+  Bangle.drawWidgets();
 };
