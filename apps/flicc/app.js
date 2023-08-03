@@ -74,7 +74,8 @@ function draw() {
   if (classDataDay != now.getDay()) {
     classDataDay = now.getDay();
     classData = JSON.parse(
-      require("Storage").open(`classes-${classDataDay}.json`, "r").readLine() || "[]"
+      require("Storage").open(`classes-${classDataDay}.json`, "r").readLine() ||
+        "[]"
     );
     // classData = [
     //   {
@@ -128,28 +129,34 @@ function drawInfo() {
     (now.getMonth() + 1).toString().padStart(2, "0") +
     "-" +
     now.getDate().toString().padStart(2, "0");
-  const weatherData = JSON.parse(require("Storage").open("weather.json", "r").readLine() || "[]");
+  const weatherData = JSON.parse(
+    require("Storage").open("weather.json", "r").readLine() || "[]"
+  );
   const currentWeather = weatherData.find((weather) => weather[0] == datestamp);
   g.setFont("4x5", 6)
     .setFontAlign(-1, -1)
     .clear()
     .setColor(0, 0.5, 1)
     .setColor(1, 1, 1)
-    .drawString(`${monthName} ${dayOfMonth}`, 10, 10)
-    .setFont("4x5", 5)
-    .drawString(battery, 10, 10 + 30 + 10)
-    .setFont("6x8", 3)
-    .setFontAlign(-1, 0)
-    .drawString("%", 10 + 40 + (battery == 100 ? 20 : 0), 10 + 30 + 10 + 13)
-    .setFontAlign(-1, -1);
+    .drawString(`${monthName} ${dayOfMonth}`, 0, 20);
+  g.setColor(1, 1, 1)
+    .fillRect(0, 0, 176, 16)
+    .setColor(0.5, 1, 0.5)
+    .fillRect(0, 0, 176 * (battery / 100), 16)
+    .setColor(0, 0, 0)
+    .setFont("4x5", 3)
+    .setFontAlign(0, -1)
+    .drawString(battery, 176 / 2, 1);
   if (currentWeather) {
     const low = Math.round(currentWeather[2]);
     const high = Math.round(currentWeather[3]);
-    let y = 85;
-    g.setFont("4x5", 3).drawString(`${low} TO ${high}.`, 10, y);
+    let y = 55;
+    g.setFont("4x5", 3)
+      .setFontAlign(-1, -1)
+      .drawString(`${low} TO ${high}.`, 10, y);
     for (const line of g.wrapString(currentWeather[1].toUpperCase(), 156)) {
       y += 18;
-      g.drawString(line, 10, y)
+      g.drawString(line, 10, y);
     }
   }
 }
