@@ -133,13 +133,8 @@ function drawInfo() {
     require("Storage").open("weather.json", "r").readLine() || "[]"
   );
   const currentWeather = weatherData.find((weather) => weather[0] == datestamp);
-  g.setFont("4x5", 6)
-    .setFontAlign(-1, -1)
-    .clear()
-    .setColor(0, 0.5, 1)
+  g.clear()
     .setColor(1, 1, 1)
-    .drawString(`${monthName} ${dayOfMonth}`, 0, 20);
-  g.setColor(1, 1, 1)
     .fillRect(0, 0, 176, 16)
     .setColor(0.5, 1, 0.5)
     .fillRect(0, 0, 176 * (battery / 100), 16)
@@ -147,16 +142,18 @@ function drawInfo() {
     .setFont("4x5", 3)
     .setFontAlign(0, -1)
     .drawString(battery, 176 / 2, 1);
+  g.setFont("4x5", 6)
+    .setFontAlign(-1, -1)
+    .setColor(1, 1, 1)
+    .drawString(`${monthName} ${dayOfMonth}`, 0, 20);
   if (currentWeather) {
     const low = Math.round(currentWeather[2]);
     const high = Math.round(currentWeather[3]);
-    let y = 55;
-    g.setFont("4x5", 3)
-      .setFontAlign(-1, -1)
-      .drawString(`${low} TO ${high}.`, 10, y);
-    for (const line of g.wrapString(currentWeather[1].toUpperCase(), 156)) {
+    let y = 60;
+    g.setFont("4x5", 3).drawString(`${low} TO ${high}.`, 0, y);
+    for (const line of g.wrapString(currentWeather[1].toUpperCase(), 176)) {
       y += 18;
-      g.drawString(line, 10, y);
+      g.drawString(line, 0, y);
     }
   }
 }
