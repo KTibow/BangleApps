@@ -40,7 +40,7 @@ function bigTime(h, m) {
 }
 function countDown() {
   const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000);
-  if (remainingTime < 30) Bangle.setLCDPower(1);
+  Bangle.setLCDPower(1);
   g.setFont("4x5Numeric", 19)
     .setFontAlign(0, 0)
     .setColor(1, 1, 1)
@@ -59,7 +59,8 @@ function getClasses(minute, classes) {
     return classItem.start <= minute;
   });
   const nextClass = applicableClasses.find((classItem) => {
-    return classItem.start > minute;
+    const timeDifference = classItem.start - minute;
+    return timeDifference < 4;
   });
   cachedClasses = [activeClass, nextClass];
   cachedClassesMinute = minute;
@@ -81,7 +82,7 @@ function draw() {
     //   {
     //     name: "Math",
     //     room: "117",
-    //     start: 400,
+    //     start: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 1,
     //     end: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 2,
     //   },
     // ];
@@ -99,7 +100,30 @@ function draw() {
       countDown();
     }
   } else {
-    bigTime(nowStr.split(":")[0], nowStr.split(":")[1]);
+    if (classes[1]) {
+      g.setFont("4x5Numeric", 10)
+        .setFontAlign(0, 0)
+        .setColor(1, 1, 1)
+        .clear()
+        .drawString(nowStr, 176 / 2, 70 / 2)
+        .fillRect(0, 70, 176, 176);
+      g.setColor(0, 0, 0)
+        .setFont("4x5", 5)
+        .setFontAlign(0, 1)
+        .drawString(classes[1].name.toUpperCase(), 176 / 2, 176 - 23 - 25 * 2)
+        .drawString(
+          "ROOM " + classes[1].room.toUpperCase(),
+          176 / 2,
+          176 - 16 - 25
+        )
+        .drawString(
+          "IN " + (classes[1].start - minuteOfDay) + " MIN",
+          176 / 2,
+          176 - 8
+        );
+    } else {
+      bigTime(nowStr.split(":")[0], nowStr.split(":")[1]);
+    }
   }
   if (currentTimeout) clearTimeout(currentTimeout);
   currentTimeout = setTimeout(draw, 60000 - (Date.now() % 60000));
