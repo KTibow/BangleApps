@@ -60,7 +60,7 @@ function getClasses(minute, classes) {
   });
   const nextClass = applicableClasses.find((classItem) => {
     const timeDifference = classItem.start - minute;
-    return timeDifference < 4;
+    return timeDifference <= 5;
   });
   cachedClasses = [activeClass, nextClass];
   cachedClassesMinute = minute;
@@ -82,8 +82,8 @@ function draw() {
     //   {
     //     name: "Math",
     //     room: "117",
-    //     start: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 1,
-    //     end: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 2,
+    //     start: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 4,
+    //     end: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 6,
     //   },
     // ];
     // classData = [];
