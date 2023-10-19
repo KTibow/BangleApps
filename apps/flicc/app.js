@@ -31,12 +31,12 @@ function bigCountdown(remaining, now) {
     .drawString(now, (176 + 5) / 2, 176 - 40);
 }
 function bigTime(h, m) {
-  g.setFont("4x5Numeric", 15)
-    .setFontAlign(1, -1)
+  g.setFont("4x5Numeric", 16)
+    .setFontAlign(-1, -1)
     .setColor(1, 1, 1)
     .clear()
-    .drawString(h, 176 - 8 + 15, 8)
-    .drawString(m, 176 - 8 + 15, 9 + 75 + 9);
+    .drawString(h, 5, 5)
+    .drawString(m, 5, 176 - 80 - 5);
 }
 function countDown() {
   const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000);
@@ -143,7 +143,7 @@ function drawInfo() {
     "SEP",
     "OCT",
     "NOV",
-    "DEV",
+    "DEC",
   ][now.getMonth()];
   const dayOfMonth = now.getDate().toString();
   const battery = E.getBattery();
