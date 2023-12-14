@@ -101,26 +101,22 @@ function draw() {
     }
   } else {
     if (classes[1]) {
-      g.setFont("4x5Numeric", 10)
-        .setFontAlign(0, 0)
-        .setColor(1, 1, 1)
-        .clear()
-        .drawString(nowStr, 176 / 2, 70 / 2)
-        .fillRect(0, 70, 176, 176);
-      g.setColor(0, 0, 0)
+      // 1. class name, 25 high
+      // 2. padding, 5 high
+      // 3. room, 25 high
+      // 4. padding, 5 high
+      // 5. countdown, 34 high
+      // total; 94 high
+      g.setColor(1, 1, 1)
         .setFont("4x5", 5)
-        .setFontAlign(0, 1)
-        .drawString(classes[1].name.toUpperCase(), 176 / 2, 176 - 23 - 25 * 2)
-        .drawString(
-          "ROOM " + classes[1].room.toUpperCase(),
-          176 / 2,
-          176 - 16 - 25
-        )
-        .drawString(
-          "IN " + (classes[1].start - minuteOfDay) + " MIN",
-          176 / 2,
-          176 - 8
-        );
+        .setFontAlign(0, -1)
+        .clear()
+        .drawString(classes[1].name.toUpperCase(), 176 / 2 + 2, 41)
+        .drawString(classes[1].room.toUpperCase(), 176 / 2 + 2, 71)
+        .fillCircle(176 / 2, 118, 17)
+        .setColor(0, 0, 0)
+        .setFontAlign(0, 0)
+        .drawString(classes[1].start - minuteOfDay, 176 / 2 + 2, 118);
     } else {
       bigTime(nowStr.split(":")[0], nowStr.split(":")[1]);
     }
