@@ -1,7 +1,6 @@
 ///<reference path="../../typescript/types/main.d.ts" />
 
 Graphics.prototype.setFontgooglesansflex = function () {
-  // Actual height 78 (79 - 2)
   return this.setFontCustom(
     E.toString(
       require("heatshrink").decompress(
@@ -13,6 +12,20 @@ Graphics.prototype.setFontgooglesansflex = function () {
     46,
     80,
     80 | 65536
+  );
+};
+Graphics.prototype.setFontinflate = function () {
+  return this.setFontCustom(
+    E.toString(
+      require("heatshrink").decompress(
+        atob(
+          "AH4A/AAMD+AKIh/4BREf/gKIn/+BSn/BVQ2Jj4KKMRJ4KgfgaH4A/ADEOBRN+V5LQJh4KJv4KIgf/BREf/7mI///4AJGg4fJn//+AJGgIfBwBUH//8KhH/8BUI/50ID7x0/OixUID4JUHL4T/ID5IKBD5EAOhAABOg4A/ACTxBXg7mBAAK9GcwIABPwrmCAASUEYwIADVQgfDEIwJEZYgqFFghKDAAZOCGoo3ENQIAFOARAFIQl/BQxCCBI//wBLHJoQKKgYKI8BhHAAPwBRRsHNwQKVQQ6ECBSqYHBQ2AT4n+BQT3DNIQKD+DsFBQbgCBRbBCBQfABSggKGxRMKMRQ3DAoQKEV7gKKfkBbCAA3wBRPggYKJQ4QAG4AKJwCIDBQ9/BQ6eBTQ/+BQKEH/gKBNw7LCLA7sCJo7VCIQ4JCIQxACe4iXDBQYsFFQYhFD4hOFJQQAEMoJfCAH4ARPwgAEg7KCNY5/GRogKIYoOABQ6WBBQ6iCBQ7PCBQ6sBBREfBSjkCBQ5WBMRDuCBI0BBIKDHBQSZHNgX4Hga0CNgQFCHYXgBQpbCGIR3C+AkCAAWABQX4DwQAC8AbDAAvwBRP4BRP8RoQKR/wK/BQJiJBRX8TIQKHXQSOHWwoKEeIQAGbgLCFAAXAcQgAEfohAFBQMAFRAABLIoUDBYvwBIgA/AH4Akv4JIgbqCAAzmBaoYFBwDODZgc/CAcf//4ewgFCB4IECGAP//xACBQYqBAAIaD/glDAAI3BBQglBAAPAgIKEEoIKIBIRNBHYQKBB4QAB+AKEIAYKBAoQKBOIIAC/AKEJYYKBCAQKBJYYKGJYYGBBQR4BBIYKBEwXwJYgKFKAQAC/wKC8BWEBQnABRRhEBQJSCwBhEBQphEBQnAMIgKFBIgKE8YKJAAwKH+YKJ8IKJ4IKJwIKJTgQKG/wKJ/gKDRQoKK/AKJaYYKG8AKDYIvABQX8BQuABQbiFgAKI/wKEAYQFCBRP4BQf4gJWEBQkAJYgKFfIeABQYaBTQRABgAnCBQJjCIAIKFDQXgBQIyCAoQqDAAIyBBQUPDIIKEIwIAGHoIbDAAi3BBI8Ag5RCAA0BNgIA/AFUHBRN/X4YAFeASHBSQjWBcATmBWYcHewazBZIYKBXQTJBGAYbBDgTfBcwYKEAYK/DBQXAgIKFGIInBIoIKPEAXgIoQKG+AKKAYQKG/AKNMQIMBE4ZFC+BFBBQ5FCwAKC/gKC4AkB4BeCBQgDBNIf8UYIdBAYIuCBSX4UAX+BQS9CBUH8a4QKZwBTCBSPABRPhAwRMGAAaDCBQ4AC/yvCBSLFDBSTiBBTv4g4KUOIRcG+AKKSQRcG8AKJ4CzCGAJREBQLjBEoIKEwEAWAXwKIkAgAnC8BGEBQIcC4A7EBQIcCAgI7DAoIcBDQQ7DAoIGBB4QwCJYIsCAgQlEAAo3BGoQAGh5gBAH4AqmB3JbIQAGagQJGbYS0CAAi5CUg7PCaoS4FAAQKFZwQKHFQQABJooqCBQwqEfghVDBQ51BBRE/BRI1EBQg1FBQg1FTQhrEBQprEEApAFBQhAFBQgJFBQZAGBQZAGBQaBFUghLGBQZLD/glCBQRLD8A7CBQTiEBQRWF/gKFUQfwBQphDSgI2CMIoKEggKE+BxE4BsHDYQKJ+B3HAAP4BRP8BRTZGBRv+BX4KBMRIKK/iZJBRX4YAivFcwbFGgAGEKQP4bYMALAeAI4LOBfomAgAKCBIIAFBQP4BQ4rCBSQgB/gKSPwIgIBRR+BOwIAHMwQA/ADcEAgcHMYZ/BZgd/Agn//wEBgKlDAgLnDR4P/eIn/4D3FFQIABE4IFCBQLLBAAK3BAoQaBGoIABGQLyBXgQKKBIRNCBQXwJYZICDYXwKAQKG/AKKMIYKQ/gKFwAKDO4YKYMQX8RoYKF/wKGAwQKG4AKVHoX+F4XvBRODBROBBQR/CBQa9C8AKgZgQ2G+AVC/gKQa4YKDwC2FBQ3/XQYKGAAX4BRzjCBTHwBQYDCBQbQCBQ3gBQbfFBRT1DwB1Ceo2ARYQACCIYKGgAKCgDCCBQYRCgDRCZ4QKCAYMABQf8DgQKCPIf4DgQOBgBuD+AcCAYRYD4AGBj4DCJoYFBAAhCCEwQAFG4ImCAAosBBI4A/AEcDVoKOJ8AKGXQSZGcwiXHYoofFFgwfEeIQACbIY3Gj4KE/wqIIQoJF/+AOgQKJGopYEGopYEGowKDv4KG+BAIBQR2FPIhAHBQShEBQpLHR4QKKKw4KCKw4KCBI4KBZowxC/wKF8BdC/ytF4ARC/xsFwAKKHoQKGT4f+QQoKPKAX9FYwKC+BBGBQaGBBQ/gMQRpCBQ34HoQKD4CZFBSv8BQWABSjTGBRRQC/z0GBQT/H+C6B/EAn4KFPgPwBQ4zB4EAHQQAC8ASBYIIKFCQIACBRTfFagIACIoLqFBRrNCVwQKEcYSNCBQiPEOgIAEQgZhBAAhYDKwhCFBIo3DGowABTYKXBAA5VFAH4Ash6zGVYaTIYIKJJWhC1DBRWAA4uAgYKGdIPgBQTrEAwP4dgQKDAwQKHD4LzBh4KFv4GB/wKFI4QKHEwQKBEgQKCCAQKHn4KJBIQKGGoYKGGoZXBEoQKBGoYKERwIaCPAQKENYQKHBIf/+AKDIAivBBQZAEHoIKDIAgGBBQZAEdoIKCIAv+BQgUE/gKDIAvwBQZAF8AKDIAqJBWgZAFBRBABBRBABBRBABBRBABBRCpBBQ41CZYo1EBQ41CBQ5rBBRA1CBQw1DBQ34BQaWFMAQKHFQYKFFQkAYQgqEBQoqEBQoqEgEDFRAKEFQsAgKAGAAbsEBQ6rDAAjGBJQqPEJQpYDD5AA/ACcDOREAv6zGWoipDg/we4ghDDYaeB/4QCYwSaBv7VEeQQbBZQSgCEwXwcAYmCXQIbBewbhCGIQKFGIn8F4QKDEwYKEMYIKDHQRHCHgf/BQoxEBQnwBQmPBQgxEAAgKK/AKKGIgKP/gKKTAQKn/wKGwAKCYgTYEYIIKDU4TuBA4IKCCIIKDFAIKCAwIcB/AKmJAY2GIJX/wZiDK4h4ORxYKYYpb8VBRP4g4KZIwn4gYFDGAnwdwRnBBR/gW4QKBGAgKBZoJcBBQnABQg7EwDJCIwwKBGQQ7E/8AgAnCHYoKBDgQwFBQIRCAYIwDBQUfB4SECEoIAFGAQlBAApCBGoQAGj4fHAH4AfOgJpIYwKqDAAi2CSozXD+AKFdoYhGWoTSDVIgKDwAKEcIQ3HIAQKMMgoJDJopWDBQxWDAAP4BRl+MIoKCA4PABQ5pB8AKFQgJpB+CtBBQoZCBQxTC/iNEAwJICBQ3+GQQKK/wKGGQX+VwgKLE4YKO8AHB/gGCBQaHCBQ+AL4IKHZIX8cIQKG/w6DBQpFEBSn4IIoKIagvwNobJFBQZUDAAR/CAA/ABROABSkAHorTDBRP8BRP4gBpFMIYKJ4EARQpLDBRMAVYxADAAJAIBRHgBQShFIAQABWAQ1FAAKPFGoZ5GNYIACNwpgBAARYEUIIAED5A3FD4gsENQYAEn4pGAH4AlngDCjgJEUoKMBAYLbDRwTtBgamFaIIGBAYKcEV4IGBAYLnEfoIGBAYKoEv4GCBRQDB/7mGBRbpGAwYKQOYIKeGxxMKMQ4GDBRCOIUhS2DXQzMDaAzmDAYLmEfAb8GgF+AYU+BIgAp"
+        )
+      )
+    ),
+    46,
+    atob("IiZJOERFSERJQklHIw=="),
+    88 | 65536
   );
 };
 Graphics.prototype.setFont4x5Numeric = function () {
@@ -37,13 +50,23 @@ const offset = new Date().getTimezoneOffset();
 let classDataDay, classData, currentTimeout;
 
 function bigCountdown(remaining, now) {
-  g.setFont("4x5Numeric", 19)
+  g.setFont("inflate")
     .setFontAlign(0, -1)
     .setColor(1, 1, 1)
     .clear()
-    .drawString(remaining, (176 + 19) / 2, 20)
+    .drawString(remaining, 176 / 2, 20)
     .setFont("4x5Numeric", 5)
     .drawString(now, (176 + 5) / 2, 176 - 40);
+}
+function countDown() {
+  const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000);
+  Bangle.setLCDPower(1);
+  g.setFont("inflate")
+    .setFontAlign(0, 0)
+    .setColor(1, 1, 1)
+    .clear()
+    .drawString(remainingTime + 1, 176 / 2, 176 / 2);
+  if (remainingTime >= 1) setTimeout(countDown, 1000 - (Date.now() % 1000));
 }
 function clearSpace1(char, x, y) {
   "jit";
@@ -115,16 +138,6 @@ function bigTime(h, m) {
     176 / 2 + 36
   );
 }
-function countDown() {
-  const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000);
-  Bangle.setLCDPower(1);
-  g.setFont("4x5Numeric", 19)
-    .setFontAlign(0, 0)
-    .setColor(1, 1, 1)
-    .clear()
-    .drawString(remainingTime + 1, 97.5, 88);
-  if (remainingTime > 1) setTimeout(countDown, 1000 - (Date.now() % 1000));
-}
 
 let cachedClasses, cachedClassesMinute;
 function getClasses(minute, classes) {
@@ -159,8 +172,8 @@ function draw() {
     //   {
     //     name: "Math",
     //     room: "117",
-    //     start: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 4,
-    //     end: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 6,
+    //     start: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 1,
+    //     end: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 4,
     //   },
     // ];
     // classData = [];
@@ -179,21 +192,22 @@ function draw() {
   } else {
     if (classes[1]) {
       // 1. class name, 25 high
-      // 2. padding, 5 high
+      // 2. padding, 10 high
       // 3. room, 25 high
-      // 4. padding, 5 high
-      // 5. countdown, 34 high
-      // total; 94 high
+      // 4. padding, 10 high
+      // 5. countdown, 50 high
+      // total; 120 high
       g.setColor(1, 1, 1)
         .setFont("4x5", 5)
         .setFontAlign(0, -1)
         .clear()
-        .drawString(classes[1].name.toUpperCase(), 176 / 2 + 2, 41)
-        .drawString(classes[1].room.toUpperCase(), 176 / 2 + 2, 71)
-        .fillCircle(176 / 2, 118, 17)
+        .drawString(classes[1].name.toUpperCase(), 176 / 2 + 2, 28)
+        .drawString(classes[1].room.toUpperCase(), 176 / 2 + 2, 63)
+        .fillCircle(176 / 2, 123, 25)
         .setColor(0, 0, 0)
         .setFontAlign(0, 0)
-        .drawString(classes[1].start - minuteOfDay, 176 / 2 + 2, 118);
+        .setFont("4x5Numeric", 5)
+        .drawString(classes[1].start - minuteOfDay, 176 / 2 + 2, 123);
     } else {
       bigTime(nowStr.split(":")[0], nowStr.split(":")[1]);
     }
