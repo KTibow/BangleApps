@@ -45,19 +45,54 @@ function bigCountdown(remaining, now) {
     .setFont("4x5Numeric", 5)
     .drawString(now, (176 + 5) / 2, 176 - 40);
 }
-function clearSpace(char, x, y) {
+function clearSpace1(char, x, y) {
   "jit";
   g.setColor(0, 0, 0);
-  g.drawString(char, x - 2, y - 2);
-  g.drawString(char, x, y - 4);
-  g.drawString(char, x + 2, y - 2);
   g.drawString(char, x - 4, y);
-  g.drawString(char, x + 4, y);
-  g.drawString(char, x - 2, y + 2);
-  g.drawString(char, x, y + 4);
-  g.drawString(char, x + 2, y + 2);
+  g.drawString(char, x, y - 4);
+  if (char == "1") {
+    g.drawString(char, x - 2, y - 2);
+    g.drawString(char, x - 2, y + 2);
+  }
+  if (char == "2") {
+    g.drawString(char, x - 2, y + 2);
+    g.drawString(char, x, y + 4);
+  }
+  if (char == "3") {
+    g.drawString(char, x - 2, y - 2);
+    g.drawString(char, x - 2, y + 2);
+  }
+  if (char == "5") {
+    g.drawString(char, x - 2, y - 2);
+    g.drawString(char, x - 2, y + 2);
+  }
+  if (char == "7") {
+    g.drawString(char, x - 2, y + 2);
+    g.drawString(char, x, y + 4);
+  }
+  if (char == "9") {
+    g.drawString(char, x, y + 4);
+  }
+}
+function clearSpace2(char, x, y) {
+  "jit";
+  g.setColor(0, 0, 0);
+  g.drawString(char, x - 4, y);
+  g.drawString(char, x, y - 4);
+  if (char != "0") g.drawString(char, x - 2, y - 2);
+}
+function clearSpace3(char, x, y, isBlocked) {
+  "jit";
+  g.setColor(0, 0, 0);
+  g.drawString(char, x - 4, y);
+  g.drawString(char, x, y - 4);
+  if (char == "4" || (isBlocked && char != "0"))
+    g.drawString(char, x - 2, y - 2);
+  if (isBlocked && char != "0") g.drawString(char, x - 2, y + 2);
+  if (isBlocked && char != "0") g.drawString(char, x, y + 4);
 }
 function bigTime(h, m) {
+  "jit";
   const hPad = h.toString().padStart(2, "0");
   g.setFont("googlesansflex", 1).setFontAlign(0, 0).clear();
 
@@ -67,13 +102,13 @@ function bigTime(h, m) {
     176 / 2 - 36
   );
 
-  clearSpace(hPad[1], 176 / 2 + 30, 176 / 2 - 36);
+  if (hPad[0] != "1") clearSpace1(hPad[1], 176 / 2 + 30, 176 / 2 - 36);
   g.setColor(1, 1, 1).drawString(hPad[1], 176 / 2 + 30, 176 / 2 - 36);
 
-  clearSpace(m[0], 176 / 2 - 30, 176 / 2 + 36);
+  clearSpace2(m[0], 176 / 2 - 30, 176 / 2 + 36);
   g.setColor(1, 1, 1).drawString(m[0], 176 / 2 - 30, 176 / 2 + 36);
 
-  clearSpace(m[1], 176 / 2 + 30, 176 / 2 + 36);
+  clearSpace3(m[1], 176 / 2 + 30, 176 / 2 + 36, m[0] != "1");
   g.setColor(83 / 255, 100 / 255, 1).drawString(
     m[1],
     176 / 2 + 30,
@@ -225,6 +260,6 @@ Bangle.on("swipe", (x, y) => {
   else drawInfo();
 });
 Bangle.loadWidgets();
+Bangle.setUI("clock");
 require("widget_utils").hide();
 draw();
-Bangle.setUI("clock");
