@@ -66,7 +66,15 @@ function countDown() {
     .setColor(1, 1, 1)
     .clear()
     .drawString(remainingTime + 1, 176 / 2, 176 / 2);
-  if (remainingTime >= 1) setTimeout(countDown, 1000 - (Date.now() % 1000));
+  if (remainingTime > 1) setTimeout(countDown, 1000 - (Date.now() % 1000));
+  else
+    setTimeout(() => {
+      g.setFont("inflate")
+        .setFontAlign(0, 0)
+        .setColor(1, 1, 1)
+        .clear()
+        .drawString("1", 176 / 2, 176 / 2);
+    }, 1000 - (Date.now() % 1000));
 }
 function clearSpace1(char, x, y) {
   "jit";
