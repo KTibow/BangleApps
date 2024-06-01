@@ -148,7 +148,7 @@ function bigTime(h, m) {
   g.setColor(0, 1, 0).setFont("shantellsans");
   if (m[0] == "1" || m[1] == "1") {
     g.setFontAlign(1, -1);
-    g.drawString(m, 176, 55);
+    g.drawString(m, 170, 55);
   } else {
     g.setFontAlign(0, -1);
     g.drawString(m, 88, 55);
@@ -289,7 +289,7 @@ Bangle.on("swipe", (x, y) => {
   if (infoShown) draw();
   else drawInfo();
 });
-Bangle.loadWidgets();
 Bangle.setUI("clock");
+Bangle.loadWidgets();
 require("widget_utils").hide();
 draw();
