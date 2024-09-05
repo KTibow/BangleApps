@@ -138,7 +138,7 @@ function countDown() {
         .setColor(1, 1, 1)
         .clear()
         .drawString("1", 176 / 2, 176 / 2);
-    }, 1000 - (Date.now() % 1000));
+    }, 900 - (Date.now() % 1000));
 }
 function bigTime(h, m) {
   g.setColor(0.5, 1, 0.5);
@@ -166,7 +166,7 @@ function getClasses(minute, classes) {
   });
   const nextClass = applicableClasses.find((classItem) => {
     const timeDifference = classItem.start - minute;
-    return timeDifference <= 5;
+    return timeDifference <= 8;
   });
   cachedClasses = [activeClass, nextClass];
   cachedClassesMinute = minute;
