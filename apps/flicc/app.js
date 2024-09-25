@@ -113,59 +113,6 @@ Graphics.prototype.setFont4x5 = function () {
 const offset = new Date().getTimezoneOffset();
 let classDataDay, classData, currentTimeout;
 
-const germanNumbers = [
-  "NULL",
-  "EINS",
-  "ZWEI",
-  "DREI",
-  "VIER",
-  "FUNF",
-  "SECHS",
-  "SIEBEN",
-  "ACHT",
-  "NEUN",
-  "ZEHN",
-  "ELF",
-  "ZWOLF",
-  "DREIZEHN",
-  "VIERZEHN",
-  "FUNFZEHN",
-  "SECHZEHN",
-  "SIEBZEHN",
-  "ACHTZEHN",
-  "NEUNZEHN",
-  "ZWANZIG",
-  "EINUNDZWANZIG",
-  "ZWEIUNDZWANZIG",
-  "DREIUNDZWANZIG",
-  "VIERUNDZWANZIG",
-  "FUNFUNDZWANZIG",
-  "SECHSUNDZWANZIG",
-  "SIEBENUNDZWANZIG",
-  "ACHTUNDZWANZIG",
-  "NEUNUNDZWANZIG",
-  "DREISSIG",
-  "EINUNDDREISSIG",
-  "ZWEIUNDDREISSIG",
-  "DREIUNDDREISSIG",
-  "VIERUNDDREISSIG",
-  "FUNFUNDDREISSIG",
-  "SECHSUNDDREISSIG",
-  "SIEBENUNDDREISSIG",
-  "ACHTUNDDREISSIG",
-  "NEUNUNDDREISSIG",
-  "VIERZIG",
-  "EINUNDVIERZIG",
-  "ZWEIUNDVIERZIG",
-  "DREIUNDVIERZIG",
-  "VIERUNDVIERZIG",
-  "FUNFUNDVIERZIG",
-  "SECHSUNDVIERZIG",
-  "SIEBENUNDVIERZIG",
-  "ACHTUNDVIERZIG",
-  "NEUNUNDVIERZIG",
-  "FUNFZIG",
-];
 function bigCountdown(remaining, now) {
   g.setFont("inflate")
     .setFontAlign(0, -1)
@@ -174,9 +121,6 @@ function bigCountdown(remaining, now) {
     .drawString(remaining, 176 / 2, 20)
     .setFont("4x5Numeric", 5)
     .drawString(now, (176 + 5) / 2, 176 - 40);
-  if (remaining <= 50) {
-    g.setFont("4x5", 4).drawString(germanNumbers[remaining], 176 / 2, 110);
-  }
 }
 function countDown() {
   const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000);
