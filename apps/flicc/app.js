@@ -69,7 +69,7 @@ Graphics.prototype.setFontN57 = function () {
     E.toString(
       require("heatshrink").decompress(
         atob(
-          "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"
+          "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"
         )
       )
     ),
@@ -104,50 +104,6 @@ Graphics.prototype.setFont4x5 = function () {
     5
   );
 };
-function getRedFillPoints(centerX, centerY, xFactor, angle) {
-  // angle is 0-360, where 0 means empty and 360 means full
-  // we start at top-center and go clockwise
-
-  const offset = 200; // large enough to go way off screen
-
-  if (angle <= 45) {
-    // Just a triangle from center up and to the right
-    return [
-      centerX,
-      centerY, // center
-      centerX,
-      0, // top center
-      centerX + offset * xFactor * Math.cos(((angle - 90) * Math.PI) / 180),
-      centerY + offset * Math.sin(((angle - 90) * Math.PI) / 180),
-    ];
-  } else if (angle <= 135) {
-    // Need an extra point to catch the top-right corner
-    return [
-      centerX,
-      centerY, // center
-      centerX,
-      0, // top center
-      centerX + offset,
-      0, // far top right
-      centerX + offset * xFactor * Math.cos(((angle - 90) * Math.PI) / 180),
-      centerY + offset * Math.sin(((angle - 90) * Math.PI) / 180),
-    ];
-  } else if (angle <= 225) {
-    // Need another point to catch the bottom-right corner
-    return [
-      centerX,
-      centerY, // center
-      centerX,
-      0, // top center
-      centerX + offset,
-      0, // far top right
-      centerX + offset,
-      offset, // far bottom right
-      centerX + offset * xFactor * Math.cos(((angle - 90) * Math.PI) / 180),
-      centerY + offset * Math.sin(((angle - 90) * Math.PI) / 180),
-    ];
-  }
-}
 const offset = new Date().getTimezoneOffset();
 let classDataDay, classData, currentTimeout;
 
@@ -227,7 +183,7 @@ function draw() {
     //   {
     //     name: "Math",
     //     room: "117",
-    //     start: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 2,
+    //     start: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 4,
     //     end: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 4,
     //   },
     // ];
@@ -246,19 +202,16 @@ function draw() {
   } else {
     if (classes[1]) {
       const remainingTime = classes[1].start - minuteOfDay;
-      const progressAngle = 360 - (remainingTime / 5) * 360;
 
-      if (progressAngle >= 0) {
-        g.setColor(0.25, 0, 0).setFont("4x5", 5).setFontAlign(0, 1).clear();
-        if (progressAngle <= 225) {
-          g.fillPoly(getRedFillPoints(88, 88, 1, progressAngle));
-        } else {
-          g.fillRect(0, 0, 176, 176)
-            .setColor(0, 0, 0)
-            .fillPoly(getRedFillPoints(88, 88, -1, 360 - progressAngle));
-        }
-      } else {
-        g.setFont("4x5", 5).setFontAlign(0, 1).clear();
+      g.setColor(0.25, 0, 0).setFont("4x5", 5).setFontAlign(0, 1).clear();
+      if (remainingTime == 1) {
+        g.fillPoly([88, 88, 88, 0, 176, 0, 176, 176, 0, 176, 0, 60]);
+      } else if (remainingTime == 2) {
+        g.fillPoly([88, 88, 88, 0, 176, 0, 176, 176, 24, 176]);
+      } else if (remainingTime == 3) {
+        g.fillPoly([88, 88, 88, 0, 176, 0, 176, 176, 152, 176]);
+      } else if (remainingTime == 4) {
+        g.fillPoly([88, 88, 88, 0, 176, 0, 176, 60]);
       }
 
       g.setColor(1, 1, 1)
