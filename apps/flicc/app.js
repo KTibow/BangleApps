@@ -1,63 +1,142 @@
 ///<reference path="../../typescript/types/main.d.ts" />
 
-Array.prototype.sample = function () {
-  return this[Math.floor(Math.random() * this.length)];
+Graphics.prototype.setFontWorkbench = function () {
+  // Actual height 85 (86 - 2)
+  // 1 BPP
+  return this.setFontCustom(
+    E.toString(
+      require("heatshrink").decompress(
+        atob(
+          "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",
+        ),
+      ),
+    ),
+    48,
+    47,
+    100 | 65536,
+  );
 };
-let classDataDay,
-  classData,
-  drawTimeout,
-  colours = [
-    "#f00",
-    "#00f",
-    "#0f0",
-    "#ff0",
-    "#f0f",
-    "#0ff",
-    "#8f0",
-    "#f08",
-    "#f80",
-    "#80f",
-    "#0f8",
-    "#08f",
-  ],
-  digits = [
-    E.toArrayBuffer(atob("BQcB/Gtax+A=")),
-    E.toArrayBuffer(atob("BQeCAX9c1zXNc1zX9A==")),
-    E.toArrayBuffer(atob("BQcB/Hsbx+A=")),
-    E.toArrayBuffer(atob("BQcB/Hsex+A=")),
-    E.toArrayBuffer(atob("BQeCAf/zPM8D/Nc1/A==")),
-    E.toArrayBuffer(atob("BQcB/G8ex+A=")),
-    E.toArrayBuffer(atob("BQcB/G8ax+A=")),
-    E.toArrayBuffer(atob("BQeCAf/wP81zXNc1/A==")),
-    E.toArrayBuffer(atob("BQcB/Gsax+A=")),
-    E.toArrayBuffer(atob("BQcB/Gsex+A=")),
-  ];
-function countDown() {
-  const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000);
-  Bangle.setLCDPower(1);
-  g.setFont("Vector", 100)
-    .setFontAlign(0, 0)
-    .setColor(g.theme.fg)
-    .setBgColor(g.theme.bg)
-    .clear()
-    .drawString(remainingTime + 1, 95, 100);
-  if (remainingTime > 1) setTimeout(countDown, 1000 - (Date.now() % 1000));
-  else
-    setTimeout(
-      () => {
-        g.setFont("Vector", 100)
-          .setFontAlign(0, 0)
-          .setColor(g.theme.fg)
-          .setBgColor(g.theme.bg)
-          .clear()
-          .drawString("1", 95, 100);
-      },
-      900 - (Date.now() % 1000),
-    );
+Graphics.prototype.setFontWorkbenchXL = function () {
+  // Actual height 128 (128 - 1)
+  // 1 BPP
+  return this.setFontCustom(
+    E.toString(
+      require("heatshrink").decompress(
+        atob(
+          "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",
+        ),
+      ),
+    ),
+    48,
+    atob("R0ZHR0ZHR0dHRw=="),
+    150 | 65536,
+  );
+};
+
+Bangle.setUI("clock");
+Bangle.loadWidgets();
+require("widget_utils").hide();
+
+function clamp(min, n, max) {
+  return Math.max(min, Math.min(n, max));
 }
-function getDate() {
-  const d = new Date();
-  const months = [
+function setColor(hue) {
+  const c = 1;
+  const x = c * (1 - Math.abs(((hue / 60) % 2) - 1));
+
+  if (hue < 60) {
+    g.setColor(0.5 + c * 0.5, 0.5 + x * 0.5, 0.5);
+  } else if (hue < 120) {
+    g.setColor(0.5 + x * 0.5, 0.5 + c * 0.5, 0.5);
+  } else if (hue < 180) {
+    g.setColor(0.5, 0.5 + c * 0.5, 0.5 + x * 0.5);
+  } else if (hue < 240) {
+    g.setColor(0.5, 0.5 + x * 0.5, 0.5 + c * 0.5);
+  } else if (hue < 300) {
+    g.setColor(0.5 + x * 0.5, 0.5, 0.5 + c * 0.5);
+  } else {
+    g.setColor(0.5 + c * 0.5, 0.5, 0.5 + x * 0.5);
+  }
+}
+let classDataDay, classData;
+let cachedClasses, cachedClassesMinute;
+function getClasses(day, minute) {
+  if (classDataDay != day) {
+    classDataDay = day;
+    classData = JSON.parse(
+      require("Storage").open(`classes-${day}.json`, "r").readLine() || "[]",
+    );
+    // classData = [];
+    // const now = new Date();
+    // const offset = now.getTimezoneOffset();
+    // classData = [
+    //   {
+    //     name: "Math",
+    //     room: "117",
+    //     start: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) - 2,
+    //     end: ((Math.floor(now.getTime() / 60000) - offset) % (60 * 24)) + 2,
+    //   },
+    // ];
+  }
+
+  if (cachedClassesMinute == minute) return cachedClasses;
+  const applicableClasses = classData.filter((classItem) => {
+    return classItem.end > minute;
+  });
+  const activeClass = applicableClasses.find((classItem) => {
+    return classItem.start <= minute;
+  });
+  const nextClass = applicableClasses.find((classItem) => {
+    const timeDifference = classItem.start - minute;
+    return timeDifference <= 8;
+  });
+  cachedClasses = [activeClass, nextClass];
+  cachedClassesMinute = minute;
+  return cachedClasses;
+}
+
+function drawTime(hue, now) {
+  const hour = (now.getHours() % 12 || 12).toString();
+  const minute =
+    now.getMinutes() < 10
+      ? "0" + now.getMinutes()
+      : now.getMinutes().toString();
+  g.setFont("Workbench").setFontAlign(-1, -1);
+  setColor(hue - 10);
+  g.drawString(hour, -4, -2);
+  setColor(hue + 10);
+  g.drawString(minute, -4, 89);
+}
+function countDown(hue) {
+  const draw = (text) => {
+    g.setFont("WorkbenchXL").setFontAlign(0, 0);
+    setColor(hue);
+    g.fillRect(0, 0, 176, 176);
+    g.setColor(0, 0, 0);
+    g.drawString(text, 176 / 2 - 2, 176 / 2 + 10);
+  };
+  const remainingTime = 60 - Math.floor((new Date().getTime() % 60000) / 1000);
+
+  Bangle.setLCDPower(1);
+  draw(remainingTime);
+  if (remainingTime > 1)
+    setTimeout(() => countDown(hue), 1000 - (Date.now() % 1000));
+  else setTimeout(() => draw("1"), 900 - (Date.now() % 1000));
+}
+function drawCountdown(hue, minutes) {
+  g.setFont("Workbench").setFontAlign(0, 0);
+  setColor(hue);
+  if (minutes == 1) {
+    countDown(hue);
+    Bangle.buzz(500);
+  } else {
+    g.drawString(minutes.toString(), 176 / 2, 176 / 2 + 5);
+  }
+}
+let currentTimeout;
+function draw() {
+  const now = new Date();
+  const month = [
     "Jan",
     "Feb",
     "Mar",
@@ -70,161 +149,32 @@ function getDate() {
     "Oct",
     "Nov",
     "Dec",
-  ];
-  return months[d.getMonth()] + " " + d.getDate();
-}
-function draw() {
-  const now = new Date(),
-    offset = now.getTimezoneOffset();
-  if (classDataDay != now.getDay()) {
-    classDataDay = now.getDay();
-    classData = JSON.parse(
-      require("Storage").open(`classes-${classDataDay}.json`, "r").readLine() ||
-        "[]",
-    );
-    // classData = [
-    //   {
-    //     name: "Math",
-    //     room: "117",
-    //     start: ((Math.floor(now.getTime() / 6e4) - offset) % 1440) + 0,
-    //     end: ((Math.floor(now.getTime() / 6e4) - offset) % 1440) + 2,
-    //   },
-    // ];
-  }
-  g.clear();
-  for (let i_x = 0; i_x < num_squares_w; i_x++)
-    for (let i_y = 0; i_y < num_squares_h; i_y++) {
-      let x =
-          0 === i_x
-            ? 0
-            : i_x === num_squares_w - 1
-              ? g.getWidth() - s - o_w
-              : o_w + i_x * s,
-        x2 =
-          i_x === num_squares_w - 1
-            ? g.getWidth()
-            : 0 === i_x
-              ? o_w + s
-              : o_w + i_x * s + s,
-        y =
-          0 === i_y
-            ? 0
-            : i_y === num_squares_h - 1
-              ? g.getHeight() - s - o_h
-              : o_h + i_y * s,
-        y2 =
-          i_y === num_squares_h - 1
-            ? g.getHeight()
-            : 0 === i_y
-              ? o_h + s
-              : o_h + i_y * s + s;
-      g.setColor(colours.sample()).fillRect(x, y, x2, y2);
-    }
-  const minuteOfDay = (Math.floor(now.getTime() / 6e4) - offset) % 1440;
-  let activeClass, nextClass;
-  if (minuteOfDay >= 300) {
-    const applicableClasses = classData.filter(
-      (classItem) => classItem.end > minuteOfDay,
-    );
-    activeClass = applicableClasses.find(
-      (classItem) => classItem.start <= minuteOfDay,
-    );
-    nextClass = applicableClasses.find(
-      (classItem) => classItem.start - minuteOfDay <= 8,
-    );
-  }
-  if (activeClass) {
-    const remainingMins = activeClass.end - minuteOfDay;
-    g.setBgColor(g.theme.fg);
-    g.setColor(g.theme.bg);
-    if (remainingMins == 1) {
-      Bangle.buzz(500);
-      countDown();
-    } else if (remainingMins < 100) {
-      g.drawImage(
-        digits[Math.floor(remainingMins / 10)],
-        (mid_x - 5) * s + o_w,
-        (mid_y - 3) * s + o_h,
-        { scale: s },
-      );
-      g.drawImage(
-        digits[remainingMins % 10],
-        (mid_x + 1) * s + o_w,
-        (mid_y - 3) * s + o_h,
-        { scale: s },
-      );
-      g.setFont("Vector", s + o_h)
-        .setFontAlign(-1, 1)
-        .setColor(g.theme.bg)
-        .fillRect(0, 176 - s - o_h, o_w + s * 5, 176)
-        .setColor(g.theme.fg)
-        .drawString(getDate(), 4, 176);
-    }
-  } else {
-    let t = require("locale").time(now, 1),
-      hour = parseInt(t.split(":")[0]),
-      minute = parseInt(t.split(":")[1]);
-    g.setBgColor(g.theme.fg);
-    g.setColor(g.theme.bg);
+  ][now.getMonth()];
+  const minuteOfDay = now.getHours() * 60 + now.getMinutes();
+  const hue = clamp(10, (minuteOfDay - 360) * (360 / 720), 350);
+  const classes = getClasses(now.getDay(), minuteOfDay);
+  let finalText;
 
-    if (nextClass) {
-      g.drawImage(digits[Math.floor(hour / 10)], 0, s + o_h, { scale: s });
-      g.drawImage(digits[hour % 10], 42, s + o_h, {
-        scale: s,
-      });
-      g.drawImage(digits[Math.floor(minute / 10)], 84, s + o_h, {
-        scale: s,
-      });
-      g.drawImage(digits[minute % 10], 126, s + o_h, {
-        scale: s,
-      });
-      g.fillRect(0, 176 - (o_h + s * 2), 176, 176)
-        .setColor(g.theme.fg)
-        .setFont("Vector", o_h + s * 2)
-        .setFontAlign(0, 1)
-        .drawString(`Get to ${nextClass.room}`, 176 / 2, 176);
+  g.clear();
+  if (classes[0]) {
+    drawCountdown(hue, classes[0].end - minuteOfDay);
+    finalText = `${month} ${now.getDate()}`;
+  } else {
+    drawTime(hue, now);
+    if (classes[1]) {
+      finalText = `Go to ${classes[1].room}`;
     } else {
-      g.drawImage(
-        digits[Math.floor(hour / 10)],
-        (mid_x - 5) * s + o_w,
-        (mid_y - 7) * s + o_h,
-        { scale: s },
-      );
-      g.drawImage(
-        digits[hour % 10],
-        (mid_x + 1) * s + o_w,
-        (mid_y - 7) * s + o_h,
-        { scale: s },
-      );
-      g.drawImage(
-        digits[Math.floor(minute / 10)],
-        (mid_x - 5) * s + o_w,
-        (mid_y + 1) * s + o_h,
-        { scale: s },
-      );
-      g.drawImage(
-        digits[minute % 10],
-        (mid_x + 1) * s + o_w,
-        (mid_y + 1) * s + o_h,
-        { scale: s },
-      );
+      finalText = `${month} ${now.getDate()}`;
     }
   }
-  if (drawTimeout) {
-    clearTimeout(drawTimeout);
+  if (finalText) {
+    g.setFont("Vector", 20)
+      .setFontAlign(1, -1)
+      .setColor(g.theme.fg)
+      .drawString(finalText, 176, 0);
   }
-  drawTimeout = setTimeout(draw, 60000 - (Date.now() % 60000));
+
+  if (currentTimeout) clearTimeout(currentTimeout);
+  currentTimeout = setTimeout(draw, 60000 - (Date.now() % 60000));
 }
-let s = Math.floor(g.getHeight() / 17),
-  num_squares_w = Math.round(g.getWidth() / s) - 1,
-  num_squares_h = Math.round(g.getHeight() / s) - 1,
-  o_w = Math.floor((g.getWidth() - num_squares_w * s) / 2),
-  o_h = Math.floor((g.getHeight() - num_squares_h * s) / 2),
-  mid_x = Math.floor(num_squares_w / 2),
-  mid_y = Math.floor((num_squares_h - 1) / 2);
-Bangle.setUI({
-  mode: "clock",
-});
-Bangle.loadWidgets();
-require("widget_utils").swipeOn();
-setTimeout(draw, 200);
+draw();
