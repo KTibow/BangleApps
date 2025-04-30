@@ -129,8 +129,10 @@ function drawCountdown(hue, minutes) {
   if (minutes == 1) {
     countDown(hue);
     Bangle.buzz(500);
+    return false;
   } else {
     g.drawString(minutes.toString(), 176 / 2, 176 / 2 + 5);
+    return true;
   }
 }
 let currentTimeout;
@@ -157,8 +159,10 @@ function draw() {
 
   g.clear();
   if (classes[0]) {
-    drawCountdown(hue, classes[0].end - minuteOfDay);
-    finalText = `${month} ${now.getDate()}`;
+    const showText = drawCountdown(hue, classes[0].end - minuteOfDay);
+    if (showText) {
+      finalText = `${month} ${now.getDate()}`;
+    }
   } else {
     drawTime(hue, now);
     if (classes[1]) {
