@@ -129,11 +129,10 @@ function drawCountdown(hue, minutes) {
   if (minutes == 1) {
     countDown(hue);
     Bangle.buzz(500);
-    return false;
-  } else {
-    g.drawString(minutes.toString(), 176 / 2, 176 / 2 + 5);
-    return true;
+    return;
   }
+  g.drawString(minutes.toString(), 176 / 2, 176 / 2 + 5);
+  return true;
 }
 let currentTimeout;
 function draw() {
