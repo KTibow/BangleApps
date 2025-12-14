@@ -166,7 +166,8 @@ function draw() {
   } else {
     drawTime(hue, now);
     if (classes[1]) {
-      finalText = `Go to ${classes[1].room}`;
+      const timeRemaining = classes[1].start - minuteOfDay;
+      finalText = `${timeRemaining}m to ${classes[1].room}`;
     } else {
       finalText = `${month} ${now.getDate()}`;
     }
