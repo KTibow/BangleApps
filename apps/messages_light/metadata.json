@@ -1,7 +1,7 @@
 {
   "id": "messages_light",
   "name": "Messages Light",
-  "version": "1.6",
+  "version": "1.08",
   "description": "A light implementation of messages App (display notifications from iOS and Gadgetbridge/Android)",
   "icon": "app.png",
   "type": "app",
@@ -16,6 +16,6 @@
     {"name":"boot_messages_light.boot.js","url":"messages_light.boot.js"},
     {"name":"messages_light.listener.js","url":"messages_light.listener.js"}
   ],
-  "data": [{"name":"messages_light.settings.json"},{"name":"messages_light.NewMessage.json"}],
+  "data": [{"name":"messages_light.settings.json"},{"name":"messages_light.NewEvent.json"}],
   "screenshots": [{"url":"screenshot-notify.png"} ,{"url":"screenshot-long-text1.png"},{"url":"screenshot-long-text2.png"}, {"url":"screenshot-call.png"} ]
 }
