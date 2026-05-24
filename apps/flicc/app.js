@@ -123,12 +123,37 @@ function countDown(hue) {
     setTimeout(() => countDown(hue), 1000 - (Date.now() % 1000));
   else setTimeout(() => draw("1"), 900 - (Date.now() % 1000));
 }
+let vibrationMinuteBoundary;
+function scheduleFinalMinuteVibrations() {
+  const now = Date.now();
+  const minuteBoundary = now + (60000 - (now % 60000));
+  const msUntilMinuteBoundary = minuteBoundary - now;
+  if (vibrationMinuteBoundary == minuteBoundary) return;
+
+  vibrationMinuteBoundary = minuteBoundary;
+
+  Bangle.buzz(200);
+  setTimeout(() => Bangle.buzz(200), 300);
+
+  for (let i = 6; i > 1; i--) {
+    const delay = msUntilMinuteBoundary - i * 1000;
+    if (delay > 0) setTimeout(() => Bangle.buzz(200), delay);
+  }
+
+  const finalDelay = msUntilMinuteBoundary - 1000;
+  if (finalDelay > 0) {
+    setTimeout(() => {
+      const buzzDuration = minuteBoundary - Date.now();
+      Bangle.buzz(Math.max(0, buzzDuration));
+    }, finalDelay);
+  }
+}
 function drawCountdown(hue, minutes) {
   g.setFont("Workbench").setFontAlign(0, 0);
   setColor(hue);
   if (minutes == 1) {
     countDown(hue);
-    Bangle.buzz(500);
+    scheduleFinalMinuteVibrations();
     return;
   }
   g.drawString(minutes.toString(), 176 / 2, 176 / 2 + 5);
